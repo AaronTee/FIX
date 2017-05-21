@@ -1,0 +1,1 @@
+2017-05-21 16:55:57,701 [8] INFO  FIX.Web.Controllers.BaseController [(null)] - test logger

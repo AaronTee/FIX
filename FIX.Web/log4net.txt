@@ -1,0 +1,6 @@
+2017-05-21 16:49:08,207 [5] INFO  FIX.Web.Controllers.BaseController [(null)] - test
+2017-05-21 16:50:22,555 [5] INFO  FIX.Web.Controllers.BaseController [(null)] - test
+2017-05-21 16:50:22,785 [5] DEBUG FIX.Web.Controllers.BaseController [(null)] - test
+2017-05-21 16:50:22,987 [5] WARN  FIX.Web.Controllers.BaseController [(null)] - test
+2017-05-21 16:50:23,165 [5] ERROR FIX.Web.Controllers.BaseController [(null)] - test
+2017-05-21 16:50:23,359 [5] FATAL FIX.Web.Controllers.BaseController [(null)] - test

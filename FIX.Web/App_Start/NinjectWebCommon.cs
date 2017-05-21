@@ -12,6 +12,7 @@ namespace FIX.Web.App_Start
     using Ninject.Web.Common;
     using Data;
     using Service;
+    using Service.Interface;
 
     public static class NinjectWebCommon 
     {
@@ -65,6 +66,7 @@ namespace FIX.Web.App_Start
         {
             kernel.Bind<IDbContext>().To<FIXDbContext>().InRequestScope();
             kernel.Bind(typeof(IRepository<>)).To(typeof(Repository<>)).InRequestScope();
+            kernel.Bind<IBaseService>().To<BaseService>();
             kernel.Bind<IUserService>().To<UserService>();
         }        
     }

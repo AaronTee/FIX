@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using FIX.Service;
 using FIX.Web.Models;
 using FIX.Core.Data;
+using FIX.Service.Interface;
 
 namespace FIX.Web.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private IUserService userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IBaseService baseService) : base(baseService)
         {
             this.userService = userService;
         }
@@ -42,7 +42,7 @@ namespace FIX.Web.Controllers
                 model.LastName = userEntity.UserProfile.LastName;
                 model.Address = userEntity.UserProfile.Address;
                 model.Email = userEntity.Email;
-                model.UserName = userEntity.UserName;
+                model.UserName = userEntity.Username;
                 model.Password = userEntity.Password;
             }
             return View(model);
@@ -55,7 +55,7 @@ namespace FIX.Web.Controllers
             {
                 User userEntity = new User
                 {
-                    UserName = model.UserName,
+                    Username = model.UserName,
                     Email = model.Email,
                     Password = model.Password,
                     CreatedTimestamp = DateTime.UtcNow,
@@ -79,7 +79,7 @@ namespace FIX.Web.Controllers
             else
             {
                 User userEntity = userService.GetUser(model.ID);
-                userEntity.UserName = model.UserName;
+                userEntity.Username = model.UserName;
                 userEntity.Email = model.Email;
                 userEntity.Password = model.Password;
                 userEntity.ModifiedTimestamp = DateTime.UtcNow;
@@ -110,7 +110,7 @@ namespace FIX.Web.Controllers
                 model.Address = userEntity.UserProfile.Address;
                 model.Email = userEntity.Email;
                 model.CreatedTimestamp = userEntity.CreatedTimestamp;
-                model.UserName = userEntity.UserName;
+                model.UserName = userEntity.Username;
             }
             return View(model);
         }
@@ -126,7 +126,7 @@ namespace FIX.Web.Controllers
                 model.Address = userEntity.UserProfile.Address;
                 model.Email = userEntity.Email;
                 model.CreatedTimestamp = userEntity.CreatedTimestamp;
-                model.UserName = userEntity.UserName;
+                model.UserName = userEntity.Username;
             }
             return View(model);
         }

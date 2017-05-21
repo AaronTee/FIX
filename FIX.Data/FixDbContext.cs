@@ -34,5 +34,6 @@ namespace FIX.Data
         {
             return base.Set<TEntity>();
         }
+ 
     }
 }

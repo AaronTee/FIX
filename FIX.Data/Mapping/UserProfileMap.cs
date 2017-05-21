@@ -10,11 +10,12 @@ namespace FIX.Data.Mapping
             //key
             HasKey(t => t.ID);
             //properties
-            Property(t => t.FirstName).IsRequired().HasMaxLength(100).HasColumnType("nvarchar");
+            Property(t => t.FirstName).IsRequired().HasMaxLength(100).HasColumnType("nvarchar").IsRequired();
             Property(t => t.LastName).HasMaxLength(100).HasColumnType("nvarchar");
             Property(t => t.Address).HasColumnType("nvarchar");
+            Property(t => t.Gender).HasMaxLength(2).HasColumnType("nvarchar");
             Property(t => t.CreatedTimestamp).IsRequired();
-            Property(t => t.ModifiedTimestamp).IsRequired();
+            Property(t => t.ModifiedTimestamp);
             //table
             ToTable("UserProfiles");
             //relation

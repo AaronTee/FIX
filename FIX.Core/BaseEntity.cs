@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace FIX.Core
 {
     public abstract class BaseEntity

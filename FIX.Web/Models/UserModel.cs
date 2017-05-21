@@ -18,4 +18,11 @@ namespace FIX.Web.Models
         [Display(Name = "Created Date")]
         public DateTime CreatedTimestamp { get; set; }
     }
+
+    public class UserRole
+    {
+        public const string SuperAdmin = "SuperAdmin";
+        public const string Admin = "Admin";
+        public const string User = "User";
+    }
 }

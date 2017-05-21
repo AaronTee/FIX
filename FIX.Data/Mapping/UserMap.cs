@@ -10,12 +10,12 @@ namespace FIX.Data.Mapping
             //key
             HasKey(t => t.ID);
             //properties
-            Property(t => t.UserName).IsRequired();
+            Property(t => t.Username).IsRequired();
             Property(t => t.Email).IsRequired();
             Property(t => t.Password).IsRequired();
-            Property(t => t.IP).IsRequired();
+            Property(t => t.IP);
             Property(t => t.CreatedTimestamp).IsRequired();
-            Property(t => t.ModifiedTimestamp).IsRequired();
+            Property(t => t.ModifiedTimestamp);
             //table
             ToTable("Users");
         }
