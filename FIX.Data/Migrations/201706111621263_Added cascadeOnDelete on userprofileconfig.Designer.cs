@@ -7,13 +7,13 @@ namespace FIX.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class InitialCreate : IMigrationMetadata
+    public sealed partial class AddedcascadeOnDeleteonuserprofileconfig : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedcascadeOnDeleteonuserprofileconfig));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705181400476_InitialCreate"; }
+            get { return "201706111621263_Added cascadeOnDelete on userprofileconfig"; }
         }
         
         string IMigrationMetadata.Source

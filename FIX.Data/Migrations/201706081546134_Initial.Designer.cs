@@ -13,7 +13,7 @@ namespace FIX.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201705211541317_Initial"; }
+            get { return "201706081546134_Initial"; }
         }
         
         string IMigrationMetadata.Source

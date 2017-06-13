@@ -52,17 +52,26 @@
     <Compile Include="IDbContext.cs" />
     <Compile Include="FIXDbContext.cs" />
     <Compile Include="IRepository.cs" />
+    <Compile Include="Mapping\GenderMap.cs" />
+    <Compile Include="Mapping\UserBankAccountMap.cs" />
+    <Compile Include="Mapping\BankMap.cs" />
+    <Compile Include="Mapping\RoleMap.cs" />
     <Compile Include="Mapping\UserMap.cs" />
     <Compile Include="Mapping\UserProfileMap.cs" />
-    <Compile Include="Migrations\201705181400476_InitialCreate.cs" />
-    <Compile Include="Migrations\201705181400476_InitialCreate.Designer.cs">
-      <DependentUpon>201705181400476_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201706081546134_Initial.cs" />
+    <Compile Include="Migrations\201706081546134_Initial.Designer.cs">
+      <DependentUpon>201706081546134_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201705211541317_Initial.cs" />
-    <Compile Include="Migrations\201705211541317_Initial.Designer.cs">
-      <DependentUpon>201705211541317_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201706111621263_Added cascadeOnDelete on userprofileconfig.cs" />
+    <Compile Include="Migrations\201706111621263_Added cascadeOnDelete on userprofileconfig.Designer.cs">
+      <DependentUpon>201706111621263_Added cascadeOnDelete on userprofileconfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706121959038_Added UserBankAccount.cs" />
+    <Compile Include="Migrations\201706121959038_Added UserBankAccount.Designer.cs">
+      <DependentUpon>201706121959038_Added UserBankAccount.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="PartialFIXDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
   </ItemGroup>
@@ -77,11 +86,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201705181400476_InitialCreate.resx">
-      <DependentUpon>201705181400476_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201706081546134_Initial.resx">
+      <DependentUpon>201706081546134_Initial.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705211541317_Initial.resx">
-      <DependentUpon>201705211541317_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201706111621263_Added cascadeOnDelete on userprofileconfig.resx">
+      <DependentUpon>201706111621263_Added cascadeOnDelete on userprofileconfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706121959038_Added UserBankAccount.resx">
+      <DependentUpon>201706121959038_Added UserBankAccount.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

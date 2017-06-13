@@ -9,6 +9,5 @@ namespace FIX.Service
 {
     public class BaseService : IBaseService
     {
-
     }
 }

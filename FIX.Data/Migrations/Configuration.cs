@@ -11,23 +11,24 @@ namespace FIX.Data.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "FIX.Data.FIXDbContext";
         }
 
         protected override void Seed(FIX.Data.FIXDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            context.Set<Gender>().AddOrUpdate(
+                new Gender() { GenderId = 1, Description = "Male", CreatedTimestamp = DateTime.Now },
+                new Gender() { GenderId = 2, Description = "Female", CreatedTimestamp = DateTime.Now },
+                new Gender() { GenderId = 3, Description = "Other", CreatedTimestamp = DateTime.Now }
+            );
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            //context.Set<Role>().AddOrUpdate(
+            //    new Role() { RoleName = "Admin", CreatedTimestamp = DateTime.Now },
+            //    new Role() { RoleName = "User", CreatedTimestamp = DateTime.Now }
+            //);
+
+            //context.Set<User>().AddOrUpdate(
+            //    new User() { Username = "admin", Password = "admin", Email = "aarontee.tech@gmail.com", CreatedTimestamp = DateTime.Now, HasAcceptedTerms = false, HasEmailVerified = false }
+            //);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model FIX.Web.Models.UserModel
+﻿@model FIX.Web.Models.UserViewModel
 
 @{
     ViewBag.Title = "User Detail";
@@ -23,9 +23,9 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.UserName, new { @class = "col-lg-2 control-label" })
+                @Html.LabelFor(model => model.Username, new { @class = "col-lg-2 control-label" })
                 <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.UserName, new { @class = "form-control" })
+                    @Html.DisplayFor(model => model.Username, new { @class = "form-control" })
                 </div>
             </div>
 
@@ -55,9 +55,9 @@
                 <div class="form-group">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-9">
-                        @Html.ActionLink("Edit", "CreateEditUser",
+                        @*@Html.ActionLink("Edit", "CreateEditUser",
                         new { id = ViewContext.RouteData.Values["id"] },
-                        new { @class = "btn btn-primary" })
+                        new { @class = "btn btn-primary" })*@
                         @Html.ActionLink("Back to List", "Index",
                         null, new { @class = "btn btn-success" })
                     </div>

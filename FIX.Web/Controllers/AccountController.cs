@@ -9,12 +9,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using FIX.Web.Models;
-using System.Collections.Generic;
-using System.Net.Http;
 using FIX.Service.Interface;
 using Newtonsoft.Json;
 using FIX.Web.Helpers;
 using System.Net;
+using System.Threading;
 
 namespace FIX.Web.Controllers
 {
@@ -65,7 +64,7 @@ namespace FIX.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            if (Request.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -79,24 +78,25 @@ namespace FIX.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public ActionResult Login(LoginViewModel model, string returnUrl)
         {
+            try
+            {
 #if !DEBUG
-            if (!IsRecapchaValidate())
-            {
-                ModelState.AddModelError("", "Captcha is not valid. Please try again.");
-                return View(model);
-            }
+                if (!IsRecapchaValidate())
+                {
+                    ModelState.AddModelError("", "Captcha is not valid. Please try again.");
+                    return View(model);
+                }
 #endif
-
-            if (_userService.IsValid(model.Email, model.Password))
-            {
-                var ident = new ClaimsIdentity(new[] { 
+                if (_userService.IsValid(model.Username, model.Password))
+                {
+                    var ident = new ClaimsIdentity(new[] { 
                     // adding following 2 claim just for supporting default antiforgery provider
-                    new Claim(ClaimTypes.NameIdentifier, model.Email),
+                    new Claim(ClaimTypes.NameIdentifier, model.Username),
                     new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
 
-                    new Claim(ClaimTypes.Name, model.Email),
+                    new Claim(ClaimTypes.Name, model.Username),
 
                     //Add Role (search table to find out!)
                     new Claim(ClaimTypes.Role, UserRole.SuperAdmin),
@@ -104,19 +104,25 @@ namespace FIX.Web.Controllers
                     new Claim(ClaimTypes.Role, UserRole.User),
 
                 },
-                DefaultAuthenticationTypes.ApplicationCookie);
+                    DefaultAuthenticationTypes.ApplicationCookie);
 
-                HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties {
-                    IsPersistent = false
-                }, ident);
+                    HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties
+                    {
+                        IsPersistent = false
+                    }, ident);
 
-                return RedirectToAction("Index", "Home"); // auth succeed 
+                    return RedirectToAction("Index", "Home"); // auth succeed 
+                }
+
+                // invalid username or password
+                ModelState.AddModelError("", "invalid username or password");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
             }
 
-            // invalid username or password
-            ModelState.AddModelError("", "invalid username or password");
             return View();
-
         }
 
         private bool IsRecapchaValidate()
@@ -166,7 +172,7 @@ namespace FIX.Web.Controllers
         //    // If a user enters incorrect codes for a specified amount of time then the user account 
         //    // will be locked out for a specified amount of time. 
         //    // You can configure the account lockout settings in IdentityConfig
-        //    var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+        //var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
         //    switch (result)
         //    {
         //        case SignInStatus.Success:
@@ -437,8 +443,10 @@ namespace FIX.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            //Clear cookie
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+
+            return RedirectToAction("Login", "Account");
         }
 
         //

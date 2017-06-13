@@ -8,7 +8,7 @@ namespace FIX.Data.Mapping
         public UserProfileMap()
         {
             //key
-            HasKey(t => t.ID);
+            HasKey(t => t.UserProfileId);
             //properties
             Property(t => t.FirstName).IsRequired().HasMaxLength(100).HasColumnType("nvarchar").IsRequired();
             Property(t => t.LastName).HasMaxLength(100).HasColumnType("nvarchar");
@@ -17,9 +17,9 @@ namespace FIX.Data.Mapping
             Property(t => t.CreatedTimestamp).IsRequired();
             Property(t => t.ModifiedTimestamp);
             //table
-            ToTable("UserProfiles");
+            ToTable("UserProfile");
             //relation
-            HasRequired(t => t.User).WithRequiredDependent(u => u.UserProfile);
+            HasRequired(t => t.User).WithRequiredDependent(u => u.UserProfile).WillCascadeOnDelete();
         }
     }
 }

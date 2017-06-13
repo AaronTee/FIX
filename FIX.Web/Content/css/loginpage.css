@@ -1,0 +1,45 @@
+﻿html{
+    background: url("../image/loginbg.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    touch-action: manipulation;
+}
+
+body{
+    background-color: transparent;
+}
+
+.container{
+    width: 100%;
+    padding: 0;
+}
+
+.loginform-container {
+    margin-top: 25px;
+    margin-bottom: 50px;
+    position: relative;
+    text-align: center;
+}
+
+.loginform-container.center #companylogo{
+    width: 60%;
+    height: 60%;
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.loginform-container.center .form-group{
+    text-align: center;
+}
+
+.loginform-container ul{
+    padding: 0;
+}
+
+.loginform-container ul.form-field li{
+    width: 250px;
+    margin: 0 auto;
+    margin-bottom: 15px;
+}

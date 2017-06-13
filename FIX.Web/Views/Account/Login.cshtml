@@ -1,59 +1,45 @@
 ﻿@using FIX.Web.Models
 @model LoginViewModel
 @{
-    ViewBag.Title = "Log in";
+    ViewBag.Title = "Home";
 }
 
-<div class="loginform-container">
-    <div class="row">
-        <div class="col-xs-6 border-right">
-            <div class="center">
-                <img id="companylogo" src="~/Content/image/FIXLogo.png">
+<div class="loginform-container center">
+    <img id="companylogo" src="~/Content/image/FIXLogo.png">
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <ul class="form-field" style="list-style-type: none">
+        <li>
+            <div class="input-group">
+                <span class="input-group-addon" style="padding-left: 12px; padding-right: 12px"><i class="fa fa-user" style="font-size: 1.4em"></i></span>
+                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = Resources.Global.Username })
             </div>
-        </div>
-        <div class="col-xs-6">
-            <div class="center">
-                <div class="loginform">
-                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        <div>
-                            <ul class="form-field" style="list-style-type: none">
-                                <li>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-user fa-2x"></i></span>
-                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control input-lg", placeholder = "Username" })
-                                    </div>
-                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                                </li>
-                                <li>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-lock fa-2x" style="font-size: 2.2em"></i></span>
-                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control input-lg", placeholder = "Password" })
-                                    </div>
-                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                                </li>
-                                <li>
-                                    @Html.CheckBoxFor(m => m.RememberMe)
-                                    @Html.LabelFor(m => m.RememberMe)
-                                </li>
-                                <li>
-                                    <div class="g-recaptcha" data-sitekey="@(AppSettingsHelper.GetKeyValue("GoogleRecaptchaSiteKey"))"></div>
-                                </li>
-                                <li>
-                                    <input type="submit" value="Log in" class="btn btn-default" />
-                                </li>
-                            </ul>
-                        </div>
-                    }
-                </div>
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+        </li>
+        <li>
+            <div class="input-group">
+                <span class="input-group-addon" style="padding-left: 13px; padding-right: 13px"><i class="fa fa-lock" style="font-size: 1.4em"></i></span>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = Resources.Global.Password })
             </div>
-        </div>
-    </div>
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </li>
+        <li>
+            @Html.CheckBoxFor(m => m.RememberMe) @Html.LabelFor(m => m.RememberMe, new { @style="color:white" })
+        </li>
+        <li>
+            <div class="g-recaptcha" data-theme="light" data-sitekey="@(AppSettingsHelper.GetKeyValue("GoogleRecaptchaSiteKey"))"></div>
+        </li>
+        <li>
+            <input type="submit" value="@(Resources.Global.Login)" class="btn btn-default" style="width: 100%" />
+        </li>
+    </ul>
+    }
 </div>
 
 
-
 @section Scripts {
+    @*Overwrite*@
+    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/loginpage.css"))"/> 
 }

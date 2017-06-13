@@ -117,10 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Target" xml:space="preserve">
-    <value>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</value>
+  <data name="Home" xml:space="preserve">
+    <value>首页</value>
   </data>
-  <data name="DefaultSchema" xml:space="preserve">
-    <value>dbo</value>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>用户名</value>
   </data>
 </root>

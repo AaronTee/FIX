@@ -7,18 +7,23 @@ namespace FIX.Service
 {
     public class UserService : IUserService
     {
-        private IRepository<User> userRepo;
-        private IRepository<UserProfile> userProfileRepo;
+        private IRepository<User> _userRepo;
+        private IRepository<UserProfile> _userProfileRepo;
+        private IRepository<Role> _roleRepo;
+        private IRepository<UserBankAccount> _userBankAccountRepository;
 
-        public UserService(IRepository<User> userRepository, IRepository<UserProfile> userProfileRepository)
+        public UserService(IRepository<User> userRepository, IRepository<UserProfile> userProfileRepository, IRepository<Role> roleRepository
+            , IRepository<UserBankAccount> userBankAccountRepository)
         {
-            this.userRepo = userRepository;
-            this.userProfileRepo = userProfileRepository;
+            _userRepo = userRepository;
+            _userProfileRepo = userProfileRepository;
+            _roleRepo = roleRepository;
+            _userBankAccountRepository = userBankAccountRepository;
         }
 
         public IQueryable<User> GetUsers()
         {
-            return userRepo.Table;
+            return _userRepo.Table;
         }
 
         public bool IsValid(string username, string password)
@@ -27,25 +32,34 @@ namespace FIX.Service
             return user != null;
         }
 
-        public User GetUser(long id)
+        public User GetUser(int id)
         {
-            return userRepo.GetById(id);
+            return _userRepo.GetById(id);
+        }
+
+        public int GetUserID(string username)
+        {
+            return GetUsers().Where(x => x.Username == username).First().UserId;
+        }
+
+        public User GetUser(string username, string password)
+        {
+            return GetUsers().Where(x => x.Username == username && x.Password == password).FirstOrDefault();
         }
 
         public void InsertUser(User user)
         {
-            userRepo.Insert(user);
+            _userRepo.Insert(user);
         }
 
         public void UpdateUser(User user)
         {
-            userRepo.Update(user);
+            _userRepo.Update(user);
         }
 
         public void DeleteUser(User user)
         {
-            userProfileRepo.Delete(user.UserProfile);
-            userRepo.Delete(user);
+            _userRepo.Delete(user);
         }
     }
 }

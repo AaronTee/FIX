@@ -13,6 +13,7 @@ var watch = require('gulp-watch');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var rev = require('gulp-rev');
+var order = require("gulp-order");
 
 var config = {
     //Include all js files but exclude any min.js files
@@ -22,18 +23,17 @@ var config = {
         'jqueryval.js': ['Scripts/jquery.validate*.min.js'],
         'modernizr.js': ['Scripts/modernizr-*.js'],
         'bootstrap.js': ['Scripts/bootstrap.js', 'Scripts/respond.js'],
+        'app.js': ['Scripts/styles.js']
     },
 
     srcCss: [
-        './Content/css/**/*.css'
-    ],
-
-    srcless: [
-        './Content/less/**/*.less'
+        './Content/css/bootswatch.css',
+        './Content/css/font-awesome.css',
+        './Content/css/bootstrap.custom.css'
     ],
 
     srcsass: [
-        './Content/sass/**/*.scss'
+        './Content/sass/styles.scss'
     ],
 
     production: !!util.env.production
@@ -50,24 +50,23 @@ gulp.task('clean', function (cb) {
 
 gulp.task('style', function () {
 
-    var lessStream = gulp.src(config.srcless)
-        .pipe(less())
-        .pipe(concat('style-less.less'))
+    var cssStream = gulp.src(config.srcCss)
+        .pipe(concat('style-css.css'))
     ;
 
     var scssStream = gulp.src(config.srcsass)
         .pipe(sass())
         .pipe(concat('style-sass.scss'))
     ;
-    
-    var cssStream = gulp.src(config.srcCss)
-        .pipe(concat('style-css.css'))
-    ;
 
-    var mergedStream = merge(lessStream, scssStream, cssStream)
+    var mergedStream = merge(scssStream, cssStream)
+        .pipe(order([
+            "style-css.css",
+            "style-sass.scss"
+        ]))
         .pipe(concat('styles.min.css'))
         .pipe(config.production ? minify() : util.noop())
-        .pipe(gulp.dest('./Content/bundles/'));
+        .pipe(gulp.dest('./Content/'));
 
     return mergedStream;
 });
@@ -93,7 +92,6 @@ gulp.task('script', function (done) {
             .pipe(gulp.dest(buildFolder))
         }
     }
-
     done();
 });
 

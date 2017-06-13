@@ -5,10 +5,13 @@ using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Reflection;
 using FIX.Core;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace FIX.Data
 {
-    public class FIXDbContext : DbContext, IDbContext
+    public partial class FIXDbContext : DbContext, IDbContext
     {
         public FIXDbContext()
             : base("name=FIXConnectionString")
@@ -17,6 +20,7 @@ namespace FIX.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
             .Where(type => !String.IsNullOrEmpty(type.Namespace))

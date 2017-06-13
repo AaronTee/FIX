@@ -5,128 +5,196 @@ using System.Web.Mvc;
 using FIX.Web.Models;
 using FIX.Core.Data;
 using FIX.Service.Interface;
+using AutoMapper;
 
 namespace FIX.Web.Controllers
 {
+    [Authorize]
     public class UserController : BaseController
     {
-        private IUserService userService;
+        private IUserService _userService;
+        private IRoleService _roleService;
+        private IUserBankAccountService _userBankAccountService;
 
-        public UserController(IUserService userService, IBaseService baseService) : base(baseService)
+        public UserController(IUserService userService, IRoleService roleService
+            ,IUserBankAccountService userBankAccountService, IBaseService baseService) : base(baseService)
         {
-            this.userService = userService;
+            _userService = userService;
+            _roleService = roleService;
+            _userBankAccountService = userBankAccountService;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            IEnumerable<UserModel> users = userService.GetUsers().Select(u => new UserModel
+            IEnumerable<UserViewModel> users = _userService.GetUsers().Select(u => new UserViewModel
             {
-                FirstName = u.UserProfile.FirstName,
-                LastName = u.UserProfile.LastName,
+                Username = u.Username,
                 Email = u.Email,
-                Address = u.UserProfile.Address,
-                ID = u.ID
-            });
+                UserId = u.UserId,
+                Roles = u.Roles
+            }).ToList();
             return View(users);
         }
+ 
+        [HttpGet]
+        public ActionResult Create()
+        {
+            UserCreateEditViewModel model = new UserCreateEditViewModel();
+
+            model.CountryDDL = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = "Malaysia", Value = "MY" }
+            };
+
+            model.RoleDDL = _roleService.GetAsQueryable().Select(x => new SelectListItem()
+            {
+                Text = x.RoleName,
+                Value = x.RoleId.ToString()
+            });
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(UserCreateEditViewModel model)
+        {
+            List<Role> rolesAssigned = new List<Role>();
+
+            foreach (var selectedRole in model.Roles)
+            {
+                rolesAssigned.Add(_roleService.GetById(selectedRole));
+            }
+
+            User userEntity = new User
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+                CreatedTimestamp = DateTime.UtcNow,
+                ModifiedTimestamp = DateTime.UtcNow,
+                IP = Request.UserHostAddress,
+                UserProfile = new UserProfile
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    CreatedTimestamp = DateTime.UtcNow,
+                    ModifiedTimestamp = DateTime.UtcNow
+                },
+                Roles = rolesAssigned
+            };
+            _userService.InsertUser(userEntity);
+            
+            return View(model);
+        }
+
 
         [HttpGet]
-        public ActionResult CreateEditUser(int? id)
+        public ActionResult Edit(int? id)
         {
-            UserModel model = new UserModel();
+            UserCreateEditViewModel model = new UserCreateEditViewModel();
+
+            model.CountryDDL = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = "Malaysia", Value = "MY" }
+            };
+
+            model.RoleDDL = _roleService.GetAsQueryable().Select(x => new SelectListItem()
+            {
+                Text = x.RoleName,
+                Value = x.RoleId.ToString()
+            });
+
             if (id.HasValue && id != 0)
             {
-                User userEntity = userService.GetUser(id.Value);
-                model.FirstName = userEntity.UserProfile.FirstName;
-                model.LastName = userEntity.UserProfile.LastName;
-                model.Address = userEntity.UserProfile.Address;
+                User userEntity = _userService.GetUser(id.Value);
+                UserBankAccount userBankAccountEntity = _userBankAccountService.GetPrimaryAccount(userEntity);
+
+                model.Username = userEntity.Username;
+                
+                
                 model.Email = userEntity.Email;
-                model.UserName = userEntity.Username;
+                model.Username = userEntity.Username;
                 model.Password = userEntity.Password;
+
+                model.FirstName = userEntity.UserProfile?.FirstName;
+                model.LastName = userEntity.UserProfile?.LastName;
+                model.Address = userEntity.UserProfile?.Address;
+
+                model.BankAccountHolder = userBankAccountEntity?.BankAccountHolder;
+                model.BankAccountNo = userBankAccountEntity?.BankAccountNo;
+                model.BankBranch = userBankAccountEntity?.BankBranch;
             }
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult CreateEditUser(UserModel model)
+        public ActionResult Edit(UserCreateEditViewModel model)
         {
-            if (model.ID == 0)
-            {
-                User userEntity = new User
-                {
-                    Username = model.UserName,
-                    Email = model.Email,
-                    Password = model.Password,
-                    CreatedTimestamp = DateTime.UtcNow,
-                    ModifiedTimestamp = DateTime.UtcNow,
-                    IP = Request.UserHostAddress,
-                    UserProfile = new UserProfile
-                    {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Address = model.Address,
-                        CreatedTimestamp = DateTime.UtcNow,
-                        ModifiedTimestamp = DateTime.UtcNow
-                    }
-                };
-                userService.InsertUser(userEntity);
-                if (userEntity.ID > 0)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                User userEntity = userService.GetUser(model.ID);
-                userEntity.Username = model.UserName;
-                userEntity.Email = model.Email;
-                userEntity.Password = model.Password;
-                userEntity.ModifiedTimestamp = DateTime.UtcNow;
-                userEntity.IP = Request.UserHostAddress;
-                userEntity.UserProfile.FirstName = model.FirstName;
-                userEntity.UserProfile.LastName = model.LastName;
-                userEntity.UserProfile.Address = model.Address;
-                userEntity.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
-                userService.UpdateUser(userEntity);
-                if (userEntity.ID > 0)
-                {
-                    return RedirectToAction("Index");
-                }
+            List<Role> rolesAssigned = new List<Role>();
 
+            foreach(var selectedRole in model.Roles)
+            {
+                rolesAssigned.Add(new Role() {
+                    RoleId = selectedRole
+                });
             }
+
+            User userEntity = new User
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+                CreatedTimestamp = DateTime.UtcNow,
+                ModifiedTimestamp = DateTime.UtcNow,
+                IP = Request.UserHostAddress,
+                UserProfile = new UserProfile
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    CreatedTimestamp = DateTime.UtcNow,
+                    ModifiedTimestamp = DateTime.UtcNow
+                },
+                Roles = rolesAssigned
+            };
+            return View(model);
+
+            _userService.UpdateUser(userEntity);
+
             return View(model);
         }
 
         public ActionResult Detail(int? id)
         {
-            UserModel model = new UserModel();
+            UserViewModel model = new UserViewModel();
             if (id.HasValue && id != 0)
             {
-                User userEntity = userService.GetUser(id.Value);
+                User userEntity = _userService.GetUser(id.Value);
 
-                model.FirstName = userEntity.UserProfile.FirstName;
-                model.LastName = userEntity.UserProfile.LastName;
-                model.Address = userEntity.UserProfile.Address;
-                model.Email = userEntity.Email;
+                model.FirstName = userEntity.UserProfile?.FirstName;
+                model.LastName = userEntity.UserProfile?.LastName;
+                model.Address = userEntity.UserProfile?.Address;
+                model.Email = userEntity?.Email;
                 model.CreatedTimestamp = userEntity.CreatedTimestamp;
-                model.UserName = userEntity.Username;
+                model.Username = userEntity.Username;
             }
             return View(model);
         }
 
         public ActionResult Delete(int id)
         {
-            UserModel model = new UserModel();
+            UserViewModel model = new UserViewModel();
             if (id != 0)
             {
-                User userEntity = userService.GetUser(id);
+                User userEntity = _userService.GetUser(id);
                 model.FirstName = userEntity.UserProfile.FirstName;
                 model.LastName = userEntity.UserProfile.LastName;
                 model.Address = userEntity.UserProfile.Address;
                 model.Email = userEntity.Email;
                 model.CreatedTimestamp = userEntity.CreatedTimestamp;
-                model.UserName = userEntity.Username;
+                model.Username = userEntity.Username;
             }
             return View(model);
         }
@@ -138,8 +206,8 @@ namespace FIX.Web.Controllers
             {
                 if (id != 0)
                 {
-                    User userEntity = userService.GetUser(id);
-                    userService.DeleteUser(userEntity);
+                    User userEntity = _userService.GetUser(id);
+                    _userService.DeleteUser(userEntity);
                     return RedirectToAction("Index");
                 }
                 return View();

@@ -1,4 +1,4 @@
-﻿@model FIX.Web.Models.UserModel
+﻿@model UserViewModel
 
 @{
     ViewBag.Title = "Delete User";
@@ -25,9 +25,9 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.UserName, new { @class = "col-lg-2 control-label" })
+                @Html.LabelFor(model => model.Username, new { @class = "col-lg-2 control-label" })
                 <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.UserName, new { @class = "form-control" })
+                    @Html.DisplayFor(model => model.Username, new { @class = "form-control" })
                 </div>
             </div>
 

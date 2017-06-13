@@ -49,16 +49,13 @@ namespace FIX.Web.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
     }
 
@@ -108,5 +105,12 @@ namespace FIX.Web.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+    }
+
+    public class EmailViewModel
+    {
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+        public string EmailDomain { get; set; }
     }
 }

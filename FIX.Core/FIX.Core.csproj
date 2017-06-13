@@ -42,6 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Data\Gender.cs" />
+    <Compile Include="Data\UserBankAccount.cs" />
+    <Compile Include="Data\Bank.cs" />
+    <Compile Include="Data\Role.cs" />
     <Compile Include="Data\User.cs" />
     <Compile Include="Data\UserProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
