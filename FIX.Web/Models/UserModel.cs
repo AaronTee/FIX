@@ -43,6 +43,7 @@ namespace FIX.Web.Models
         {
             CountryDDL = new List<SelectListItem>();
             RoleDDL = new List<SelectListItem>();
+            GenderDDL = new List<SelectListItem>();
         }
 
         [Required]
@@ -100,6 +101,8 @@ namespace FIX.Web.Models
 
         public IEnumerable<SelectListItem> CountryDDL { get; set; }
         public IEnumerable<SelectListItem> RoleDDL { get; set; }
+        public IEnumerable<SelectListItem> GenderDDL { get; set; }
+
 
         public UserRole UserRole { get; set; }
     }

@@ -10,25 +10,27 @@ namespace FIX.Service
         private IRepository<User> _userRepo;
         private IRepository<UserProfile> _userProfileRepo;
         private IRepository<Role> _roleRepo;
-        private IRepository<UserBankAccount> _userBankAccountRepository;
+        private IRepository<UserBankAccount> _userBankAccountRepo;
+        private IRepository<Gender> _genderRepo;
 
-        public UserService(IRepository<User> userRepository, IRepository<UserProfile> userProfileRepository, IRepository<Role> roleRepository
-            , IRepository<UserBankAccount> userBankAccountRepository)
+        public UserService(IRepository<User> userRepo, IRepository<UserProfile> userProfileRepo, IRepository<Role> roleRepo
+            , IRepository<UserBankAccount> userBankAccountRepo, IRepository<Gender> genderRepo)
         {
-            _userRepo = userRepository;
-            _userProfileRepo = userProfileRepository;
-            _roleRepo = roleRepository;
-            _userBankAccountRepository = userBankAccountRepository;
+            _userRepo = userRepo;
+            _userProfileRepo = userProfileRepo;
+            _roleRepo = roleRepo;
+            _userBankAccountRepo = userBankAccountRepo;
+            _genderRepo = genderRepo;
         }
 
-        public IQueryable<User> GetUsers()
+        public IQueryable<User> GetAllUsers()
         {
             return _userRepo.Table;
         }
 
         public bool IsValid(string username, string password)
         {
-            var user = GetUsers().Where(x => x.Username == username && x.Password == password).FirstOrDefault();
+            var user = GetAllUsers().Where(x => x.Username == username && x.Password == password).FirstOrDefault();
             return user != null;
         }
 
@@ -39,12 +41,12 @@ namespace FIX.Service
 
         public int GetUserID(string username)
         {
-            return GetUsers().Where(x => x.Username == username).First().UserId;
+            return GetAllUsers().Where(x => x.Username == username).First().UserId;
         }
 
         public User GetUser(string username, string password)
         {
-            return GetUsers().Where(x => x.Username == username && x.Password == password).FirstOrDefault();
+            return GetAllUsers().Where(x => x.Username == username && x.Password == password).FirstOrDefault();
         }
 
         public void InsertUser(User user)
@@ -60,6 +62,36 @@ namespace FIX.Service
         public void DeleteUser(User user)
         {
             _userRepo.Delete(user);
+        }
+
+        public IQueryable<Role> GetAllRoles()
+        {
+            return _roleRepo.Table;
+        }
+
+        public Role GetRoleById(int id)
+        {
+            return _roleRepo.GetById(id);
+        }
+
+        public IQueryable<UserBankAccount> GetAllBankAccount()
+        {
+            return _userBankAccountRepo.Table;
+        }
+
+        public UserBankAccount GetPrimaryBankAccount(User user)
+        {
+            return GetAllBankAccount().Where(x => x.IsPrimary && x.UserId == user.UserId).FirstOrDefault();
+        }
+
+        public IQueryable<Gender> GetAllGender()
+        {
+            return _genderRepo.Table;
+        }
+
+        public Gender GetGenderById(int id)
+        {
+            return _genderRepo.GetById(id);
         }
     }
 }

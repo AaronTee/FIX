@@ -11,7 +11,7 @@ namespace FIX.Core.Data
         public string Address { get; set; }
         public string Country { get; set; }
         public string PhoneNo { get; set; }
-        public string Gender { get; set; }
+        public int Gender { get; set; }
         public virtual User User { get; set; }
     }
 }

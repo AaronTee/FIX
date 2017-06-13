@@ -13,21 +13,16 @@ namespace FIX.Web.Controllers
     public class UserController : BaseController
     {
         private IUserService _userService;
-        private IRoleService _roleService;
-        private IUserBankAccountService _userBankAccountService;
 
-        public UserController(IUserService userService, IRoleService roleService
-            ,IUserBankAccountService userBankAccountService, IBaseService baseService) : base(baseService)
+        public UserController(IUserService userService, IBaseService baseService) : base(baseService)
         {
             _userService = userService;
-            _roleService = roleService;
-            _userBankAccountService = userBankAccountService;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            IEnumerable<UserViewModel> users = _userService.GetUsers().Select(u => new UserViewModel
+            IEnumerable<UserViewModel> users = _userService.GetAllUsers().Select(u => new UserViewModel
             {
                 Username = u.Username,
                 Email = u.Email,
@@ -47,7 +42,7 @@ namespace FIX.Web.Controllers
                 new SelectListItem() { Text = "Malaysia", Value = "MY" }
             };
 
-            model.RoleDDL = _roleService.GetAsQueryable().Select(x => new SelectListItem()
+            model.RoleDDL = _userService.GetAllRoles().Select(x => new SelectListItem()
             {
                 Text = x.RoleName,
                 Value = x.RoleId.ToString()
@@ -63,7 +58,7 @@ namespace FIX.Web.Controllers
 
             foreach (var selectedRole in model.Roles)
             {
-                rolesAssigned.Add(_roleService.GetById(selectedRole));
+                rolesAssigned.Add(_userService.GetRoleById(selectedRole));
             }
 
             User userEntity = new User
@@ -100,20 +95,24 @@ namespace FIX.Web.Controllers
                 new SelectListItem() { Text = "Malaysia", Value = "MY" }
             };
 
-            model.RoleDDL = _roleService.GetAsQueryable().Select(x => new SelectListItem()
+            model.RoleDDL = _userService.GetAllRoles().Select(x => new SelectListItem()
             {
                 Text = x.RoleName,
                 Value = x.RoleId.ToString()
             });
 
+            model.GenderDDL = _userService.GetAllGender().Select(x => new SelectListItem()
+            {
+                Text = x.Description,
+                Value = x.GenderId.ToString()
+            });
+
             if (id.HasValue && id != 0)
             {
                 User userEntity = _userService.GetUser(id.Value);
-                UserBankAccount userBankAccountEntity = _userBankAccountService.GetPrimaryAccount(userEntity);
+                UserBankAccount userBankAccountEntity = _userService.GetPrimaryBankAccount(userEntity);
 
                 model.Username = userEntity.Username;
-                
-                
                 model.Email = userEntity.Email;
                 model.Username = userEntity.Username;
                 model.Password = userEntity.Password;
@@ -154,6 +153,7 @@ namespace FIX.Web.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Address = model.Address,
+                    Gender = model.Gender,
                     CreatedTimestamp = DateTime.UtcNow,
                     ModifiedTimestamp = DateTime.UtcNow
                 },
