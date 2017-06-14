@@ -1,31 +1,24 @@
 ﻿using System.Linq;
 using FIX.Core.Data;
 using FIX.Data;
+using System.Data.Entity;
 using FIX.Service.Interface;
 
 namespace FIX.Service
 {
     public class UserService : IUserService
     {
-        private IRepository<User> _userRepo;
-        private IRepository<UserProfile> _userProfileRepo;
-        private IRepository<Role> _roleRepo;
-        private IRepository<UserBankAccount> _userBankAccountRepo;
-        private IRepository<Gender> _genderRepo;
+        private IDbContext _context;
 
-        public UserService(IRepository<User> userRepo, IRepository<UserProfile> userProfileRepo, IRepository<Role> roleRepo
-            , IRepository<UserBankAccount> userBankAccountRepo, IRepository<Gender> genderRepo)
+        public UserService(IDbContext context)
         {
-            _userRepo = userRepo;
-            _userProfileRepo = userProfileRepo;
-            _roleRepo = roleRepo;
-            _userBankAccountRepo = userBankAccountRepo;
-            _genderRepo = genderRepo;
+            _context = context;
         }
 
         public IQueryable<User> GetAllUsers()
         {
-            return _userRepo.Table;
+            var a = _context.Set<User>();
+            return _context.Set<User>();
         }
 
         public bool IsValid(string username, string password)
@@ -34,14 +27,14 @@ namespace FIX.Service
             return user != null;
         }
 
-        public User GetUser(int id)
-        {
-            return _userRepo.GetById(id);
-        }
-
         public int GetUserID(string username)
         {
             return GetAllUsers().Where(x => x.Username == username).First().UserId;
+        }
+
+        public User GetUser(int id)
+        {
+            return _context.Set<User>().Find(id);
         }
 
         public User GetUser(string username, string password)
@@ -51,32 +44,32 @@ namespace FIX.Service
 
         public void InsertUser(User user)
         {
-            _userRepo.Insert(user);
+            _context.Insert(user);
         }
 
         public void UpdateUser(User user)
         {
-            _userRepo.Update(user);
+            _context.Update(user);
         }
 
         public void DeleteUser(User user)
         {
-            _userRepo.Delete(user);
+            _context.Delete(user);
         }
 
         public IQueryable<Role> GetAllRoles()
         {
-            return _roleRepo.Table;
+            return _context.Set<Role>();
         }
 
         public Role GetRoleById(int id)
         {
-            return _roleRepo.GetById(id);
+            return _context.Set<Role>().Find(id);
         }
 
         public IQueryable<UserBankAccount> GetAllBankAccount()
         {
-            return _userBankAccountRepo.Table;
+            return _context.Set<UserBankAccount>();
         }
 
         public UserBankAccount GetPrimaryBankAccount(User user)
@@ -86,12 +79,12 @@ namespace FIX.Service
 
         public IQueryable<Gender> GetAllGender()
         {
-            return _genderRepo.Table;
+            return _context.Set<Gender>();
         }
 
         public Gender GetGenderById(int id)
         {
-            return _genderRepo.GetById(id);
+            return _context.Set<Gender>().Find(id);
         }
     }
 }

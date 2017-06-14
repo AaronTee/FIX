@@ -48,6 +48,12 @@ namespace FIX.Web.Controllers
                 Value = x.RoleId.ToString()
             });
 
+            model.GenderDDL = _userService.GetAllGender().Select(x => new SelectListItem()
+            {
+                Text = x.Description,
+                Value = x.GenderId.ToString()
+            });
+
             return View(model);
         }
 
@@ -74,6 +80,7 @@ namespace FIX.Web.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Address = model.Address,
+                    Gender = _userService.GetGenderById(model.Gender),
                     CreatedTimestamp = DateTime.UtcNow,
                     ModifiedTimestamp = DateTime.UtcNow
                 },
@@ -120,7 +127,10 @@ namespace FIX.Web.Controllers
                 model.FirstName = userEntity.UserProfile?.FirstName;
                 model.LastName = userEntity.UserProfile?.LastName;
                 model.Address = userEntity.UserProfile?.Address;
-                model.Gender = userEntity.UserProfile
+                model.Country = userEntity.UserProfile?.Country;
+                model.PhoneNo = userEntity.UserProfile?.PhoneNo;
+                model.RolesDescription = userEntity.Roles.Select(x => x.RoleName).ToList();
+                model.GenderDescription = userEntity.UserProfile?.Gender?.Description;
 
                 model.BankAccountHolder = userBankAccountEntity?.BankAccountHolder;
                 model.BankAccountNo = userBankAccountEntity?.BankAccountNo;
@@ -154,17 +164,17 @@ namespace FIX.Web.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Address = model.Address,
-                    Gender = model.Gender,
+                    Country = model.Country,
+                    PhoneNo = model.PhoneNo,
+                    Gender = _userService.GetGenderById(model.Gender),
                     CreatedTimestamp = DateTime.UtcNow,
                     ModifiedTimestamp = DateTime.UtcNow
                 },
                 Roles = rolesAssigned
             };
-            return View(model);
-
             _userService.UpdateUser(userEntity);
 
-            return View(model);
+            return RedirectToAction("Index");
         }
 
         public ActionResult Detail(int? id)

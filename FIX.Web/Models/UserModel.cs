@@ -75,6 +75,8 @@ namespace FIX.Web.Models
         [Display(Name = "Gender")]
         public int Gender { get; set; }
 
+        public string GenderDescription { get; set; }
+
         [Required]
         [Display(Name = "Country")]
         public string Country { get; set; }
@@ -82,6 +84,8 @@ namespace FIX.Web.Models
         [Required]
         [Display(Name = "Role")]
         public List<int> Roles { get; set; }
+
+        public List<string> RolesDescription { get; set; }
 
         [Required]
         [Display(Name = "Phone No.")]
@@ -102,9 +106,6 @@ namespace FIX.Web.Models
         public IEnumerable<SelectListItem> CountryDDL { get; set; }
         public IEnumerable<SelectListItem> RoleDDL { get; set; }
         public IEnumerable<SelectListItem> GenderDDL { get; set; }
-
-
-        public UserRole UserRole { get; set; }
     }
 
     public class UserRole

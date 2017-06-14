@@ -8,5 +8,7 @@ namespace FIX.Core.Data
     {
         public int GenderId { get; set; }
         public string Description { get; set; }
+
+        public ICollection<UserProfile> UserProfiles { get; set; }
     }
 }

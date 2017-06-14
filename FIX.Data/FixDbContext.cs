@@ -34,10 +34,38 @@ namespace FIX.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public new IDbSet<TEntity> Set<TEntity>() where TEntity : BaseEntity
+        public new IDbSet<TEntity> Set<TEntity>() where TEntity : class
         {
             return base.Set<TEntity>();
         }
- 
+
+        public IDbSet<TEntity> Get<TEntity>() where TEntity : class
+        {
+            return base.Set<TEntity>();
+        }
+
+        public void Insert<TEntity>(TEntity entity) where TEntity : class
+        {
+            Set<TEntity>().Add(entity);
+            base.Entry(entity).State = EntityState.Added;
+
+        }
+
+        public void Delete<TEntity>(TEntity entity) where TEntity : class
+        {
+            Set<TEntity>().Remove(entity);
+            base.Entry(entity).State = EntityState.Deleted;
+
+        }
+
+        public void Update<TEntity>(TEntity entity, bool AddIfNotExist = true) where TEntity : class
+        {
+            if(entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            base.Entry(entity).State = EntityState.Modified;
+
+        }
     }
 }

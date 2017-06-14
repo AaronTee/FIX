@@ -65,11 +65,8 @@ namespace FIX.Web.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IDbContext>().To<FIXDbContext>().InRequestScope();
-            kernel.Bind(typeof(IRepository<>)).To(typeof(Repository<>)).InRequestScope();
             kernel.Bind<IBaseService>().To<BaseService>();
             kernel.Bind<IUserService>().To<UserService>();
-            kernel.Bind<IRoleService>().To<RoleService>();
-            kernel.Bind<IUserBankAccountService>().To<UserBankAccountService>();
         }        
     }
 }
