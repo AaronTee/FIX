@@ -120,6 +120,7 @@ namespace FIX.Web.Controllers
                 model.FirstName = userEntity.UserProfile?.FirstName;
                 model.LastName = userEntity.UserProfile?.LastName;
                 model.Address = userEntity.UserProfile?.Address;
+                model.Gender = userEntity.UserProfile
 
                 model.BankAccountHolder = userBankAccountEntity?.BankAccountHolder;
                 model.BankAccountNo = userBankAccountEntity?.BankAccountNo;
