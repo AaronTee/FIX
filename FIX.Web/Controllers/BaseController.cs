@@ -1,4 +1,5 @@
-﻿using FIX.Service.Interface;
+﻿using FIX.Data;
+using FIX.Service.Interface;
 using FIX.Web.Helpers;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,24 @@ namespace FIX.Web.Controllers
             HttpContext.Response.SetCookie(_cookie);
 
             base.OnActionExecuting(filterContext);
+        }
+
+        /// <summary>
+        /// Save changes in Dbcontext. Return true if succeed.
+        /// </summary>
+        /// <returns></returns>
+        protected bool Save()
+        {
+            try
+            {
+                _baseService.Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return false;
+            }
         }
     }
 }

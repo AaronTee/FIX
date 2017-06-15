@@ -27,7 +27,6 @@ namespace FIX.Data.Mapping
             ToTable("Users");
 
             //relationship
-            HasMany(t => t.Roles).WithMany(x => x.Users);
         }
     }
 }

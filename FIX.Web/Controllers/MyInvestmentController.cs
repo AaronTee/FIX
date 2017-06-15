@@ -13,7 +13,7 @@ namespace FIX.Web.Controllers
     {
         IUserService _userService;
 
-        public MyInvestmentController(IUserService userService) : base(userService)
+        public MyInvestmentController(IUserService userService, IBaseService baseService) : base(baseService)
         {
             _userService = userService;
         }

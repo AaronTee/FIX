@@ -15,11 +15,11 @@ namespace FIX.Data.Migrations
 
         protected override void Seed(FIX.Data.FIXDbContext context)
         {
-            context.Set<Gender>().AddOrUpdate(
-                new Gender() { GenderId = 1, Description = "Male", CreatedTimestamp = DateTime.Now },
-                new Gender() { GenderId = 2, Description = "Female", CreatedTimestamp = DateTime.Now },
-                new Gender() { GenderId = 3, Description = "Other", CreatedTimestamp = DateTime.Now }
-            );
+            //context.Set<Gender>().AddOrUpdate(
+            //    new Gender() { GenderId = 1, Description = "Male", CreatedTimestamp = DateTime.Now },
+            //    new Gender() { GenderId = 2, Description = "Female", CreatedTimestamp = DateTime.Now },
+            //    new Gender() { GenderId = 3, Description = "Other", CreatedTimestamp = DateTime.Now }
+            //);
 
             //context.Set<Role>().AddOrUpdate(
             //    new Role() { RoleName = "Admin", CreatedTimestamp = DateTime.Now },

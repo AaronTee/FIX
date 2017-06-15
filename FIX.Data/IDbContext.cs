@@ -11,6 +11,6 @@ namespace FIX.Data
         void Insert<TEntity>(TEntity entity) where TEntity : class;
         int SaveChanges();
         IDbSet<TEntity> Set<TEntity>() where TEntity : class;
-        void Update<TEntity>(TEntity entity, bool AddIfNotExist = true) where TEntity : class;
+        void Update<TEntity>(TEntity entity) where TEntity : class;
     }
 }

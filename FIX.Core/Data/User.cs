@@ -13,7 +13,6 @@ namespace FIX.Core.Data
         public bool HasAcceptedTerms { get; set; }
         public bool HasEmailVerified { get; set; }
         public virtual UserProfile UserProfile { get; set; }
-        public virtual ICollection<Role> Roles { get; set; }
-        public virtual ICollection<UserBankAccount> UserBankAccount { get; set; }
+
     }
 }

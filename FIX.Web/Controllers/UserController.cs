@@ -27,7 +27,7 @@ namespace FIX.Web.Controllers
                 Username = u.Username,
                 Email = u.Email,
                 UserId = u.UserId,
-                Roles = u.Roles
+                Roles = u.UserProfile.Roles
             }).ToList();
             return View(users);
         }
@@ -81,12 +81,23 @@ namespace FIX.Web.Controllers
                     LastName = model.LastName,
                     Address = model.Address,
                     Gender = _userService.GetGenderById(model.Gender),
+                    PhoneNo = model.PhoneNo,
                     CreatedTimestamp = DateTime.UtcNow,
-                    ModifiedTimestamp = DateTime.UtcNow
+                    ModifiedTimestamp = DateTime.UtcNow,
+                    UserBankAccount = new List<UserBankAccount>()
+                    {
+                        new UserBankAccount() {
+                            BankAccountHolder = model.BankAccountHolder,
+                            BankAccountNo = model.BankAccountNo,
+                            BankBranch = model.BankBranch
+                        }
+                    },
+                    Roles = rolesAssigned
                 },
-                Roles = rolesAssigned
             };
             _userService.InsertUser(userEntity);
+
+            Save();
             
             return View(model);
         }
@@ -117,7 +128,6 @@ namespace FIX.Web.Controllers
             if (id.HasValue && id != 0)
             {
                 User userEntity = _userService.GetUser(id.Value);
-                UserBankAccount userBankAccountEntity = _userService.GetPrimaryBankAccount(userEntity);
 
                 model.Username = userEntity.Username;
                 model.Email = userEntity.Email;
@@ -129,13 +139,19 @@ namespace FIX.Web.Controllers
                 model.Address = userEntity.UserProfile?.Address;
                 model.Country = userEntity.UserProfile?.Country;
                 model.PhoneNo = userEntity.UserProfile?.PhoneNo;
-                model.RolesDescription = userEntity.Roles.Select(x => x.RoleName).ToList();
-                model.GenderDescription = userEntity.UserProfile?.Gender?.Description;
+                model.RolesDescription = userEntity.UserProfile.Roles.Select(x => x.RoleName).ToList();
+                model.GenderDescription = userEntity.UserProfile.Gender?.Description;
 
-                model.BankAccountHolder = userBankAccountEntity?.BankAccountHolder;
-                model.BankAccountNo = userBankAccountEntity?.BankAccountNo;
-                model.BankBranch = userBankAccountEntity?.BankBranch;
+                if(userEntity.UserProfile.UserBankAccount.Count() > 0)
+                {
+                    var bankInfo = userEntity.UserProfile.UserBankAccount.First(); //We have one bank account for now.
+                    model.BankAccountHolder = bankInfo.BankAccountHolder;
+                    model.BankAccountNo = bankInfo.BankAccountNo;
+                    model.BankBranch = bankInfo.BankBranch;
+                }
+                
             }
+
             return View(model);
         }
 
@@ -146,33 +162,51 @@ namespace FIX.Web.Controllers
 
             foreach(var selectedRole in model.Roles)
             {
-                rolesAssigned.Add(new Role() {
-                    RoleId = selectedRole
-                });
+                rolesAssigned.Add(_userService.GetRoleById(selectedRole));
             }
 
-            User userEntity = new User
+            User userEntity = _userService.GetUser(model.Id);
+
+            List<UserBankAccount> bankAccountAssigned = userEntity.UserProfile.UserBankAccount?.ToList();
+            
+            if (bankAccountAssigned.Count() < 1)
             {
-                Username = model.Username,
-                Email = model.Email,
-                Password = model.Password,
-                CreatedTimestamp = DateTime.UtcNow,
-                ModifiedTimestamp = DateTime.UtcNow,
-                IP = Request.UserHostAddress,
-                UserProfile = new UserProfile
+                bankAccountAssigned.Add(new UserBankAccount()
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Address = model.Address,
-                    Country = model.Country,
-                    PhoneNo = model.PhoneNo,
-                    Gender = _userService.GetGenderById(model.Gender),
-                    CreatedTimestamp = DateTime.UtcNow,
-                    ModifiedTimestamp = DateTime.UtcNow
-                },
-                Roles = rolesAssigned
-            };
+                    BankAccountHolder = model.BankAccountHolder,
+                    BankAccountNo = model.BankAccountNo,
+                    BankBranch = model.BankBranch,
+                    CreatedTimestamp = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                bankAccountAssigned.First().BankAccountHolder = model.BankAccountHolder;
+                bankAccountAssigned.First().BankAccountNo = model.BankAccountNo;
+                bankAccountAssigned.First().BankBranch = model.BankBranch;
+                bankAccountAssigned.First().ModifiedTimestamp = DateTime.UtcNow;
+            }
+
+
+            userEntity.Username = model.Username;
+            userEntity.Email = model.Email;
+            userEntity.Password = model.Password;
+            userEntity.CreatedTimestamp = DateTime.UtcNow;
+            userEntity.ModifiedTimestamp = DateTime.UtcNow;
+            userEntity.IP = Request.UserHostAddress;
+            userEntity.UserProfile.FirstName = model.FirstName;
+            userEntity.UserProfile.LastName = model.LastName;
+            userEntity.UserProfile.Address = model.Address;
+            userEntity.UserProfile.Country = model.Country;
+            userEntity.UserProfile.PhoneNo = model.PhoneNo;
+            userEntity.UserProfile.Gender = _userService.GetGenderById(model.Gender);
+            userEntity.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
+            userEntity.UserProfile.UserBankAccount = bankAccountAssigned;
+            userEntity.UserProfile.Roles = rolesAssigned;
+
             _userService.UpdateUser(userEntity);
+
+            Save();
 
             return RedirectToAction("Index");
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace FIX.Core.Data
 {
@@ -14,5 +15,7 @@ namespace FIX.Core.Data
 
         public virtual Gender Gender { get; set; }
         public virtual User User { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<UserBankAccount> UserBankAccount { get; set; }
     }
 }

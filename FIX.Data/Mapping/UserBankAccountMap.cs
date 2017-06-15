@@ -9,10 +9,7 @@ namespace FIX.Data.Mapping
     {
         public UserBankAccountMap()
         {
-            HasKey(t => new {
-                t.UserId,
-                t.BankId
-            });
+            HasKey(t => t.UserBankAccountId).Property(t => t.UserBankAccountId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             //properties
             Property(t => t.BankAccountHolder).IsRequired();
             Property(t => t.BankAccountNo).IsRequired();
@@ -22,9 +19,6 @@ namespace FIX.Data.Mapping
             Property(t => t.ModifiedTimestamp);
             //table
             ToTable("UserBankAccount");
-
-            HasRequired(t => t.Bank).WithMany().HasForeignKey(t => t.BankId);
-            HasRequired(t => t.User).WithMany().HasForeignKey(t => t.UserId);
         }
     }
 }

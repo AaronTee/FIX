@@ -8,6 +8,7 @@ using FIX.Core;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.Entity.Validation;
 using System.Text;
+using System.Data.Entity.Migrations;
 
 namespace FIX.Data
 {
@@ -46,25 +47,29 @@ namespace FIX.Data
 
         public void Insert<TEntity>(TEntity entity) where TEntity : class
         {
-            Set<TEntity>().Add(entity);
             base.Entry(entity).State = EntityState.Added;
+
+            Set<TEntity>().Add(entity);
 
         }
 
         public void Delete<TEntity>(TEntity entity) where TEntity : class
         {
-            Set<TEntity>().Remove(entity);
             base.Entry(entity).State = EntityState.Deleted;
+
+            Set<TEntity>().Remove(entity);
 
         }
 
-        public void Update<TEntity>(TEntity entity, bool AddIfNotExist = true) where TEntity : class
+        public void Update<TEntity>(TEntity entity) where TEntity : class
         {
-            if(entity == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException("entity");
             }
             base.Entry(entity).State = EntityState.Modified;
+
+            Set<TEntity>().AddOrUpdate(entity);
 
         }
     }

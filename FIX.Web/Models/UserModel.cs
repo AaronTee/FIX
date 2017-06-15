@@ -46,6 +46,8 @@ namespace FIX.Web.Models
             GenderDDL = new List<SelectListItem>();
         }
 
+        public int Id { get; set; }
+
         [Required]
         [Display(Name = "Member ID")]
         public string Username { get; set; }

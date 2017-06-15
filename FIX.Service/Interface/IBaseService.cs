@@ -5,5 +5,6 @@ namespace FIX.Service.Interface
 {
     public interface IBaseService
     {
+        void Save();
     }
 }

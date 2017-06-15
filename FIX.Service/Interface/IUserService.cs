@@ -3,7 +3,7 @@ using FIX.Core.Data;
 
 namespace FIX.Service.Interface
 {
-    public interface IUserService : IBaseService
+    public interface IUserService
     {
         void DeleteUser(User user);
         IQueryable<Role> GetAllRoles();

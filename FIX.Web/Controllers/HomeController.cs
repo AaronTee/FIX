@@ -13,7 +13,7 @@ namespace FIX.Web.Controllers
     {
         IUserService _userService;
 
-        public HomeController(IUserService userService) : base(userService)
+        public HomeController(IUserService userService, IBaseService baseService) : base(baseService)
         {
             _userService = userService;
         }

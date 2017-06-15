@@ -20,7 +20,9 @@ namespace FIX.Data.Mapping
             //table
             ToTable("UserProfile");
             //relation
-            HasRequired(t => t.User).WithRequiredDependent(u => u.UserProfile).WillCascadeOnDelete();
+            HasRequired(t => t.User).WithRequiredDependent(u => u.UserProfile);
+            HasMany(t => t.Roles).WithMany(x => x.UserProfiles);
+            HasMany(t => t.UserBankAccount).WithRequired(t => t.UserProfile);
         }
     }
 }
