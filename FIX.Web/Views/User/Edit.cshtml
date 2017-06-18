@@ -1,4 +1,4 @@
-﻿@model UserCreateEditViewModel
+﻿@model UserViewModel
 @{
     ViewBag.Title = "Create Edit User";
 }
@@ -12,12 +12,12 @@
                 <fieldset>
                     <legend>Edit User</legend>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             @Html.EditorFor(x => x.Email, "Email")
                             @Html.EditorFor(x => x.Username, "Text")
                             @Html.EditorFor(x => x.Password, "Password")
                             @Html.EditorFor(x => x.ConfirmPassword, "Password")
-                            @Html.EditorFor(x => x.Roles, "Dropdown", new { DDL = Model.RoleDDL })
+                            @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
                             @Html.EditorFor(x => x.FirstName, "Text")
                             @Html.EditorFor(x => x.LastName, "Text")
                             @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
@@ -25,7 +25,8 @@
                             @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
                             @Html.EditorFor(x => x.PhoneNo, "Text")
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
+                            @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
                             @Html.EditorFor(x => x.BankAccountHolder, "Text")
                             @Html.EditorFor(x => x.BankAccountNo, "Text")
                             @Html.EditorFor(x => x.BankBranch, "Text")
@@ -46,3 +47,4 @@
         </div>
     </div>
 </div>
+

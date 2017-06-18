@@ -43,3 +43,7 @@ body{
     margin: 0 auto;
     margin-bottom: 15px;
 }
+
+.input-group-addon{
+    padding: 0px;
+}

@@ -1,8 +1,8 @@
 ﻿@model object
 
 <div class="form-group">
-    @Html.LabelFor(model => model, new { @class = "col-sm-4 control-label" })
-    <div class="col-sm-8">
+    @Html.LabelFor(model => model, new { @class = "control-label" })
+    <div class="">
         @Html.DropDownListFor(model => model, ViewData["DDL"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model)
     </div>

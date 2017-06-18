@@ -1,68 +1,45 @@
-﻿@model FIX.Web.Models.UserViewModel
+﻿@model UserViewModel
 
 @{
     ViewBag.Title = "User Detail";
 }
 
 <div class="book-example panel panel-primary">
-    <div class="panel-heading panel-head">User Detail</div>
+    <div class="panel-heading panel-head">User Maintenance</div>
     <div class="panel-body">
-        <div class="form-horizontal">
-            <div class="form-group">
-                @Html.LabelFor(model => model.FirstName, new { @class = "col-lg-2 control-label" })
-                <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.FirstName, new { @class = "form-control" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.LastName, new { @class = "col-lg-2 control-label" })
-                <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.LastName, new { @class = "form-control" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Username, new { @class = "col-lg-2 control-label" })
-                <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.Username, new { @class = "form-control" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Email, new { @class = "col-lg-2 control-label" })
-                <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.Email, new { @class = "form-control" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.CreatedTimestamp, new { @class = "col-lg-2 control-label" })
-                <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.CreatedTimestamp, new { @class = "form-control" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Address, new { @class = "col-lg-2 control-label" })
-                <div class="col-lg-9">
-                    @Html.DisplayFor(model => model.Address, new { @class = "form-control" })
-                </div>
-            </div>
-
-            @using (Html.BeginForm())
+        <div class="form-section">
+            @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal" }))
             {
-                <div class="form-group">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-9">
-                        @*@Html.ActionLink("Edit", "CreateEditUser",
-                        new { id = ViewContext.RouteData.Values["id"] },
-                        new { @class = "btn btn-primary" })*@
-                        @Html.ActionLink("Back to List", "Index",
-                        null, new { @class = "btn btn-success" })
+                <fieldset>
+                    <legend>Edit User</legend>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            @Html.EditorFor(x => x.Email, "Display")
+                            @Html.EditorFor(x => x.Username, "Display")
+                            @Html.EditorFor(x => x.RoleName, "Display")
+                            @Html.EditorFor(x => x.FirstName, "Display")
+                            @Html.EditorFor(x => x.LastName, "Display")
+                            @Html.EditorFor(x => x.Gender, "Display")
+                            @Html.EditorFor(x => x.Address, "Display")
+                            @Html.EditorFor(x => x.Country, "Display")
+                            @Html.EditorFor(x => x.PhoneNo, "Display")
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.EditorFor(x => x.BankName, "Display")
+                            @Html.EditorFor(x => x.BankAccountHolder, "Display")
+                            @Html.EditorFor(x => x.BankAccountNo, "Display")
+                            @Html.EditorFor(x => x.BankBranch, "Display")
+                        </div>
                     </div>
-                </div>
+
+                    <div class="action-panel">
+                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                            <button class="btn btn-success" id="Button1" type="submit">
+                                Submit
+                            </button>
+                        </div>
+                </fieldset>
             }
         </div>
     </div>
-</div>   
+</div>

@@ -13,7 +13,7 @@
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.Username)</th>
                         <th>@Html.DisplayNameFor(model => model.Email)</th>
-                        <th>@Html.DisplayNameFor(model => model.Roles)</th>
+                        <th>@Html.DisplayNameFor(model => model.RoleName)</th>
                         <th class="nosort">Action</th>
                     </tr>
                 </thead>
@@ -28,15 +28,15 @@
                                 @Html.DisplayFor(modelItem => item.Email)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Roles.FirstOrDefault().RoleName)
+                                @Html.DisplayFor(modelItem => item.RoleName)
                             </td>
                             <td>
                                 @Html.ActionLink("Edit", "Edit",
-                        new { id = item.UserId }, new { @class = "btn btn-success" })
+                        new { id = item.Id }, new { @class = "btn btn-success" })
                                 @Html.ActionLink("Details", "Detail",
-                        new { id = item.UserId }, new { @class = "btn btn-primary" })
+                        new { id = item.Id }, new { @class = "btn btn-primary" })
                                 @Html.ActionLink("Delete", "Delete",
-                        new { id = item.UserId }, new { @class = "btn btn-danger" })
+                        new { id = item.Id }, new { @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }

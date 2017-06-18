@@ -1,10 +1,9 @@
-﻿using FIX.Service.Interface;
-using FIX.Web.Models;
+﻿using FIX.Web.Models;
 using Microsoft.AspNet.Identity;
 using System.Web.Mvc;
 using AutoMapper;
-using FIX.Core.Data;
 using FIX.Web.Extensions;
+using FIX.Service;
 
 namespace FIX.Web.Controllers
 {
@@ -13,7 +12,7 @@ namespace FIX.Web.Controllers
     {
         IUserService _userService;
 
-        public HomeController(IUserService userService, IBaseService baseService) : base(baseService)
+        public HomeController(IUserService userService)
         {
             _userService = userService;
         }
@@ -22,16 +21,14 @@ namespace FIX.Web.Controllers
         {
             HomeViewModels model = new HomeViewModels();
 
-            var userID = _userService.GetUserID(User.Identity.GetUserId());
-
-            User user = _userService.GetUser(userID);
+            var user = _userService.GetUserBy(User.Identity.GetUserId());
 
             model.userModel = new UserViewModel()
             {
                 Username = user.Username,
                 FirstName = user.UserProfile?.FirstName,
                 LastName = user.UserProfile?.LastName,
-                CreatedTimestamp = user.CreatedTimestamp
+                CreatedTimestamp = user.CreatedTimestamp.Date
             };
 
             return View(model);

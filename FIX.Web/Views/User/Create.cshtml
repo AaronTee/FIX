@@ -1,4 +1,4 @@
-﻿@model UserCreateEditViewModel
+﻿@model UserViewModel
 @{
     ViewBag.Title = "Create Edit User";
 }
@@ -7,7 +7,7 @@
     <div class="panel-heading panel-head">User Maintenance</div>
     <div class="panel-body">
         <div class="form-section">
-            @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+            @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal", @id = "user-form" }))
             {
                 <fieldset>
                     <legend>Create New User</legend>
@@ -17,7 +17,7 @@
                             @Html.EditorFor(x => x.Username, "Text")
                             @Html.EditorFor(x => x.Password, "Password")
                             @Html.EditorFor(x => x.ConfirmPassword, "Password")
-                            @Html.EditorFor(x => x.Roles, "Dropdown", new { DDL = Model.RoleDDL })
+                            @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
                             @Html.EditorFor(x => x.FirstName, "Text")
                             @Html.EditorFor(x => x.LastName, "Text")
                             @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
@@ -26,6 +26,7 @@
                             @Html.EditorFor(x => x.PhoneNo, "Text")
                         </div>
                         <div class="col-lg-6">
+                            @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
                             @Html.EditorFor(x => x.BankAccountHolder, "Text")
                             @Html.EditorFor(x => x.BankAccountNo, "Text")
                             @Html.EditorFor(x => x.BankBranch, "Text")
@@ -46,3 +47,68 @@
         </div>
     </div> 
 </div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $.validator.addMethod(
+            'validateUsername',
+            function (value, element) {
+                var isValid = false;
+                if (value) {
+                    $.ajax({
+                        url: GetPath('User/ValidateUsername'),
+                        type: 'GET',
+                        async: false,
+                        data: { input: value },
+                        success: function (_isValid) {
+                            isValid = _isValid;
+                            return isValid;
+                        }
+                    });
+                }
+                return isValid;
+            },
+            'Username has been taken, please choose another one.');
+
+            $.validator.addMethod(
+            'validateEmail',
+            function (value, element) {
+                var isValid = false;
+                if (value) {
+                    $.ajax({
+                        url: GetPath('User/ValidateEmail'),
+                        type: 'GET',
+                        async: false,
+                        data: { input: value },
+                        success: function (_isValid) {
+                            isValid = _isValid;
+                            return isValid;
+                        }
+                    });
+                }
+                return isValid;
+            },
+            'Email has registered to one of the existing account, please choose another one.');
+
+            $('#Username').rules('add', {
+                minlength: 8,
+                validateUsername: true,
+                messages: {
+                    minlength: jQuery.validator.format("Please, at least {0} characters are necessary.")
+                }
+            });
+
+            $('#Email').rules('add', {
+                validateEmail: true,
+            });
+
+            var validator = $("#user-form").data("validator");
+            if (validator) {
+                validator.settings.onkeyup = false;
+            }
+
+            
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿using FIX.Core.Data;
+﻿using FIX.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,40 +10,17 @@ namespace FIX.Web.Models
     {
         public UserViewModel()
         {
-            Roles = new List<Role>();
-        }
-
-        public int UserId { get; set; }
-
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; }
-
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-
-        public string Address { get; set; }
-
-        [Display(Name = "Username")]
-        public string Username { get; set; }
-
-        public string Email { get; set; }
-
-        public string Password { get; set; }
-
-        [Display(Name = "Roles")]
-        public IEnumerable<Role> Roles { get; set; }
-
-        [Display(Name = "Created Date")]
-        public DateTime CreatedTimestamp { get; set; }
-    }
-
-    public class UserCreateEditViewModel
-    {
-        public UserCreateEditViewModel()
-        {
-            CountryDDL = new List<SelectListItem>();
+            CountryDDL = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = "Malaysia", Value = "MY" }
+            };
             RoleDDL = new List<SelectListItem>();
-            GenderDDL = new List<SelectListItem>();
+            GenderDDL = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = "Male", Value = DBConstant.DBCGender.Male },
+                new SelectListItem() { Text = "Female", Value = DBConstant.DBCGender.Female },
+                new SelectListItem() { Text = "Other", Value = DBConstant.DBCGender.Other }
+            };
         }
 
         public int Id { get; set; }
@@ -75,19 +52,22 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Gender")]
-        public int Gender { get; set; }
+        public string Gender { get; set; }
 
         public string GenderDescription { get; set; }
+
+        public string BankName { get; set; }
 
         [Required]
         [Display(Name = "Country")]
         public string Country { get; set; }
 
+        [Display(Name = "Role")]
+        public string RoleName { get; set; }
+
         [Required]
         [Display(Name = "Role")]
-        public List<int> Roles { get; set; }
-
-        public List<string> RolesDescription { get; set; }
+        public int RoleId { get; set; }
 
         [Required]
         [Display(Name = "Phone No.")]
@@ -98,6 +78,10 @@ namespace FIX.Web.Models
         public string BankAccountNo { get; set; }
 
         [Required]
+        [Display(Name = "Bank")]
+        public int BankId { get; set; }
+
+        [Required]
         [Display(Name = "Bank Account Holder")]
         public string BankAccountHolder { get; set; }
 
@@ -105,9 +89,13 @@ namespace FIX.Web.Models
         [Display(Name = "Bank Branch")]
         public string BankBranch { get; set; }
 
+        [Display(Name = "Created Date")]
+        public DateTime CreatedTimestamp { get; set; }
+
         public IEnumerable<SelectListItem> CountryDDL { get; set; }
         public IEnumerable<SelectListItem> RoleDDL { get; set; }
         public IEnumerable<SelectListItem> GenderDDL { get; set; }
+        public IEnumerable<SelectListItem> BankDDL { get; set; }
     }
 
     public class UserRole

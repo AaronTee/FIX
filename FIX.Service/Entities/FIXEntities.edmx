@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FIXModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bank">
+          <Key>
+            <PropertyRef Name="BankId" />
+          </Key>
+          <Property Name="BankId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IP" Type="nvarchar" MaxLength="255" />
+          <Property Name="HasAcceptedTerms" Type="bit" Nullable="false" />
+          <Property Name="HasEmailVerified" Type="bit" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserBankAccount">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="BankId" />
+            <PropertyRef Name="BankAccountNo" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="BankId" Type="int" Nullable="false" />
+          <Property Name="BankAccountNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BankAcconutHolder" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankBranch" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsPrimary" Type="bit" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country" Type="nvarchar" MaxLength="20" />
+          <Property Name="PhoneNo" Type="nvarchar" MaxLength="20" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="1" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <Association Name="FK__UserBankA__BankI__2D27B809">
+          <End Role="Bank" Type="Self.Bank" Multiplicity="1" />
+          <End Role="UserBankAccount" Type="Self.UserBankAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="BankId" />
+            </Principal>
+            <Dependent Role="UserBankAccount">
+              <PropertyRef Name="BankId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserBankA__UserI__2C3393D0">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserBankAccount" Type="Self.UserBankAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserBankAccount">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__RoleI__1CF15040">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__UserI__25869641">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FIXModelStoreContainer">
+          <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserBankAccount" EntityType="Self.UserBankAccount" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__UserBankA__BankI__2D27B809" Association="Self.FK__UserBankA__BankI__2D27B809">
+            <End Role="Bank" EntitySet="Bank" />
+            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserBankA__UserI__2C3393D0" Association="Self.FK__UserBankA__UserI__2C3393D0">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__RoleI__1CF15040" Association="Self.FK__UserProfi__RoleI__1CF15040">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__UserI__25869641" Association="Self.FK__UserProfi__UserI__25869641">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FIXModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FIXEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bank" EntityType="FIXModel.Bank" />
+          <EntitySet Name="Role" EntityType="FIXModel.Role" />
+          <EntitySet Name="User" EntityType="FIXModel.User" />
+          <EntitySet Name="UserBankAccount" EntityType="FIXModel.UserBankAccount" />
+          <EntitySet Name="UserProfile" EntityType="FIXModel.UserProfile" />
+          <AssociationSet Name="FK__UserBankA__BankI__2D27B809" Association="FIXModel.FK__UserBankA__BankI__2D27B809">
+            <End Role="Bank" EntitySet="Bank" />
+            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__RoleI__1CF15040" Association="FIXModel.FK__UserProfi__RoleI__1CF15040">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserBankA__UserI__2C3393D0" Association="FIXModel.FK__UserBankA__UserI__2C3393D0">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__UserI__25869641" Association="FIXModel.FK__UserProfi__UserI__25869641">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Bank">
+          <Key>
+            <PropertyRef Name="BankId" />
+          </Key>
+          <Property Name="BankId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__BankI__2D27B809" FromRole="Bank" ToRole="UserBankAccount" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__RoleI__1CF15040" FromRole="Role" ToRole="UserProfile" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HasAcceptedTerms" Type="Boolean" Nullable="false" />
+          <Property Name="HasEmailVerified" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__2C3393D0" FromRole="User" ToRole="UserBankAccount" />
+          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__25869641" FromRole="User" ToRole="UserProfile" />
+        </EntityType>
+        <EntityType Name="UserBankAccount">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="BankId" />
+            <PropertyRef Name="BankAccountNo" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="BankId" Type="Int32" Nullable="false" />
+          <Property Name="BankAccountNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankAcconutHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsPrimary" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Bank" Relationship="FIXModel.FK__UserBankA__BankI__2D27B809" FromRole="UserBankAccount" ToRole="Bank" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserBankA__UserI__2C3393D0" FromRole="UserBankAccount" ToRole="User" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Role" Relationship="FIXModel.FK__UserProfi__RoleI__1CF15040" FromRole="UserProfile" ToRole="Role" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserProfi__UserI__25869641" FromRole="UserProfile" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__UserBankA__BankI__2D27B809">
+          <End Type="FIXModel.Bank" Role="Bank" Multiplicity="1" />
+          <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="BankId" />
+            </Principal>
+            <Dependent Role="UserBankAccount">
+              <PropertyRef Name="BankId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__RoleI__1CF15040">
+          <End Type="FIXModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="FIXModel.UserProfile" Role="UserProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserBankA__UserI__2C3393D0">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1" />
+          <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserBankAccount">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__UserI__25869641">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FIXModel.UserProfile" Role="UserProfile" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FIXModelStoreContainer" CdmEntityContainer="FIXEntities">
+          <EntitySetMapping Name="Bank">
+            <EntityTypeMapping TypeName="FIXModel.Bank">
+              <MappingFragment StoreEntitySet="Bank">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="BankId" ColumnName="BankId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role">
+            <EntityTypeMapping TypeName="FIXModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="FIXModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="HasEmailVerified" ColumnName="HasEmailVerified" />
+                <ScalarProperty Name="HasAcceptedTerms" ColumnName="HasAcceptedTerms" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserBankAccount">
+            <EntityTypeMapping TypeName="FIXModel.UserBankAccount">
+              <MappingFragment StoreEntitySet="UserBankAccount">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
+                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+                <ScalarProperty Name="BankAcconutHolder" ColumnName="BankAcconutHolder" />
+                <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
+                <ScalarProperty Name="BankId" ColumnName="BankId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfile">
+            <EntityTypeMapping TypeName="FIXModel.UserProfile">
+              <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

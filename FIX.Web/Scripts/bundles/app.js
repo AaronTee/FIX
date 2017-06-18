@@ -1,3 +1,6 @@
+function GetPath(url) {
+    return rootpath + url;
+}
 var toggler = $('.navbar-toggle');
 var sidebar = $('.' + toggler.attr("data-target"));
 var dimTarget = $('.' + toggler.attr("data-dim-target"));
@@ -96,6 +99,11 @@ parentMenu.click(function () {
         // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#Problems_and_solutions
         return _overlay.scrollHeight - _overlay.scrollTop <= _overlay.clientHeight;
     }
+
+    $('input[data-val="true"], select[data-val="true"]')
+        .closest(".form-group")
+        .children("label")
+        .addClass("required-field");
 }())
 
 //--------- disable touch hover------------

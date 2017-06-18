@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using FIX.Web.Models;
-using FIX.Core.Data;
-using FIX.Service.Interface;
-using AutoMapper;
+using FIX.Service.Entities;
+using FIX.Service;
 
 namespace FIX.Web.Controllers
 {
     [Authorize]
     public class UserController : BaseController
     {
-        private IUserService _userService;
 
-        public UserController(IUserService userService, IBaseService baseService) : base(baseService)
+        private IUserService _userService;
+        private IBankService _bankService;
+
+        public UserController(IUserService userService, IBankService bankService)
         {
             _userService = userService;
+            _bankService = bankService;
         }
 
         [HttpGet]
@@ -24,10 +26,10 @@ namespace FIX.Web.Controllers
         {
             IEnumerable<UserViewModel> users = _userService.GetAllUsers().Select(u => new UserViewModel
             {
+                Id = u.UserId,
                 Username = u.Username,
                 Email = u.Email,
-                UserId = u.UserId,
-                Roles = u.UserProfile.Roles
+                RoleName = u.UserProfile.Role.Description
             }).ToList();
             return View(users);
         }
@@ -35,178 +37,139 @@ namespace FIX.Web.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            UserCreateEditViewModel model = new UserCreateEditViewModel();
-
-            model.CountryDDL = new List<SelectListItem>()
-            {
-                new SelectListItem() { Text = "Malaysia", Value = "MY" }
-            };
+            UserViewModel model = new UserViewModel();
 
             model.RoleDDL = _userService.GetAllRoles().Select(x => new SelectListItem()
             {
-                Text = x.RoleName,
+                Text = x.Description,
                 Value = x.RoleId.ToString()
             });
 
-            model.GenderDDL = _userService.GetAllGender().Select(x => new SelectListItem()
+            model.BankDDL = _bankService.GetAllBank().Select(x => new SelectListItem()
             {
-                Text = x.Description,
-                Value = x.GenderId.ToString()
+                Text = x.Name,
+                Value = x.BankId.ToString()
             });
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Create(UserCreateEditViewModel model)
+        public ActionResult Create(UserViewModel model)
         {
-            List<Role> rolesAssigned = new List<Role>();
-
-            foreach (var selectedRole in model.Roles)
-            {
-                rolesAssigned.Add(_userService.GetRoleById(selectedRole));
-            }
-
-            User userEntity = new User
+            User user = new User()
             {
                 Username = model.Username,
                 Email = model.Email,
                 Password = model.Password,
-                CreatedTimestamp = DateTime.UtcNow,
-                ModifiedTimestamp = DateTime.UtcNow,
                 IP = Request.UserHostAddress,
+                HasAcceptedTerms = false,
+                HasEmailVerified = false,
+                CreatedTimestamp = DateTime.UtcNow,
                 UserProfile = new UserProfile
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
                     Address = model.Address,
-                    Gender = _userService.GetGenderById(model.Gender),
+                    Country = model.Country,
+                    FirstName = model.FirstName,
+                    Gender = model.Gender,
+                    LastName = model.LastName,
                     PhoneNo = model.PhoneNo,
+                    RoleId = model.RoleId,
                     CreatedTimestamp = DateTime.UtcNow,
-                    ModifiedTimestamp = DateTime.UtcNow,
-                    UserBankAccount = new List<UserBankAccount>()
-                    {
-                        new UserBankAccount() {
-                            BankAccountHolder = model.BankAccountHolder,
-                            BankAccountNo = model.BankAccountNo,
-                            BankBranch = model.BankBranch
-                        }
-                    },
-                    Roles = rolesAssigned
                 },
+                UserBankAccount = new List<UserBankAccount>
+                {
+                    new UserBankAccount() {
+                        BankAcconutHolder = model.BankAccountHolder,
+                        BankAccountNo = model.BankAccountNo,
+                        BankBranch = model.BankBranch,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        IsPrimary = true,
+                        BankId = model.BankId
+                    }
+                }
             };
-            _userService.InsertUser(userEntity);
+            _userService.InsertUser(user);
 
-            Save();
+            _userService.SaveChanges();
             
-            return View(model);
+            return RedirectToAction("Index");
         }
 
 
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            UserCreateEditViewModel model = new UserCreateEditViewModel();
+            UserViewModel model = new UserViewModel();
 
-            model.CountryDDL = new List<SelectListItem>()
+            var userInfo = _userService.GetUserBy(id);
+
+            model.Username = userInfo.Username;
+            model.Email = userInfo.Email;
+            model.RoleId = userInfo.UserProfile.RoleId;
+
+            model.FirstName = userInfo.UserProfile.FirstName;
+            model.LastName = userInfo.UserProfile.LastName;
+            model.Gender = userInfo.UserProfile.Gender;
+            model.Address = userInfo.UserProfile.Address;
+            model.Country = userInfo.UserProfile.Country;
+            model.PhoneNo = userInfo.UserProfile.PhoneNo;
+
+            if (userInfo.UserBankAccount.Count > 0)
             {
-                new SelectListItem() { Text = "Malaysia", Value = "MY" }
-            };
+                var userBank = userInfo.UserBankAccount.First();
+                model.BankId = userBank.BankId;
+                model.BankAccountHolder = userBank.BankAcconutHolder;
+                model.BankAccountNo = userBank.BankAccountNo;
+                model.BankBranch = userBank.BankBranch;
+            }
 
             model.RoleDDL = _userService.GetAllRoles().Select(x => new SelectListItem()
             {
-                Text = x.RoleName,
+                Text = x.Description,
                 Value = x.RoleId.ToString()
             });
 
-            model.GenderDDL = _userService.GetAllGender().Select(x => new SelectListItem()
+            model.BankDDL = _bankService.GetAllBank().Select(x => new SelectListItem()
             {
-                Text = x.Description,
-                Value = x.GenderId.ToString()
+                Text = x.Name,
+                Value = x.BankId.ToString()
             });
-
-            if (id.HasValue && id != 0)
-            {
-                User userEntity = _userService.GetUser(id.Value);
-
-                model.Username = userEntity.Username;
-                model.Email = userEntity.Email;
-                model.Username = userEntity.Username;
-                model.Password = userEntity.Password;
-
-                model.FirstName = userEntity.UserProfile?.FirstName;
-                model.LastName = userEntity.UserProfile?.LastName;
-                model.Address = userEntity.UserProfile?.Address;
-                model.Country = userEntity.UserProfile?.Country;
-                model.PhoneNo = userEntity.UserProfile?.PhoneNo;
-                model.RolesDescription = userEntity.UserProfile.Roles.Select(x => x.RoleName).ToList();
-                model.GenderDescription = userEntity.UserProfile.Gender?.Description;
-
-                if(userEntity.UserProfile.UserBankAccount.Count() > 0)
-                {
-                    var bankInfo = userEntity.UserProfile.UserBankAccount.First(); //We have one bank account for now.
-                    model.BankAccountHolder = bankInfo.BankAccountHolder;
-                    model.BankAccountNo = bankInfo.BankAccountNo;
-                    model.BankBranch = bankInfo.BankBranch;
-                }
-                
-            }
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Edit(UserCreateEditViewModel model)
+        public ActionResult Edit(UserViewModel model)
         {
-            List<Role> rolesAssigned = new List<Role>();
 
-            foreach(var selectedRole in model.Roles)
+            var userInfo = _userService.GetUserBy(model.Id);
+
+            userInfo.Username = model.Username;
+            userInfo.Email = model.Email;
+
+            userInfo.UserProfile.FirstName = model.FirstName;
+            userInfo.UserProfile.LastName = model.LastName;
+            userInfo.UserProfile.Gender = model.Gender;
+            userInfo.UserProfile.Address = model.Address;
+            userInfo.UserProfile.Country = model.Country;
+            userInfo.UserProfile.PhoneNo = model.PhoneNo;
+
+            if (userInfo.UserBankAccount.Count > 0)
             {
-                rolesAssigned.Add(_userService.GetRoleById(selectedRole));
-            }
-
-            User userEntity = _userService.GetUser(model.Id);
-
-            List<UserBankAccount> bankAccountAssigned = userEntity.UserProfile.UserBankAccount?.ToList();
-            
-            if (bankAccountAssigned.Count() < 1)
-            {
-                bankAccountAssigned.Add(new UserBankAccount()
+                foreach (var bankAccount in userInfo.UserBankAccount)
                 {
-                    BankAccountHolder = model.BankAccountHolder,
-                    BankAccountNo = model.BankAccountNo,
-                    BankBranch = model.BankBranch,
-                    CreatedTimestamp = DateTime.UtcNow
-                });
-            }
-            else
-            {
-                bankAccountAssigned.First().BankAccountHolder = model.BankAccountHolder;
-                bankAccountAssigned.First().BankAccountNo = model.BankAccountNo;
-                bankAccountAssigned.First().BankBranch = model.BankBranch;
-                bankAccountAssigned.First().ModifiedTimestamp = DateTime.UtcNow;
+                    bankAccount.BankId = model.BankId;
+                    bankAccount.BankAcconutHolder = model.BankAccountHolder;
+                    bankAccount.BankAccountNo = model.BankAccountNo;
+                    bankAccount.BankBranch = model.BankBranch;
+                    break; //support only one account for now hence break.
+                }
             }
 
+            _userService.UpdateUser(userInfo);
 
-            userEntity.Username = model.Username;
-            userEntity.Email = model.Email;
-            userEntity.Password = model.Password;
-            userEntity.CreatedTimestamp = DateTime.UtcNow;
-            userEntity.ModifiedTimestamp = DateTime.UtcNow;
-            userEntity.IP = Request.UserHostAddress;
-            userEntity.UserProfile.FirstName = model.FirstName;
-            userEntity.UserProfile.LastName = model.LastName;
-            userEntity.UserProfile.Address = model.Address;
-            userEntity.UserProfile.Country = model.Country;
-            userEntity.UserProfile.PhoneNo = model.PhoneNo;
-            userEntity.UserProfile.Gender = _userService.GetGenderById(model.Gender);
-            userEntity.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
-            userEntity.UserProfile.UserBankAccount = bankAccountAssigned;
-            userEntity.UserProfile.Roles = rolesAssigned;
-
-            _userService.UpdateUser(userEntity);
-
-            Save();
+            _userService.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -214,53 +177,41 @@ namespace FIX.Web.Controllers
         public ActionResult Detail(int? id)
         {
             UserViewModel model = new UserViewModel();
-            if (id.HasValue && id != 0)
-            {
-                User userEntity = _userService.GetUser(id.Value);
 
-                model.FirstName = userEntity.UserProfile?.FirstName;
-                model.LastName = userEntity.UserProfile?.LastName;
-                model.Address = userEntity.UserProfile?.Address;
-                model.Email = userEntity?.Email;
-                model.CreatedTimestamp = userEntity.CreatedTimestamp;
-                model.Username = userEntity.Username;
+            var userInfo = _userService.GetUserBy(id);
+
+            model.Username = userInfo.Username;
+            model.Email = userInfo.Email;
+            model.RoleName = userInfo.UserProfile.Role.Description;
+
+            model.FirstName = userInfo.UserProfile.FirstName;
+            model.LastName = userInfo.UserProfile.LastName;
+            model.Gender = userInfo.UserProfile.Gender;
+            model.Address = userInfo.UserProfile.Address;
+            model.Country = userInfo.UserProfile.Country;
+            model.PhoneNo = userInfo.UserProfile.PhoneNo;
+
+            if (userInfo.UserBankAccount.Count > 0)
+            {
+                var userBank = userInfo.UserBankAccount.First();
+                model.BankName = userBank.Bank.Name;
+                model.BankAccountHolder = userBank.BankAcconutHolder;
+                model.BankAccountNo = userBank.BankAccountNo;
+                model.BankBranch = userBank.BankBranch;
             }
+
             return View(model);
         }
 
-        public ActionResult Delete(int id)
+        public JsonResult ValidateUsername(string input)
         {
-            UserViewModel model = new UserViewModel();
-            if (id != 0)
-            {
-                User userEntity = _userService.GetUser(id);
-                model.FirstName = userEntity.UserProfile.FirstName;
-                model.LastName = userEntity.UserProfile.LastName;
-                model.Address = userEntity.UserProfile.Address;
-                model.Email = userEntity.Email;
-                model.CreatedTimestamp = userEntity.CreatedTimestamp;
-                model.Username = userEntity.Username;
-            }
-            return View(model);
+            return Json(_userService.GetUserBy(input) == null, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public JsonResult ValidateEmail(string input)
         {
-            try
-            {
-                if (id != 0)
-                {
-                    User userEntity = _userService.GetUser(id);
-                    _userService.DeleteUser(userEntity);
-                    return RedirectToAction("Index");
-                }
-                return View();
-            }
-            catch
-            {
-                return View();
-            }
+            return Json(_userService.IsValidEmailAddress(input), JsonRequestBehavior.AllowGet);
         }
+
     }
 }

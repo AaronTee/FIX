@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0d0e2a056e714574b7a0e9e5f50f6409" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="FIXModel.Bank" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="FIXModel.Role" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="FIXModel.User" Width="1.5" PointX="0.75" PointY="4.125" />
+        <EntityTypeShape EntityType="FIXModel.UserBankAccount" Width="1.5" PointX="3" PointY="4.25" />
+        <EntityTypeShape EntityType="FIXModel.UserProfile" Width="1.5" PointX="6" PointY="4.125" />
+        <AssociationConnector Association="FIXModel.FK__UserBankA__BankI__2D27B809" />
+        <AssociationConnector Association="FIXModel.FK__UserProfi__RoleI__1CF15040" />
+        <AssociationConnector Association="FIXModel.FK__UserBankA__UserI__2C3393D0" />
+        <AssociationConnector Association="FIXModel.FK__UserProfi__UserI__25869641" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

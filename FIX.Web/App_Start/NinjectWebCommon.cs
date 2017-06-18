@@ -10,9 +10,9 @@ namespace FIX.Web.App_Start
 
     using Ninject;
     using Ninject.Web.Common;
-    using Data;
     using Service;
-    using Service.Interface;
+    using Service.Models.Repositories;
+    using System.Data.Entity;
 
     public static class NinjectWebCommon 
     {
@@ -64,9 +64,10 @@ namespace FIX.Web.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IDbContext>().To<FIXDbContext>().InRequestScope();
-            kernel.Bind<IBaseService>().To<BaseService>();
+            kernel.Bind<IUnitOfWork>().To<UnitOfWork>().InRequestScope();
             kernel.Bind<IUserService>().To<UserService>();
+            kernel.Bind<IUserBankAccountService>().To<UserBankAccountService>(); 
+            kernel.Bind<IBankService>().To<BankService>();
         }        
     }
 }

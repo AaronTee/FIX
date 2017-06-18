@@ -86,9 +86,13 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
-
     <script>
         document.addEventListener("touchstart", function () { }, true);
+        var rootpath = '@Url.Content("~/")';
+
+        function GetPath(url) {
+            return rootpath + url;
+        }
     </script>
 </body>
 </html>

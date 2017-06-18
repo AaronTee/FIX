@@ -59,8 +59,20 @@ h1, h2, h3{
     margin-top: 2px;
 }
 
+legend{
+    margin-left: -5px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
 .text-danger{
     color: #e02c29;
+}
+
+.required-field:before{
+    content: '* ';
+    font-size: 12px;
+    color: red;
 }
 
 input[type=checkbox]

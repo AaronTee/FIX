@@ -1,10 +1,9 @@
-﻿using FIX.Data;
-using FIX.Service.Interface;
+﻿using FIX.Service;
+using FIX.Service.Entities;
+using FIX.Service.Models.Repositories;
 using FIX.Web.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Web;
@@ -17,12 +16,10 @@ namespace FIX.Web.Controllers
     {
         protected static readonly HttpClient client = new HttpClient();
         protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private IUnitOfWork uow;
 
-        private IBaseService _baseService;
-
-        public BaseController(IBaseService baseService)
+        public BaseController()
         {
-            _baseService = baseService;
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -64,24 +61,6 @@ namespace FIX.Web.Controllers
             HttpContext.Response.SetCookie(_cookie);
 
             base.OnActionExecuting(filterContext);
-        }
-
-        /// <summary>
-        /// Save changes in Dbcontext. Return true if succeed.
-        /// </summary>
-        /// <returns></returns>
-        protected bool Save()
-        {
-            try
-            {
-                _baseService.Save();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message, ex);
-                return false;
-            }
         }
     }
 }

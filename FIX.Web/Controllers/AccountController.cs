@@ -9,11 +9,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using FIX.Web.Models;
-using FIX.Service.Interface;
 using Newtonsoft.Json;
 using FIX.Web.Helpers;
 using System.Net;
 using System.Threading;
+using FIX.Service;
 
 namespace FIX.Web.Controllers
 {
@@ -24,12 +24,12 @@ namespace FIX.Web.Controllers
         private ApplicationUserManager _userManager;
         private IUserService _userService;
 
-        public AccountController(IUserService userService,IBaseService baseService): base(baseService)
+        public AccountController(IUserService userService)
         {
             _userService = userService;
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IBaseService baseService ) : base(baseService)
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
