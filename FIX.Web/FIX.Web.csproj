@@ -558,7 +558,9 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\settings.js" />
     <Content Include="Scripts\styles.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
