@@ -82,11 +82,39 @@
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MvcSiteMapProvider, Version=4.6.22.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.22\lib\net45\MvcSiteMapProvider.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MvcSiteMapProvider.WebActivator, Version=4.6.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.22\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -159,7 +187,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <HintPath>..\packages\WebActivatorEx.2.0.1\lib\net40\WebActivatorEx.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebGrease">
@@ -178,60 +206,23 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Owin">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security">
-      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Facebook">
-      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Cookies">
-      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth">
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Google">
-      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Twitter">
-      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
-      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\MyInvestmentController.cs" />
+    <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Extensions\MapperExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -240,7 +231,7 @@
     <Compile Include="Helpers\SVGHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GoogleModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ListViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\MenuItemModel.cs" />
@@ -258,266 +249,13 @@
     <Content Include="Content\image\FIXLogo.png" />
     <Content Include="Content\image\loginbg.jpg" />
     <Content Include="Content\styles.min.css" />
-    <Content Include="Content\svg\flags\ad.svg" />
-    <Content Include="Content\svg\flags\ae.svg" />
-    <Content Include="Content\svg\flags\af.svg" />
-    <Content Include="Content\svg\flags\ag.svg" />
-    <Content Include="Content\svg\flags\ai.svg" />
-    <Content Include="Content\svg\flags\al.svg" />
-    <Content Include="Content\svg\flags\am.svg" />
-    <Content Include="Content\svg\flags\ao.svg" />
-    <Content Include="Content\svg\flags\aq.svg" />
-    <Content Include="Content\svg\flags\ar.svg" />
-    <Content Include="Content\svg\flags\as.svg" />
-    <Content Include="Content\svg\flags\at.svg" />
-    <Content Include="Content\svg\flags\au.svg" />
-    <Content Include="Content\svg\flags\aw.svg" />
-    <Content Include="Content\svg\flags\ax.svg" />
-    <Content Include="Content\svg\flags\az.svg" />
-    <Content Include="Content\svg\flags\ba.svg" />
-    <Content Include="Content\svg\flags\bb.svg" />
-    <Content Include="Content\svg\flags\bd.svg" />
-    <Content Include="Content\svg\flags\be.svg" />
-    <Content Include="Content\svg\flags\bf.svg" />
-    <Content Include="Content\svg\flags\bg.svg" />
-    <Content Include="Content\svg\flags\bh.svg" />
-    <Content Include="Content\svg\flags\bi.svg" />
-    <Content Include="Content\svg\flags\bj.svg" />
-    <Content Include="Content\svg\flags\bl.svg" />
-    <Content Include="Content\svg\flags\bm.svg" />
-    <Content Include="Content\svg\flags\bn.svg" />
-    <Content Include="Content\svg\flags\bo.svg" />
-    <Content Include="Content\svg\flags\bq.svg" />
-    <Content Include="Content\svg\flags\br.svg" />
-    <Content Include="Content\svg\flags\bs.svg" />
-    <Content Include="Content\svg\flags\bt.svg" />
-    <Content Include="Content\svg\flags\bv.svg" />
-    <Content Include="Content\svg\flags\bw.svg" />
-    <Content Include="Content\svg\flags\by.svg" />
-    <Content Include="Content\svg\flags\bz.svg" />
-    <Content Include="Content\svg\flags\ca.svg" />
-    <Content Include="Content\svg\flags\cc.svg" />
-    <Content Include="Content\svg\flags\cd.svg" />
-    <Content Include="Content\svg\flags\cf.svg" />
-    <Content Include="Content\svg\flags\cg.svg" />
-    <Content Include="Content\svg\flags\ch.svg" />
-    <Content Include="Content\svg\flags\ci.svg" />
-    <Content Include="Content\svg\flags\ck.svg" />
-    <Content Include="Content\svg\flags\cl.svg" />
-    <Content Include="Content\svg\flags\cm.svg" />
-    <Content Include="Content\svg\flags\cn.svg" />
-    <Content Include="Content\svg\flags\co.svg" />
-    <Content Include="Content\svg\flags\cr.svg" />
-    <Content Include="Content\svg\flags\cu.svg" />
-    <Content Include="Content\svg\flags\cv.svg" />
-    <Content Include="Content\svg\flags\cw.svg" />
-    <Content Include="Content\svg\flags\cx.svg" />
-    <Content Include="Content\svg\flags\cy.svg" />
-    <Content Include="Content\svg\flags\cz.svg" />
-    <Content Include="Content\svg\flags\de.svg" />
-    <Content Include="Content\svg\flags\dj.svg" />
-    <Content Include="Content\svg\flags\dk.svg" />
-    <Content Include="Content\svg\flags\dm.svg" />
-    <Content Include="Content\svg\flags\do.svg" />
-    <Content Include="Content\svg\flags\dz.svg" />
-    <Content Include="Content\svg\flags\ec.svg" />
-    <Content Include="Content\svg\flags\ee.svg" />
-    <Content Include="Content\svg\flags\eg.svg" />
-    <Content Include="Content\svg\flags\eh.svg" />
-    <Content Include="Content\svg\flags\er.svg" />
-    <Content Include="Content\svg\flags\es.svg" />
-    <Content Include="Content\svg\flags\et.svg" />
-    <Content Include="Content\svg\flags\eu.svg" />
-    <Content Include="Content\svg\flags\fi.svg" />
-    <Content Include="Content\svg\flags\fj.svg" />
-    <Content Include="Content\svg\flags\fk.svg" />
-    <Content Include="Content\svg\flags\fm.svg" />
-    <Content Include="Content\svg\flags\fo.svg" />
-    <Content Include="Content\svg\flags\fr.svg" />
-    <Content Include="Content\svg\flags\ga.svg" />
-    <Content Include="Content\svg\flags\gb-eng.svg" />
-    <Content Include="Content\svg\flags\gb-nir.svg" />
-    <Content Include="Content\svg\flags\gb-sct.svg" />
-    <Content Include="Content\svg\flags\gb-wls.svg" />
-    <Content Include="Content\svg\flags\gb.svg" />
-    <Content Include="Content\svg\flags\gd.svg" />
-    <Content Include="Content\svg\flags\ge.svg" />
-    <Content Include="Content\svg\flags\gf.svg" />
-    <Content Include="Content\svg\flags\gg.svg" />
-    <Content Include="Content\svg\flags\gh.svg" />
-    <Content Include="Content\svg\flags\gi.svg" />
-    <Content Include="Content\svg\flags\gl.svg" />
-    <Content Include="Content\svg\flags\gm.svg" />
-    <Content Include="Content\svg\flags\gn.svg" />
-    <Content Include="Content\svg\flags\gp.svg" />
-    <Content Include="Content\svg\flags\gq.svg" />
-    <Content Include="Content\svg\flags\gr.svg" />
-    <Content Include="Content\svg\flags\gs.svg" />
-    <Content Include="Content\svg\flags\gt.svg" />
-    <Content Include="Content\svg\flags\gu.svg" />
-    <Content Include="Content\svg\flags\gw.svg" />
-    <Content Include="Content\svg\flags\gy.svg" />
-    <Content Include="Content\svg\flags\hk.svg" />
-    <Content Include="Content\svg\flags\hm.svg" />
-    <Content Include="Content\svg\flags\hn.svg" />
-    <Content Include="Content\svg\flags\hr.svg" />
-    <Content Include="Content\svg\flags\ht.svg" />
-    <Content Include="Content\svg\flags\hu.svg" />
-    <Content Include="Content\svg\flags\id.svg" />
-    <Content Include="Content\svg\flags\ie.svg" />
-    <Content Include="Content\svg\flags\il.svg" />
-    <Content Include="Content\svg\flags\im.svg" />
-    <Content Include="Content\svg\flags\in.svg" />
-    <Content Include="Content\svg\flags\io.svg" />
-    <Content Include="Content\svg\flags\iq.svg" />
-    <Content Include="Content\svg\flags\ir.svg" />
-    <Content Include="Content\svg\flags\is.svg" />
-    <Content Include="Content\svg\flags\it.svg" />
-    <Content Include="Content\svg\flags\je.svg" />
-    <Content Include="Content\svg\flags\jm.svg" />
-    <Content Include="Content\svg\flags\jo.svg" />
-    <Content Include="Content\svg\flags\jp.svg" />
-    <Content Include="Content\svg\flags\ke.svg" />
-    <Content Include="Content\svg\flags\kg.svg" />
-    <Content Include="Content\svg\flags\kh.svg" />
-    <Content Include="Content\svg\flags\ki.svg" />
-    <Content Include="Content\svg\flags\km.svg" />
-    <Content Include="Content\svg\flags\kn.svg" />
-    <Content Include="Content\svg\flags\kp.svg" />
-    <Content Include="Content\svg\flags\kr.svg" />
-    <Content Include="Content\svg\flags\kw.svg" />
-    <Content Include="Content\svg\flags\ky.svg" />
-    <Content Include="Content\svg\flags\kz.svg" />
-    <Content Include="Content\svg\flags\la.svg" />
-    <Content Include="Content\svg\flags\lb.svg" />
-    <Content Include="Content\svg\flags\lc.svg" />
-    <Content Include="Content\svg\flags\li.svg" />
-    <Content Include="Content\svg\flags\lk.svg" />
-    <Content Include="Content\svg\flags\lr.svg" />
-    <Content Include="Content\svg\flags\ls.svg" />
-    <Content Include="Content\svg\flags\lt.svg" />
-    <Content Include="Content\svg\flags\lu.svg" />
-    <Content Include="Content\svg\flags\lv.svg" />
-    <Content Include="Content\svg\flags\ly.svg" />
-    <Content Include="Content\svg\flags\ma.svg" />
-    <Content Include="Content\svg\flags\mc.svg" />
-    <Content Include="Content\svg\flags\md.svg" />
-    <Content Include="Content\svg\flags\me.svg" />
-    <Content Include="Content\svg\flags\mf.svg" />
-    <Content Include="Content\svg\flags\mg.svg" />
-    <Content Include="Content\svg\flags\mh.svg" />
-    <Content Include="Content\svg\flags\mk.svg" />
-    <Content Include="Content\svg\flags\ml.svg" />
-    <Content Include="Content\svg\flags\mm.svg" />
-    <Content Include="Content\svg\flags\mn.svg" />
-    <Content Include="Content\svg\flags\mo.svg" />
-    <Content Include="Content\svg\flags\mp.svg" />
-    <Content Include="Content\svg\flags\mq.svg" />
-    <Content Include="Content\svg\flags\mr.svg" />
-    <Content Include="Content\svg\flags\ms.svg" />
-    <Content Include="Content\svg\flags\mt.svg" />
-    <Content Include="Content\svg\flags\mu.svg" />
-    <Content Include="Content\svg\flags\mv.svg" />
-    <Content Include="Content\svg\flags\mw.svg" />
-    <Content Include="Content\svg\flags\mx.svg" />
-    <Content Include="Content\svg\flags\my.svg" />
-    <Content Include="Content\svg\flags\mz.svg" />
-    <Content Include="Content\svg\flags\na.svg" />
-    <Content Include="Content\svg\flags\nc.svg" />
-    <Content Include="Content\svg\flags\ne.svg" />
-    <Content Include="Content\svg\flags\nf.svg" />
-    <Content Include="Content\svg\flags\ng.svg" />
-    <Content Include="Content\svg\flags\ni.svg" />
-    <Content Include="Content\svg\flags\nl.svg" />
-    <Content Include="Content\svg\flags\no.svg" />
-    <Content Include="Content\svg\flags\np.svg" />
-    <Content Include="Content\svg\flags\nr.svg" />
-    <Content Include="Content\svg\flags\nu.svg" />
-    <Content Include="Content\svg\flags\nz.svg" />
-    <Content Include="Content\svg\flags\om.svg" />
-    <Content Include="Content\svg\flags\pa.svg" />
-    <Content Include="Content\svg\flags\pe.svg" />
-    <Content Include="Content\svg\flags\pf.svg" />
-    <Content Include="Content\svg\flags\pg.svg" />
-    <Content Include="Content\svg\flags\ph.svg" />
-    <Content Include="Content\svg\flags\pk.svg" />
-    <Content Include="Content\svg\flags\pl.svg" />
-    <Content Include="Content\svg\flags\pm.svg" />
-    <Content Include="Content\svg\flags\pn.svg" />
-    <Content Include="Content\svg\flags\pr.svg" />
-    <Content Include="Content\svg\flags\ps.svg" />
-    <Content Include="Content\svg\flags\pt.svg" />
-    <Content Include="Content\svg\flags\pw.svg" />
-    <Content Include="Content\svg\flags\py.svg" />
-    <Content Include="Content\svg\flags\qa.svg" />
-    <Content Include="Content\svg\flags\re.svg" />
-    <Content Include="Content\svg\flags\ro.svg" />
-    <Content Include="Content\svg\flags\rs.svg" />
-    <Content Include="Content\svg\flags\ru.svg" />
-    <Content Include="Content\svg\flags\rw.svg" />
-    <Content Include="Content\svg\flags\sa.svg" />
-    <Content Include="Content\svg\flags\sb.svg" />
-    <Content Include="Content\svg\flags\sc.svg" />
-    <Content Include="Content\svg\flags\sd.svg" />
-    <Content Include="Content\svg\flags\se.svg" />
-    <Content Include="Content\svg\flags\sg.svg" />
-    <Content Include="Content\svg\flags\sh.svg" />
-    <Content Include="Content\svg\flags\si.svg" />
-    <Content Include="Content\svg\flags\sj.svg" />
-    <Content Include="Content\svg\flags\sk.svg" />
-    <Content Include="Content\svg\flags\sl.svg" />
-    <Content Include="Content\svg\flags\sm.svg" />
-    <Content Include="Content\svg\flags\sn.svg" />
-    <Content Include="Content\svg\flags\so.svg" />
-    <Content Include="Content\svg\flags\sr.svg" />
-    <Content Include="Content\svg\flags\ss.svg" />
-    <Content Include="Content\svg\flags\st.svg" />
-    <Content Include="Content\svg\flags\sv.svg" />
-    <Content Include="Content\svg\flags\sx.svg" />
-    <Content Include="Content\svg\flags\sy.svg" />
-    <Content Include="Content\svg\flags\sz.svg" />
-    <Content Include="Content\svg\flags\tc.svg" />
-    <Content Include="Content\svg\flags\td.svg" />
-    <Content Include="Content\svg\flags\tf.svg" />
-    <Content Include="Content\svg\flags\tg.svg" />
-    <Content Include="Content\svg\flags\th.svg" />
-    <Content Include="Content\svg\flags\tj.svg" />
-    <Content Include="Content\svg\flags\tk.svg" />
-    <Content Include="Content\svg\flags\tl.svg" />
-    <Content Include="Content\svg\flags\tm.svg" />
-    <Content Include="Content\svg\flags\tn.svg" />
-    <Content Include="Content\svg\flags\to.svg" />
-    <Content Include="Content\svg\flags\tr.svg" />
-    <Content Include="Content\svg\flags\tt.svg" />
-    <Content Include="Content\svg\flags\tv.svg" />
-    <Content Include="Content\svg\flags\tw.svg" />
-    <Content Include="Content\svg\flags\tz.svg" />
-    <Content Include="Content\svg\flags\ua.svg" />
-    <Content Include="Content\svg\flags\ug.svg" />
-    <Content Include="Content\svg\flags\um.svg" />
-    <Content Include="Content\svg\flags\un.svg" />
-    <Content Include="Content\svg\flags\us.svg" />
-    <Content Include="Content\svg\flags\uy.svg" />
-    <Content Include="Content\svg\flags\uz.svg" />
-    <Content Include="Content\svg\flags\va.svg" />
-    <Content Include="Content\svg\flags\vc.svg" />
-    <Content Include="Content\svg\flags\ve.svg" />
-    <Content Include="Content\svg\flags\vg.svg" />
-    <Content Include="Content\svg\flags\vi.svg" />
-    <Content Include="Content\svg\flags\vn.svg" />
-    <Content Include="Content\svg\flags\vu.svg" />
-    <Content Include="Content\svg\flags\wf.svg" />
-    <Content Include="Content\svg\flags\ws.svg" />
-    <Content Include="Content\svg\flags\ye.svg" />
-    <Content Include="Content\svg\flags\yt.svg" />
-    <Content Include="Content\svg\flags\za.svg" />
-    <Content Include="Content\svg\flags\zm.svg" />
-    <Content Include="Content\svg\flags\zw.svg" />
+    <Compile Include="Extensions\QueryableExtension.cs" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
+    <Content Include="Scripts\app\bootstrap-table.custom.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -534,6 +272,12 @@
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="Content\sass\styles.scss" />
+    <Content Include="Mvc.sitemap">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="MvcSiteMapSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\aws-webhost-win.pubxml" />
     <None Include="Properties\PublishProfiles\localhost.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -542,7 +286,6 @@
     <Content Include="Scripts\bundles\jquery.js" />
     <Content Include="Scripts\bundles\jqueryval.js" />
     <Content Include="Scripts\bundles\modernizr.js" />
-    <Content Include="Scripts\dttable.datatable.custom.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -556,8 +299,8 @@
     <Content Include="Scripts\require.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\settings.js" />
-    <Content Include="Scripts\styles.js" />
+    <Content Include="Scripts\app\settings.js" />
+    <Content Include="Scripts\app\styles.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -593,7 +336,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Shared\_Portal.cshtml" />
     <Content Include="Views\Shared\NavMenu.cshtml" />
-    <Content Include="Views\MyInvestment\Index.cshtml" />
+    <Content Include="Views\Investment\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Email.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Text.cshtml" />
@@ -602,9 +345,20 @@
     <Content Include="Views\User\Create.cshtml" />
     <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Display.cshtml" />
+    <Content Include="Views\Shared\Sidebar.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
+    <Content Include="Views\Shared\EmailVerification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\svg\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

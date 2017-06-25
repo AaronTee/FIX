@@ -3,7 +3,9 @@
     var $table = $(this) || $('#dtTable');
     var _dtTable;
 
-    var checkBoxEnabled = config.enableCheckbox;
+    var checkBoxEnabled = config.enableCheckbox || true;
+
+    if (config.minWidth) $table.css('min-width', config.minWidth);
 
     if ($.fn.DataTable.isDataTable($table)) _dtTable = $table.DataTable();
     else
@@ -29,7 +31,7 @@
         'order': [],
         language: {
             search: '_INPUT_',
-            searchPlaceholder: 'Search',
+            searchPlaceholder: 'Search Any',
             'paginate': {
                 'previous': '<',
                 'next': '>'
@@ -38,8 +40,10 @@
                 rows: ''
             }
         },
+        "scrollX": true,
         fnDrawCallback: function (settings) {
             redrawCheckAll();
+            _dtTable.columns.adjust().draw();
         }
     });
 
@@ -110,6 +114,6 @@
     return this;
 }
 
-$.extend($.fn.dataTableExt.oStdClasses, {
-    'sFilterInput': 'search-filter',
-});
+//$.extend($.fn.dataTableExt.oStdClasses, {
+//    'sFilterInput': 'search-filter',
+//});

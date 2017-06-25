@@ -56,6 +56,7 @@ namespace FIX.Web.Models
 
         public string GenderDescription { get; set; }
 
+        [Display(Name = "Bank")]
         public string BankName { get; set; }
 
         [Required]
@@ -92,10 +93,21 @@ namespace FIX.Web.Models
         [Display(Name = "Created Date")]
         public DateTime CreatedTimestamp { get; set; }
 
+        public bool hasEmailVerified { get; set; }
+        public bool hasAcceptedTerms { get; set; }
+
         public IEnumerable<SelectListItem> CountryDDL { get; set; }
         public IEnumerable<SelectListItem> RoleDDL { get; set; }
         public IEnumerable<SelectListItem> GenderDDL { get; set; }
         public IEnumerable<SelectListItem> BankDDL { get; set; }
+    }
+
+    public class UserListViewModel : ListViewModel{
+        public int UserId { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string RoleName { get; set; }
+        public int Status { get; set; }
     }
 
     public class UserRole

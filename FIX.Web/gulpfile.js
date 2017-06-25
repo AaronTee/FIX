@@ -23,7 +23,7 @@ var config = {
         'jqueryval.js': ['Scripts/jquery.validate*.min.js'],
         'modernizr.js': ['Scripts/modernizr-*.js'],
         'bootstrap.js': ['Scripts/bootstrap.js', 'Scripts/respond.js'],
-        'app.js': ['Scripts/settings.js', 'Scripts/styles.js']
+        'app.js': ['Scripts/app/settings.js', 'Scripts/app/*.js']
     },
 
     srcCss: [
@@ -101,8 +101,8 @@ gulp.task('watch', function () {
         gulp.start('style');
     });
 
-    watch(['./Scripts/**/*.js', '!./Scripts/**/*.min.js'], function () {
-        gulp.start('scripts');
+    watch(['./Scripts/**/*.js', '!./Scripts/**/*.min.js', '!./Scripts/bundles/*.js'], function () {
+        gulp.start('script');
     });
 });
 

@@ -28,8 +28,17 @@ namespace FIX.Web.Controllers
                 Username = user.Username,
                 FirstName = user.UserProfile?.FirstName,
                 LastName = user.UserProfile?.LastName,
+                hasEmailVerified = user.HasEmailVerified,
+                hasAcceptedTerms = user.HasAcceptedTerms,
                 CreatedTimestamp = user.CreatedTimestamp.Date
             };
+
+            if (!model.userModel.hasEmailVerified)
+            {
+                ViewBag.Url = ""
+
+                return View("RequiredAction");
+            }
 
             return View(model);
         }

@@ -26,9 +26,14 @@ namespace FIX.Service.Entities
         }
     
         public virtual DbSet<Bank> Bank { get; set; }
+        public virtual DbSet<Package> Package { get; set; }
         public virtual DbSet<Role> Role { get; set; }
+        public virtual DbSet<Status> Status { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserBankAccount> UserBankAccount { get; set; }
+        public virtual DbSet<UserPackage> UserPackage { get; set; }
         public virtual DbSet<UserProfile> UserProfile { get; set; }
+        public virtual DbSet<UserPackageDetail> UserPackageDetail { get; set; }
+        public virtual DbSet<UserActivation> UserActivation { get; set; }
     }
 }

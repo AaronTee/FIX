@@ -45,8 +45,9 @@ namespace FIX.Web
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
-                      "~/Scripts/settings.js",
-                      "~/Scripts/styles.js"));
+                      "~/Scripts/app/settings.js",
+                      "~/Scripts/app/styles.js",
+                      "~/Scripts/app/bootstrap-table.custom.js"));
 #endif
 
             bundles.Add(new StyleBundle("~/Content/style").Include(

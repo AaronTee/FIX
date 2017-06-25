@@ -17,7 +17,7 @@ namespace FIX.Service.Entities
         public int UserId { get; set; }
         public int BankId { get; set; }
         public string BankAccountNo { get; set; }
-        public string BankAcconutHolder { get; set; }
+        public string BankAccountHolder { get; set; }
         public string BankBranch { get; set; }
         public bool IsPrimary { get; set; }
         public System.DateTime CreatedTimestamp { get; set; }

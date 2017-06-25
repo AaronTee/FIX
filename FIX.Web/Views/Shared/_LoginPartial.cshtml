@@ -5,14 +5,14 @@
     {
     @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        @*<li>@Html.SVG(Url.Content("~/Content/svg/flags/gb.svg"), htmlAttributes: new { width = "40", height = "30" })</li>
-        <li>@Html.SVG(Url.Content("~/Content/svg/flags/gb.svg"), htmlAttributes: new { width = "40", height = "30" })</li>*@
+    @*<ul class="nav navbar-nav navbar-right">
+        <li>@Html.SVG(Url.Content("~/Content/svg/flags/gb.svg"), htmlAttributes: new { width = "40", height = "30" })</li>
+        <li>@Html.SVG(Url.Content("~/Content/svg/flags/gb.svg"), htmlAttributes: new { width = "40", height = "30" })</li>
         <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            @Html.ActionLink("Welcome " + User.Identity.GetUserName() + "", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
+    </ul>*@
     }
 }
 else

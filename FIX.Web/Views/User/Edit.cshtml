@@ -1,20 +1,20 @@
 ﻿@model UserViewModel
 @{
-    ViewBag.Title = "Create Edit User";
+    ViewBag.Title = "Edit User";
 }
 
-<div class="book-example panel panel-primary">
-    <div class="panel-heading panel-head">User Maintenance</div>
-    <div class="panel-body">
-        <div class="form-section">
-            @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal" }))
-            {
-                <fieldset>
-                    <legend>Edit User</legend>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            @Html.EditorFor(x => x.Email, "Email")
-                            @Html.EditorFor(x => x.Username, "Text")
+<div class="panel panel-primary">
+    <div class="form-section">
+        @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            <fieldset>
+                <legend>@ViewBag.Title</legend>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="panel-header">User Profile</div>
+                        <div class="panel-body">
+                            @Html.EditorFor(x => x.Email, "Text")
+                            @Html.EditorFor(x => x.Username, "Display")
                             @Html.EditorFor(x => x.Password, "Password")
                             @Html.EditorFor(x => x.ConfirmPassword, "Password")
                             @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
@@ -25,26 +25,62 @@
                             @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
                             @Html.EditorFor(x => x.PhoneNo, "Text")
                         </div>
-                        <div class="col-lg-4">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel-header">User Bank Account</div>
+                        <div class="panel-body">
                             @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
                             @Html.EditorFor(x => x.BankAccountHolder, "Text")
                             @Html.EditorFor(x => x.BankAccountNo, "Text")
                             @Html.EditorFor(x => x.BankBranch, "Text")
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <div class="col-lg-9"></div>
-                        <div class="col-lg-3">
-                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-                            <button class="btn btn-success" id="Button1" type="submit">
-                                Submit
-                            </button>
-                        </div>
-                    </div>
-                </fieldset>
-            }
-        </div>
+                <div class="action-panel">
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                    <button class="btn btn-success" id="Button1" type="submit">Submit</button>
+                </div>
+            </fieldset>
+        }
     </div>
 </div>
 
+@section scripts{
+    <script>
+        var g_oldEmailVal;
+        $(function () {
+            g_oldEmailVal = $("#Email").val();
+            $.validator.addMethod(
+            'validateEmail',
+            function (value, element) {
+                //No changes made
+                if (value == g_oldEmailVal) return true;
+                var isValid = false;
+                if (value) {
+                    $.ajax({
+                        url: GetPath('User/ValidateEmail'),
+                        type: 'GET',
+                        async: false,
+                        data: { input: value },
+                        success: function (_isValid) {
+                            isValid = _isValid;
+                            return isValid;
+                        }
+                    });
+                }
+                return isValid;
+            },
+            'Email has registered to one of the existing account, please choose another one.');
+
+            $('#Email').rules('add', {
+                validateEmail: true,
+            });
+
+            var validator = $("#user-form").data("validator");
+            if (validator) {
+                validator.settings.onkeyup = false;
+            }
+        });
+    </script>
+}

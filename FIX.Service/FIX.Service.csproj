@@ -75,13 +75,28 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FIXEntities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Package.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Role.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Status.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\User.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\UserActivation.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\UserBankAccount.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserPackage.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserPackageDetail.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\UserProfile.cs">

@@ -2,6 +2,8 @@
 using System.Data.Entity;
 using System;
 using FIX.Service.Entities;
+using System.Threading.Tasks;
+using static FIX.Service.DBConstant;
 
 namespace FIX.Service
 {
@@ -18,6 +20,11 @@ namespace FIX.Service
         public IQueryable<Role> GetAllRoles()
         {
             return _uow.Repository<Role>().GetAsQueryable();
+        }
+
+        public Role GetUserRoleBy(UserProfile userProfile)
+        {
+            return _uow.Repository<Role>().GetByKey(userProfile.RoleId);
         }
 
         public IQueryable<User> GetAllUsers()
@@ -40,14 +47,51 @@ namespace FIX.Service
             return _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == id).FirstOrDefault();
         }
 
-        public bool IsValid(string username, string password)
+        public async Task<bool> IsValid(string username, string password)
         {
-            return _uow.Repository<User>().GetAsQueryable().Where(x => x.Username == username && x.Password == password).FirstOrDefault() != null;
+            var task = Task.Run(() => _uow.Repository<User>().GetAsQueryable().Where(x => x.Username == username && x.Password == password).FirstOrDefault() != null);
+            return await task;
         }
 
         public bool IsValidEmailAddress(string email)
         {
             return _uow.Repository<User>().GetAsQueryable().Where(x => x.Email == email).FirstOrDefault() == null;
+        }
+
+        public Guid AssignNewValidationCode(User user)
+        {
+            Guid activationCode = Guid.NewGuid();
+
+            if (user.UserActivation != null) _uow.Repository<UserActivation>().Delete(user.UserActivation);
+
+            var newActivation = new UserActivation
+            {
+                UserId = user.UserId,
+                ActivationCode = activationCode
+            };
+            _uow.Repository<UserActivation>().Insert(newActivation);
+
+            return activationCode;
+        }
+
+        public bool ValidateActivationCode(Guid activationCode)
+        {
+            var userActivation = _uow.Repository<UserActivation>().GetAsQueryable().Where(x => x.ActivationCode == activationCode && x.StatusId == (int)EStatus.Active).FirstOrDefault();
+
+            if(userActivation != null)
+            {
+                var user = _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == userActivation.UserId).FirstOrDefault();
+
+                if(user != null)
+                {
+                    user.HasEmailVerified = true;
+                    _uow.Repository<UserActivation>().Delete(userActivation);
+                    SaveChanges();
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void InsertUser(User user)

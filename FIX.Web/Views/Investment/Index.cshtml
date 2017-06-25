@@ -1,0 +1,50 @@
+﻿@{ 
+    ViewBag.Title = "My Investment";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <h1>My Investment</h1>
+        <a id="A1" href="@Url.Action("Create")"
+           class="btn btn-action">
+            <span class="glyphicon glyphicon-plus"></span> User
+        </a>
+        <table data-toggle="table"
+               data-search="true"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-classes="table table-no-bordered"
+               data-page-list="[10, 25, 50, 100]"
+               data-url="@(Url.Content("~/"))Investment/UserPackage"
+               data-unique-id="UserId"
+               data-search-placeholder="Search Username">
+            <thead>
+                <tr>
+                    <th data-field="StartDate" data-sortable="true">Start Date</th>
+                    <th data-field="EndDate" data-formatter="LinkFormatter">End Date</th>
+                    <th data-field="Package">Package</th>
+                    <th data-field="ReturnRate" data-sortable="true">Return Rate</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+        <h1>My Return</h1>
+        <table data-toggle="table"
+               data-classes="table table-no-bordered"
+               data-url="@(Url.Content("~/"))Investment/UserPackageProgress"
+               data-unique-id="PackageId">
+            <thead>
+                <tr>
+                    <th data-field="Date" data-sortable="true">Date</th>
+                    <th data-field="ReturnRate" data-formatter="LinkFormatter">Return Rate</th>
+                    <th data-field="ReturnAmount">Amount</th>
+                    <th data-field="Status" data-sortable="true">Status</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>

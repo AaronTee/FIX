@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNet.Identity
+<div class="fixed-wrapper">
+    <div class="sidebar has-fixed-header">
+        <div class="scrollable">
+            <div class="sidebar-panel-1x1">
+                <img class="logo" src="~/Content/image/FIXLogo.png">
+            </div>
+
+            <ul class="sidebar-nav">
+                <li class="nav-menu">
+                    <a href="@Url.Action("Index", "Home")">Home</a>
+                </li>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-menu has-child">
+                        <a href="#">Admin Panel</a>
+                        
+                        <ul class="sidebar-subnav">
+                            <li class="nav-menu">
+                                <a href="@Url.Action("Index", "User")">User Management</a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                <li class="nav-menu">
+                    <a href="@Url.Action("Index", "Investment")">My Investment</a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <span>
+                Logged in as<br />
+                @User.Identity.GetUserName()
+            </span>
+            <ul>
+                <li>
+                    @Html.ActionLink("Manage", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-sidebar-primary" })
+                </li>
+                <li>
+                    <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-sidebar-primary btn-logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

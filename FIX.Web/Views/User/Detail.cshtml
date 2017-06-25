@@ -4,42 +4,43 @@
     ViewBag.Title = "User Detail";
 }
 
-<div class="book-example panel panel-primary">
-    <div class="panel-heading panel-head">User Maintenance</div>
-    <div class="panel-body">
+<div class="panel panel-primary">
         <div class="form-section">
             @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal" }))
             {
                 <fieldset>
-                    <legend>Edit User</legend>
+                    <legend>@ViewBag.Title</legend>
                     <div class="row">
                         <div class="col-lg-6">
-                            @Html.EditorFor(x => x.Email, "Display")
-                            @Html.EditorFor(x => x.Username, "Display")
-                            @Html.EditorFor(x => x.RoleName, "Display")
-                            @Html.EditorFor(x => x.FirstName, "Display")
-                            @Html.EditorFor(x => x.LastName, "Display")
-                            @Html.EditorFor(x => x.Gender, "Display")
-                            @Html.EditorFor(x => x.Address, "Display")
-                            @Html.EditorFor(x => x.Country, "Display")
-                            @Html.EditorFor(x => x.PhoneNo, "Display")
+                            <div class="panel-header">User Profile</div>
+                            <div class="panel-body">
+                                @Html.EditorFor(x => x.Email, "Display")
+                                @Html.EditorFor(x => x.Username, "Display")
+                                @Html.EditorFor(x => x.RoleName, "Display")
+                                @Html.EditorFor(x => x.FirstName, "Display")
+                                @Html.EditorFor(x => x.LastName, "Display")
+                                @Html.EditorFor(x => x.Gender, "Display")
+                                @Html.EditorFor(x => x.Address, "Display")
+                                @Html.EditorFor(x => x.Country, "Display")
+                                @Html.EditorFor(x => x.PhoneNo, "Display")
+                            </div>
                         </div>
                         <div class="col-lg-6">
-                            @Html.EditorFor(x => x.BankName, "Display")
-                            @Html.EditorFor(x => x.BankAccountHolder, "Display")
-                            @Html.EditorFor(x => x.BankAccountNo, "Display")
-                            @Html.EditorFor(x => x.BankBranch, "Display")
+                            <div class="panel-header">User Bank Account</div>
+                            <div class="panel-body">
+                                @Html.EditorFor(x => x.BankName, "Display")
+                                @Html.EditorFor(x => x.BankAccountHolder, "Display")
+                                @Html.EditorFor(x => x.BankAccountNo, "Display")
+                                @Html.EditorFor(x => x.BankBranch, "Display")
+                            </div>
                         </div>
                     </div>
 
                     <div class="action-panel">
-                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-                            <button class="btn btn-success" id="Button1" type="submit">
-                                Submit
-                            </button>
-                        </div>
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                        <button class="btn btn-success" id="Button1" type="submit">Submit</button>
+                    </div>
                 </fieldset>
             }
         </div>
     </div>
-</div>

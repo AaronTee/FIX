@@ -1,7 +1,10 @@
-﻿var toggler = $('.navbar-toggle');
+﻿$(function () {
+
+var toggler = $('.navbar-toggle');
 var sidebar = $('.' + toggler.attr("data-target"));
 var dimTarget = $('.' + toggler.attr("data-dim-target"));
 var bodyCanvas = $('.body-canvas');
+
 
 /* Handler window onResize */
 $(window).resize(function () {
@@ -59,10 +62,12 @@ parentMenu.click(function () {
     childMenu.toggleClass('show');
 });
 
-//--------------disable overlay scroll body------------
-(function () {
-    var _overlay = document.getElementsByClassName('sidebar')[0];
+    //--------------disable overlay scroll body------------
+$(function () {
+    var _overlay = document.getElementsByClassName('scrollable')[0];
     var _clientY = null; // remember Y position on touch start
+
+    if (!_overlay) return;
 
     _overlay.addEventListener('touchstart', function (event) {
         if (event.targetTouches.length === 1) {
@@ -101,7 +106,10 @@ parentMenu.click(function () {
         .closest(".form-group")
         .children("label")
         .addClass("required-field");
-}())
+})
+
+    
+
 
 //--------- disable touch hover------------
 var touch = 'ontouchstart' in document.documentElement
@@ -124,3 +132,4 @@ if (touch) { // remove all :hover stylesheets
         }
     } catch (ex) { }
 }
+});

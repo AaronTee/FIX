@@ -7,6 +7,13 @@
 
     @Styles.Render("~/Content/style")
 
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/app")
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body ontouchstart="">
@@ -30,36 +37,11 @@
         </div>
     </div>
     <div class="container">
-        <div class="fixed-wrapper">
-            <div class="sidebar has-fixed-header">
-                <div class="scrollable">
-                    <div class="sidebar-panel-1x1">
-                        <img class="logo" src="~/Content/image/FIXLogo.png">
-                    </div>
-
-                    <ul class="sidebar-nav">
-                        <li class="nav-menu">
-                            <a href="@Url.Action("Index", "Home")">Home</a>
-                        </li>
-
-                        <li class="nav-menu has-child">
-                            <a href="#">Admin Panel</a>
-                            <ul class="sidebar-subnav">
-                                <li class="nav-menu">
-                                    <a href="@Url.Action("Index", "User")">User Management</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-menu">
-                            <a href="@Url.Action("Index", "MyInvestment")">My Investment</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        @Html.Partial("Sidebar")
         <div class="body-canvas has-sidebar has-fixed-header">
             <div class="body-content">
+                @{Html.RenderPartial("_Alerts", new { });}
+                @Html.MvcSiteMap().SiteMapPath(false)
                 @RenderBody()
             </div>
         </div>
@@ -80,11 +62,6 @@
         </div>
     }  
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
     <script>
         document.addEventListener("touchstart", function () { }, true);

@@ -1,11 +1,9 @@
 ﻿@model UserViewModel
 @{
-    ViewBag.Title = "Create Edit User";
+    ViewBag.Title = "Create New User";
 }
 
-<div class="book-example panel panel-primary">
-    <div class="panel-heading panel-head">User Maintenance</div>
-    <div class="panel-body">
+<div class="panel panel-primary">
         <div class="form-section">
             @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal", @id = "user-form" }))
             {
@@ -13,102 +11,129 @@
                     <legend>Create New User</legend>
                     <div class="row">
                         <div class="col-lg-6">
-                            @Html.EditorFor(x => x.Email, "Email")
-                            @Html.EditorFor(x => x.Username, "Text")
-                            @Html.EditorFor(x => x.Password, "Password")
-                            @Html.EditorFor(x => x.ConfirmPassword, "Password")
-                            @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
-                            @Html.EditorFor(x => x.FirstName, "Text")
-                            @Html.EditorFor(x => x.LastName, "Text")
-                            @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
-                            @Html.EditorFor(x => x.Address, "Text")
-                            @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
-                            @Html.EditorFor(x => x.PhoneNo, "Text")
-                        </div>
+                            <div class="panel-header">User Profile</div>
+                            <div class="panel-body">
+                                @Html.EditorFor(x => x.Email, "Email")
+                                @Html.EditorFor(x => x.Username, "Text")
+                                @Html.EditorFor(x => x.Password, "Password")
+                                @Html.EditorFor(x => x.ConfirmPassword, "Password")
+                                @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
+                                @Html.EditorFor(x => x.FirstName, "Text")
+                                @Html.EditorFor(x => x.LastName, "Text")
+                                @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
+                                @Html.EditorFor(x => x.Address, "Text")
+                                @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
+                                @Html.EditorFor(x => x.PhoneNo, "Text")
+                            </div>
+                            </div>
                         <div class="col-lg-6">
-                            @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
-                            @Html.EditorFor(x => x.BankAccountHolder, "Text")
-                            @Html.EditorFor(x => x.BankAccountNo, "Text")
-                            @Html.EditorFor(x => x.BankBranch, "Text")
+                            <div class="panel-header">User Bank Account</div>
+                            <div class="panel-body">
+                                @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
+                                @Html.EditorFor(x => x.BankAccountHolder, "Text")
+                                @Html.EditorFor(x => x.BankAccountNo, "Text")
+                                @Html.EditorFor(x => x.BankBranch, "Text")
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="col-lg-9"></div>
-                        <div class="col-lg-3">
-                            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-                            <button class="btn btn-success" id="Button1" type="submit">
-                                Submit
-                            </button>
-                        </div>
+                    <div class="action-panel">
+                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                        <button class="btn btn-success" id="Button1" type="submit">Submit</button>
                     </div>
                 </fieldset>
             }
-        </div>
+        
     </div> 
 </div>
 
 @section scripts{
     <script>
         $(function () {
-            $.validator.addMethod(
-            'validateUsername',
-            function (value, element) {
-                var isValid = false;
-                if (value) {
-                    $.ajax({
-                        url: GetPath('User/ValidateUsername'),
-                        type: 'GET',
-                        async: false,
-                        data: { input: value },
-                        success: function (_isValid) {
-                            isValid = _isValid;
-                            return isValid;
-                        }
-                    });
-                }
-                return isValid;
-            },
-            'Username has been taken, please choose another one.');
 
-            $.validator.addMethod(
-            'validateEmail',
-            function (value, element) {
-                var isValid = false;
-                if (value) {
-                    $.ajax({
-                        url: GetPath('User/ValidateEmail'),
-                        type: 'GET',
-                        async: false,
-                        data: { input: value },
-                        success: function (_isValid) {
-                            isValid = _isValid;
-                            return isValid;
-                        }
-                    });
-                }
-                return isValid;
-            },
-            'Email has registered to one of the existing account, please choose another one.');
+            useClientSideValidation();
 
-            $('#Username').rules('add', {
-                minlength: 8,
-                validateUsername: true,
+            $form = $('#user-form');
+            $form.validate({
+                rules: {
+                    Email: {
+                        required: true,
+                        email: true,
+                        remote: {
+                            url: GetPath('User/ValidateEmail'),
+                            type: "post",
+                            data: {
+                                input: function () {
+                                    return $("#Email").val();
+                                }
+                            },
+                            complete: function () {
+                                $('#Email').valid();
+                            }
+                        }
+                    },
+                    Username: {
+                        required: true,
+                        remote: {
+                            url: GetPath('User/ValidateUsername'),
+                            type: "post",
+                            data: {
+                                input: function () {
+                                    return $("#Username").val();
+                                }
+                            },
+                            complete: function () {
+                                $('#Username').valid();
+                            }
+                        }
+                    },
+                    Password: {
+                        required: true,
+                    },
+                    ConfirmPassword: {
+                        required: true,
+                        equalTo: "#Password"
+                    },
+                    RoleId : {
+                        required: true
+                    },
+                    FirstName: {
+                        required: true
+                    },
+                    Gender : {
+                        required: true
+                    },
+                    Country : {
+                        required: true
+                    },
+                    PhoneNo: {
+                        required: true
+                    },
+                    BankId : {
+                        required: true
+                    },
+                    BankAccountHolder: {
+                        required: true
+                    },
+                    BankAccountNo: {
+                        required: true
+                    },
+                    BankBranch: {
+                        required: true
+                    }
+                },
                 messages: {
-                    minlength: jQuery.validator.format("Please, at least {0} characters are necessary.")
+                    required: "Thie field is required.",
+                    Email: {
+                        remote: "Email has been used in one of the account, please enter another."
+                    },
+                    Username: {
+                        remote: "Username has been taken, please enter another."
+                    },
+                    ConfirmPassword : "Password not match."
                 }
             });
 
-            $('#Email').rules('add', {
-                validateEmail: true,
-            });
-
-            var validator = $("#user-form").data("validator");
-            if (validator) {
-                validator.settings.onkeyup = false;
-            }
-
-            
         });
     </script>
 }

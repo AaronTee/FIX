@@ -14,6 +14,15 @@
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
         </EntityType>
+        <EntityType Name="Package">
+          <Key>
+            <PropertyRef Name="PackageId" />
+          </Key>
+          <Property Name="PackageId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Rate" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="Threshold" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+        </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="RoleId" />
@@ -22,6 +31,13 @@
           <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -36,6 +52,15 @@
           <Property Name="HasEmailVerified" Type="bit" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserActivation">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="ActivationCode" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserBankAccount">
           <Key>
@@ -46,11 +71,39 @@
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="BankId" Type="int" Nullable="false" />
           <Property Name="BankAccountNo" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="BankAcconutHolder" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankAccountHolder" Type="nvarchar" MaxLength="50" />
           <Property Name="BankBranch" Type="nvarchar" MaxLength="100" />
           <Property Name="IsPrimary" Type="bit" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserPackage">
+          <Key>
+            <PropertyRef Name="UserPackageId" />
+          </Key>
+          <Property Name="UserPackageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PackageId" Type="int" Nullable="false" />
+          <Property Name="AmountInvested" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="AmountCollected" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserPackageDetail">
+          <Key>
+            <PropertyRef Name="UserPackageId" />
+            <PropertyRef Name="ReturnDate" />
+            <PropertyRef Name="ReturnAmount" />
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="UserPackageId" Type="int" Nullable="false" />
+          <Property Name="ReturnDate" Type="date" Nullable="false" />
+          <Property Name="ReturnAmount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserProfile">
           <Key>
@@ -67,7 +120,45 @@
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
         </EntityType>
-        <Association Name="FK__UserBankA__BankI__2D27B809">
+        <Association Name="FK__User__Status__5165187F">
+          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserActiv__Statu__5812160E">
+          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="UserActivation" Type="Self.UserActivation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserActivation">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserActiv__UserI__59063A47">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserActivation" Type="Self.UserActivation" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserActivation">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserBankA__BankI__403A8C7D">
           <End Role="Bank" Type="Self.Bank" Multiplicity="1" />
           <End Role="UserBankAccount" Type="Self.UserBankAccount" Multiplicity="*" />
           <ReferentialConstraint>
@@ -79,7 +170,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserBankA__UserI__2C3393D0">
+        <Association Name="FK__UserBankA__UserI__412EB0B6">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="UserBankAccount" Type="Self.UserBankAccount" Multiplicity="*" />
           <ReferentialConstraint>
@@ -91,7 +182,67 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserProfi__RoleI__1CF15040">
+        <Association Name="FK__UserPacka__Packa__48CFD27E">
+          <End Role="Package" Type="Self.Package" Multiplicity="1" />
+          <End Role="UserPackage" Type="Self.UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Package">
+              <PropertyRef Name="PackageId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="PackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__Statu__534D60F1">
+          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="UserPackageDetail" Type="Self.UserPackageDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserPackageDetail">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__Statu__5535A963">
+          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="UserPackage" Type="Self.UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__UserI__47DBAE45">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserPackage" Type="Self.UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__UserP__5441852A">
+          <End Role="UserPackage" Type="Self.UserPackage" Multiplicity="1" />
+          <End Role="UserPackageDetail" Type="Self.UserPackageDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPackage">
+              <PropertyRef Name="UserPackageId" />
+            </Principal>
+            <Dependent Role="UserPackageDetail">
+              <PropertyRef Name="UserPackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__RoleI__4222D4EF">
           <End Role="Role" Type="Self.Role" Multiplicity="1" />
           <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="*" />
           <ReferentialConstraint>
@@ -103,7 +254,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserProfi__UserI__25869641">
+        <Association Name="FK__UserProfi__UserI__4316F928">
           <End Role="User" Type="Self.User" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -119,23 +270,67 @@
         </Association>
         <EntityContainer Name="FIXModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Package" EntityType="Self.Package" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserActivation" EntityType="Self.UserActivation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserBankAccount" EntityType="Self.UserBankAccount" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPackage" EntityType="Self.UserPackage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__UserBankA__BankI__2D27B809" Association="Self.FK__UserBankA__BankI__2D27B809">
+          <EntitySet Name="UserPackageDetail" EntityType="Self.UserPackageDetail" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [UserPackageDetail].[UserPackageId] AS [UserPackageId], 
+    [UserPackageDetail].[ReturnDate] AS [ReturnDate], 
+    [UserPackageDetail].[ReturnAmount] AS [ReturnAmount], 
+    [UserPackageDetail].[StatusId] AS [StatusId]
+    FROM [dbo].[UserPackageDetail] AS [UserPackageDetail]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__User__Status__5165187F" Association="Self.FK__User__Status__5165187F">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="Self.FK__UserActiv__Statu__5812160E">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserActivation" EntitySet="UserActivation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="Self.FK__UserActiv__UserI__59063A47">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserActivation" EntitySet="UserActivation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="Self.FK__UserBankA__BankI__403A8C7D">
             <End Role="Bank" EntitySet="Bank" />
             <End Role="UserBankAccount" EntitySet="UserBankAccount" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserBankA__UserI__2C3393D0" Association="Self.FK__UserBankA__UserI__2C3393D0">
+          <AssociationSet Name="FK__UserBankA__UserI__412EB0B6" Association="Self.FK__UserBankA__UserI__412EB0B6">
             <End Role="User" EntitySet="User" />
             <End Role="UserBankAccount" EntitySet="UserBankAccount" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProfi__RoleI__1CF15040" Association="Self.FK__UserProfi__RoleI__1CF15040">
+          <AssociationSet Name="FK__UserPacka__Packa__48CFD27E" Association="Self.FK__UserPacka__Packa__48CFD27E">
+            <End Role="Package" EntitySet="Package" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__Statu__534D60F1" Association="Self.FK__UserPacka__Statu__534D60F1">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__Statu__5535A963" Association="Self.FK__UserPacka__Statu__5535A963">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__UserI__47DBAE45" Association="Self.FK__UserPacka__UserI__47DBAE45">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__UserP__5441852A" Association="Self.FK__UserPacka__UserP__5441852A">
+            <End Role="UserPackage" EntitySet="UserPackage" />
+            <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__RoleI__4222D4EF" Association="Self.FK__UserProfi__RoleI__4222D4EF">
             <End Role="Role" EntitySet="Role" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProfi__UserI__25869641" Association="Self.FK__UserProfi__UserI__25869641">
+          <AssociationSet Name="FK__UserProfi__UserI__4316F928" Association="Self.FK__UserProfi__UserI__4316F928">
             <End Role="User" EntitySet="User" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
@@ -146,27 +341,64 @@
       <Schema Namespace="FIXModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="FIXEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Bank" EntityType="FIXModel.Bank" />
+          <EntitySet Name="Package" EntityType="FIXModel.Package" />
           <EntitySet Name="Role" EntityType="FIXModel.Role" />
+          <EntitySet Name="Status" EntityType="FIXModel.Status" />
           <EntitySet Name="User" EntityType="FIXModel.User" />
           <EntitySet Name="UserBankAccount" EntityType="FIXModel.UserBankAccount" />
+          <EntitySet Name="UserPackage" EntityType="FIXModel.UserPackage" />
           <EntitySet Name="UserProfile" EntityType="FIXModel.UserProfile" />
-          <AssociationSet Name="FK__UserBankA__BankI__2D27B809" Association="FIXModel.FK__UserBankA__BankI__2D27B809">
+          <EntitySet Name="UserPackageDetail" EntityType="FIXModel.UserPackageDetail" />
+          <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="FIXModel.FK__UserBankA__BankI__403A8C7D">
             <End Role="Bank" EntitySet="Bank" />
             <End Role="UserBankAccount" EntitySet="UserBankAccount" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProfi__RoleI__1CF15040" Association="FIXModel.FK__UserProfi__RoleI__1CF15040">
+          <AssociationSet Name="FK__UserPacka__Packa__48CFD27E" Association="FIXModel.FK__UserPacka__Packa__48CFD27E">
+            <End Role="Package" EntitySet="Package" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__RoleI__4222D4EF" Association="FIXModel.FK__UserProfi__RoleI__4222D4EF">
             <End Role="Role" EntitySet="Role" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserBankA__UserI__2C3393D0" Association="FIXModel.FK__UserBankA__UserI__2C3393D0">
+          <AssociationSet Name="FK__User__Status__5165187F" Association="FIXModel.FK__User__Status__5165187F">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__Statu__534D60F1" Association="FIXModel.FK__UserPacka__Statu__534D60F1">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__Statu__5535A963" Association="FIXModel.FK__UserPacka__Statu__5535A963">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserBankA__UserI__412EB0B6" Association="FIXModel.FK__UserBankA__UserI__412EB0B6">
             <End Role="User" EntitySet="User" />
             <End Role="UserBankAccount" EntitySet="UserBankAccount" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserProfi__UserI__25869641" Association="FIXModel.FK__UserProfi__UserI__25869641">
+          <AssociationSet Name="FK__UserPacka__UserI__47DBAE45" Association="FIXModel.FK__UserPacka__UserI__47DBAE45">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserProfi__UserI__4316F928" Association="FIXModel.FK__UserProfi__UserI__4316F928">
             <End Role="User" EntitySet="User" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
-        </EntityContainer>
+          <AssociationSet Name="FK__UserPacka__UserP__5441852A" Association="FIXModel.FK__UserPacka__UserP__5441852A">
+            <End Role="UserPackage" EntitySet="UserPackage" />
+            <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
+          </AssociationSet>
+          <EntitySet Name="UserActivation" EntityType="FIXModel.UserActivation" />
+          <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="FIXModel.FK__UserActiv__Statu__5812160E">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserActivation" EntitySet="UserActivation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="FIXModel.FK__UserActiv__UserI__59063A47">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserActivation" EntitySet="UserActivation" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="BankId" />
@@ -175,7 +407,17 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__BankI__2D27B809" FromRole="Bank" ToRole="UserBankAccount" />
+          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__BankI__403A8C7D" FromRole="Bank" ToRole="UserBankAccount" />
+        </EntityType>
+        <EntityType Name="Package">
+          <Key>
+            <PropertyRef Name="PackageId" />
+          </Key>
+          <Property Name="PackageId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Rate" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Threshold" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Packa__48CFD27E" FromRole="Package" ToRole="UserPackage" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -185,7 +427,18 @@
           <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__RoleI__1CF15040" FromRole="Role" ToRole="UserProfile" />
+          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__RoleI__4222D4EF" FromRole="Role" ToRole="UserProfile" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="Status" ToRole="User" />
+          <NavigationProperty Name="UserPackageDetail" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="Status" ToRole="UserPackageDetail" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Statu__5535A963" FromRole="Status" ToRole="UserPackage" />
+          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="Status" ToRole="UserActivation" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -200,8 +453,12 @@
           <Property Name="HasEmailVerified" Type="Boolean" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__2C3393D0" FromRole="User" ToRole="UserBankAccount" />
-          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__25869641" FromRole="User" ToRole="UserProfile" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="User" ToRole="Status" />
+          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__412EB0B6" FromRole="User" ToRole="UserBankAccount" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="User" ToRole="UserPackage" />
+          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="User" ToRole="UserProfile" />
+          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="User" ToRole="UserActivation" />
         </EntityType>
         <EntityType Name="UserBankAccount">
           <Key>
@@ -212,13 +469,31 @@
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="BankId" Type="Int32" Nullable="false" />
           <Property Name="BankAccountNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BankAcconutHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BankBranch" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="IsPrimary" Type="Boolean" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Bank" Relationship="FIXModel.FK__UserBankA__BankI__2D27B809" FromRole="UserBankAccount" ToRole="Bank" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserBankA__UserI__2C3393D0" FromRole="UserBankAccount" ToRole="User" />
+          <NavigationProperty Name="Bank" Relationship="FIXModel.FK__UserBankA__BankI__403A8C7D" FromRole="UserBankAccount" ToRole="Bank" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserBankA__UserI__412EB0B6" FromRole="UserBankAccount" ToRole="User" />
+        </EntityType>
+        <EntityType Name="UserPackage">
+          <Key>
+            <PropertyRef Name="UserPackageId" />
+          </Key>
+          <Property Name="UserPackageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PackageId" Type="Int32" Nullable="false" />
+          <Property Name="AmountInvested" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="AmountCollected" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Package" Relationship="FIXModel.FK__UserPacka__Packa__48CFD27E" FromRole="UserPackage" ToRole="Package" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__5535A963" FromRole="UserPackage" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="UserPackage" ToRole="User" />
+          <NavigationProperty Name="UserPackageDetail" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackage" ToRole="UserPackageDetail" />
         </EntityType>
         <EntityType Name="UserProfile">
           <Key>
@@ -234,10 +509,24 @@
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Role" Relationship="FIXModel.FK__UserProfi__RoleI__1CF15040" FromRole="UserProfile" ToRole="Role" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserProfi__UserI__25869641" FromRole="UserProfile" ToRole="User" />
+          <NavigationProperty Name="Role" Relationship="FIXModel.FK__UserProfi__RoleI__4222D4EF" FromRole="UserProfile" ToRole="Role" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="UserProfile" ToRole="User" />
         </EntityType>
-        <Association Name="FK__UserBankA__BankI__2D27B809">
+        <EntityType Name="UserPackageDetail">
+          <Key>
+            <PropertyRef Name="UserPackageId" />
+            <PropertyRef Name="ReturnDate" />
+            <PropertyRef Name="ReturnAmount" />
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="UserPackageId" Type="Int32" Nullable="false" />
+          <Property Name="ReturnDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ReturnAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="UserPackageDetail" ToRole="Status" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackageDetail" ToRole="UserPackage" />
+        </EntityType>
+        <Association Name="FK__UserBankA__BankI__403A8C7D">
           <End Type="FIXModel.Bank" Role="Bank" Multiplicity="1" />
           <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
           <ReferentialConstraint>
@@ -249,7 +538,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserProfi__RoleI__1CF15040">
+        <Association Name="FK__UserPacka__Packa__48CFD27E">
+          <End Type="FIXModel.Package" Role="Package" Multiplicity="1" />
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Package">
+              <PropertyRef Name="PackageId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="PackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__RoleI__4222D4EF">
           <End Type="FIXModel.Role" Role="Role" Multiplicity="1" />
           <End Type="FIXModel.UserProfile" Role="UserProfile" Multiplicity="*" />
           <ReferentialConstraint>
@@ -261,7 +562,43 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserBankA__UserI__2C3393D0">
+        <Association Name="FK__User__Status__5165187F">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__Statu__534D60F1">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.UserPackageDetail" Role="UserPackageDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserPackageDetail">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__Statu__5535A963">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserBankA__UserI__412EB0B6">
           <End Type="FIXModel.User" Role="User" Multiplicity="1" />
           <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
           <ReferentialConstraint>
@@ -273,7 +610,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserProfi__UserI__25869641">
+        <Association Name="FK__UserPacka__UserI__47DBAE45">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1" />
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserProfi__UserI__4316F928">
           <End Type="FIXModel.User" Role="User" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -283,6 +632,54 @@
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__UserP__5441852A">
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="1" />
+          <End Type="FIXModel.UserPackageDetail" Role="UserPackageDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPackage">
+              <PropertyRef Name="UserPackageId" />
+            </Principal>
+            <Dependent Role="UserPackageDetail">
+              <PropertyRef Name="UserPackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UserActivation">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ActivationCode" Type="Guid" Nullable="false" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="UserActivation" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="UserActivation" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__UserActiv__Statu__5812160E">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserActivation">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserActiv__UserI__59063A47">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserActivation">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -303,6 +700,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Package">
+            <EntityTypeMapping TypeName="FIXModel.Package">
+              <MappingFragment StoreEntitySet="Package">
+                <ScalarProperty Name="Threshold" ColumnName="Threshold" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PackageId" ColumnName="PackageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Role">
             <EntityTypeMapping TypeName="FIXModel.Role">
               <MappingFragment StoreEntitySet="Role">
@@ -313,9 +720,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Status">
+            <EntityTypeMapping TypeName="FIXModel.Status">
+              <MappingFragment StoreEntitySet="Status">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="FIXModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
                 <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
                 <ScalarProperty Name="HasEmailVerified" ColumnName="HasEmailVerified" />
@@ -335,10 +751,25 @@
                 <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
                 <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
                 <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
-                <ScalarProperty Name="BankAcconutHolder" ColumnName="BankAcconutHolder" />
+                <ScalarProperty Name="BankAccountHolder" ColumnName="BankAccountHolder" />
                 <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
                 <ScalarProperty Name="BankId" ColumnName="BankId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPackage">
+            <EntityTypeMapping TypeName="FIXModel.UserPackage">
+              <MappingFragment StoreEntitySet="UserPackage">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="AmountCollected" ColumnName="AmountCollected" />
+                <ScalarProperty Name="AmountInvested" ColumnName="AmountInvested" />
+                <ScalarProperty Name="PackageId" ColumnName="PackageId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -354,6 +785,25 @@
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPackageDetail">
+            <EntityTypeMapping TypeName="FIXModel.UserPackageDetail">
+              <MappingFragment StoreEntitySet="UserPackageDetail">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserActivation">
+            <EntityTypeMapping TypeName="FIXModel.UserActivation">
+              <MappingFragment StoreEntitySet="UserActivation">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>

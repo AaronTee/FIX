@@ -1,0 +1,36 @@
+﻿@model MvcSiteMapProvider.Web.Html.Models.SiteMapPathHelperModel
+@using System.Web.Mvc.Html
+@using System.Linq
+@using MvcSiteMapProvider.Web.Html.Models
+
+@if (Model.Count() > 1)
+{
+<ul class="breadcrumb">
+    @foreach (var node in Model)
+    {
+        // Condition to ensure root node is invisible
+        // when it is the current node
+        if (!(node.IsRootNode && node.IsCurrentNode))
+        {
+            if (node.IsRootNode) { continue; }
+
+            if (node != Model.Last())
+            {
+                if (!node.IsClickable)
+                {
+                    <li class="notclickable">@Html.DisplayFor(m => node)</li>
+
+                }
+                else
+                {
+                    <li class="clickable">@Html.DisplayFor(m => node)</li>
+                }
+            }
+            else
+            {
+                <li class="current">@Html.DisplayFor(m => node)</li>
+            }
+        }
+    }
+</ul>
+}

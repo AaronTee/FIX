@@ -5,6 +5,8 @@ using System.Web.Mvc;
 using FIX.Web.Models;
 using FIX.Service.Entities;
 using FIX.Service;
+using FIX.Web.Extensions;
+using static FIX.Service.DBConstant;
 
 namespace FIX.Web.Controllers
 {
@@ -32,6 +34,55 @@ namespace FIX.Web.Controllers
                 RoleName = u.UserProfile.Role.Description
             }).ToList();
             return View(users);
+        }
+
+        public JsonResult GetListViewData(int offset, int limit, string search, string sort, string order)
+        {
+            var queryableList = _userService.GetAllUsers();
+            var allRowCount = queryableList.Count();
+
+            if (search.IsNotNullOrEmpty())
+            {
+                queryableList = queryableList.Where(x => x.Username.Contains(search));
+            }
+
+            queryableList = queryableList.PaginateList("Username", sort, order, offset, limit);
+
+            var rowsResult = queryableList.ToList()
+                .Select(x => new UserListViewModel() {
+                    UserId = x.UserId,
+                    Username = x.Username,
+                    Email = x.Email,
+                    RoleName = x.UserProfile.Role.Description,
+                    Status = x.StatusId,
+                    ActionLinks = new List<ActionLink>()
+                    {
+                        new ActionLink() {
+                            Name = "Edit",
+                            Url = Url.RouteUrl(new {
+                                id = x.UserId,
+                                controller = "User",
+                                action = "Edit"
+                            })
+                        },
+                        new ActionLink() {
+                            Name = "Detail",
+                            Url = Url.RouteUrl(new {
+                                id = x.UserId,
+                                controller = "User",
+                                action = "Detail"
+                            })
+                        }
+                    }
+
+                });
+
+            var model = new
+            {
+                total = allRowCount,
+                rows = rowsResult
+            };
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
  
         [HttpGet]
@@ -66,6 +117,7 @@ namespace FIX.Web.Controllers
                 HasAcceptedTerms = false,
                 HasEmailVerified = false,
                 CreatedTimestamp = DateTime.UtcNow,
+                StatusId = (int)DBConstant.EStatus.Active,
                 UserProfile = new UserProfile
                 {
                     Address = model.Address,
@@ -80,19 +132,29 @@ namespace FIX.Web.Controllers
                 UserBankAccount = new List<UserBankAccount>
                 {
                     new UserBankAccount() {
-                        BankAcconutHolder = model.BankAccountHolder,
+                        BankAccountHolder = model.BankAccountHolder,
                         BankAccountNo = model.BankAccountNo,
                         BankBranch = model.BankBranch,
                         CreatedTimestamp = DateTime.UtcNow,
                         IsPrimary = true,
                         BankId = model.BankId
                     }
+                },
+                UserActivation = new UserActivation
+                {
+                    ActivationCode = Guid.NewGuid(),
+                    StatusId = (int)EStatus.Active
                 }
             };
             _userService.InsertUser(user);
 
             _userService.SaveChanges();
-            
+
+            var curUser = _userService.GetUserBy(user.Username);
+
+            AccountController ac = new AccountController(_userService);
+            ac.SendActivationEmail(curUser.UserId);
+
             return RedirectToAction("Index");
         }
 
@@ -119,7 +181,7 @@ namespace FIX.Web.Controllers
             {
                 var userBank = userInfo.UserBankAccount.First();
                 model.BankId = userBank.BankId;
-                model.BankAccountHolder = userBank.BankAcconutHolder;
+                model.BankAccountHolder = userBank.BankAccountHolder;
                 model.BankAccountNo = userBank.BankAccountNo;
                 model.BankBranch = userBank.BankBranch;
             }
@@ -144,10 +206,7 @@ namespace FIX.Web.Controllers
         {
 
             var userInfo = _userService.GetUserBy(model.Id);
-
-            userInfo.Username = model.Username;
             userInfo.Email = model.Email;
-
             userInfo.UserProfile.FirstName = model.FirstName;
             userInfo.UserProfile.LastName = model.LastName;
             userInfo.UserProfile.Gender = model.Gender;
@@ -160,7 +219,7 @@ namespace FIX.Web.Controllers
                 foreach (var bankAccount in userInfo.UserBankAccount)
                 {
                     bankAccount.BankId = model.BankId;
-                    bankAccount.BankAcconutHolder = model.BankAccountHolder;
+                    bankAccount.BankAccountHolder = model.BankAccountHolder;
                     bankAccount.BankAccountNo = model.BankAccountNo;
                     bankAccount.BankBranch = model.BankBranch;
                     break; //support only one account for now hence break.
@@ -195,7 +254,7 @@ namespace FIX.Web.Controllers
             {
                 var userBank = userInfo.UserBankAccount.First();
                 model.BankName = userBank.Bank.Name;
-                model.BankAccountHolder = userBank.BankAcconutHolder;
+                model.BankAccountHolder = userBank.BankAccountHolder;
                 model.BankAccountNo = userBank.BankAccountNo;
                 model.BankBranch = userBank.BankBranch;
             }
