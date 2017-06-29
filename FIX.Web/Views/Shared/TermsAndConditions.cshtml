@@ -1,0 +1,24 @@
+﻿@model TermsAndContitionsViewModel
+
+@{
+    Layout = "_Portal.cshtml";
+}
+
+@using (Html.BeginForm("Create", "TermsAndConditions", FormMethod.Post))
+{
+    <div class="content-wrapper">
+        <div class="content-header">
+            <h1>Terms and Conditions</h1>
+            <hr />
+        </div>
+        <div class="content-body">
+            @Html.TextAreaFor(x => x.Terms, new { @readonly = "readonly" })
+        </div>
+
+        <div class="action-panel">
+            @Html.CheckBoxFor(x => x.HasAgreed) I have read this Agreement and agree to the terms and conditions.
+        </div>
+
+        <input type="submit" value="Submit"/>
+    </div>
+}

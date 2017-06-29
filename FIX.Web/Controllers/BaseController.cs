@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -18,7 +19,6 @@ namespace FIX.Web.Controllers
     {
         protected static readonly HttpClient client = new HttpClient();
         protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private IUnitOfWork uow;
 
         public BaseController()
         {
@@ -65,22 +65,22 @@ namespace FIX.Web.Controllers
             base.OnActionExecuting(filterContext);
         }
 
-        public void Success(string message, bool autoDisappear = false, bool dismissable = false)
+        public void Success(string message, bool autoDisappear = false, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Success, autoDisappear, message, dismissable);
         }
 
-        public void Information(string message, bool autoDisappear = false, bool dismissable = false)
+        public void Information(string message, bool autoDisappear = false, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Information, autoDisappear, message, dismissable);
         }
 
-        public void Warning(string message, bool autoDisappear = false, bool dismissable = false)
+        public void Warning(string message, bool autoDisappear = false, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Warning, autoDisappear, message, dismissable);
         }
 
-        public void Danger(string message, bool autoDisappear = false, bool dismissable = false)
+        public void Danger(string message, bool autoDisappear = false, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Danger, autoDisappear, message, dismissable);
         }

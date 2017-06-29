@@ -23,8 +23,7 @@ namespace FIX.Service.Entities
         public int UserPackageId { get; set; }
         public int UserId { get; set; }
         public int PackageId { get; set; }
-        public decimal AmountInvested { get; set; }
-        public decimal AmountCollected { get; set; }
+        public decimal TotalAmount { get; set; }
         public System.DateTime Date { get; set; }
         public int StatusId { get; set; }
         public System.DateTime CreatedTimestamp { get; set; }

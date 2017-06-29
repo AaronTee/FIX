@@ -116,10 +116,12 @@
     <Compile Include="Interfaces\IRoleService.cs" />
     <Compile Include="Interfaces\IEntityService.cs" />
     <Compile Include="Interfaces\IBankService.cs" />
+    <Compile Include="Interfaces\IInvestmentService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\BankService.cs" />
     <Compile Include="Services\UserProfileService.cs" />
     <Compile Include="Services\UserBankAccountService.cs" />
+    <Compile Include="Services\InvestmentService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>

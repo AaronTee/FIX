@@ -50,6 +50,8 @@
           <Property Name="IP" Type="nvarchar" MaxLength="255" />
           <Property Name="HasAcceptedTerms" Type="bit" Nullable="false" />
           <Property Name="HasEmailVerified" Type="bit" Nullable="false" />
+          <Property Name="IsFirstTimeLogIn" Type="bit" />
+          <Property Name="TimeZoneId" Type="nvarchar" MaxLength="255" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
           <Property Name="StatusId" Type="int" Nullable="false" />
@@ -84,25 +86,20 @@
           <Property Name="UserPackageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="PackageId" Type="int" Nullable="false" />
-          <Property Name="AmountInvested" Type="decimal" Precision="15" Scale="5" Nullable="false" />
-          <Property Name="AmountCollected" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="TotalAmount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="UserPackageDetail">
           <Key>
-            <PropertyRef Name="UserPackageId" />
-            <PropertyRef Name="ReturnDate" />
-            <PropertyRef Name="ReturnAmount" />
-            <PropertyRef Name="StatusId" />
+            <PropertyRef Name="UserPackageDetailId" />
           </Key>
+          <Property Name="UserPackageDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserPackageId" Type="int" Nullable="false" />
-          <Property Name="ReturnDate" Type="date" Nullable="false" />
-          <Property Name="ReturnAmount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="StatusId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserProfile">
@@ -277,15 +274,8 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
           <EntitySet Name="UserActivation" EntityType="Self.UserActivation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserBankAccount" EntityType="Self.UserBankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPackage" EntityType="Self.UserPackage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPackageDetail" EntityType="Self.UserPackageDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserPackageDetail" EntityType="Self.UserPackageDetail" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [UserPackageDetail].[UserPackageId] AS [UserPackageId], 
-    [UserPackageDetail].[ReturnDate] AS [ReturnDate], 
-    [UserPackageDetail].[ReturnAmount] AS [ReturnAmount], 
-    [UserPackageDetail].[StatusId] AS [StatusId]
-    FROM [dbo].[UserPackageDetail] AS [UserPackageDetail]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK__User__Status__5165187F" Association="Self.FK__User__Status__5165187F">
             <End Role="Status" EntitySet="Status" />
             <End Role="User" EntitySet="User" />
@@ -344,34 +334,38 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
           <EntitySet Name="Package" EntityType="FIXModel.Package" />
           <EntitySet Name="Role" EntityType="FIXModel.Role" />
           <EntitySet Name="Status" EntityType="FIXModel.Status" />
-          <EntitySet Name="User" EntityType="FIXModel.User" />
           <EntitySet Name="UserBankAccount" EntityType="FIXModel.UserBankAccount" />
-          <EntitySet Name="UserPackage" EntityType="FIXModel.UserPackage" />
           <EntitySet Name="UserProfile" EntityType="FIXModel.UserProfile" />
-          <EntitySet Name="UserPackageDetail" EntityType="FIXModel.UserPackageDetail" />
           <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="FIXModel.FK__UserBankA__BankI__403A8C7D">
             <End Role="Bank" EntitySet="Bank" />
             <End Role="UserBankAccount" EntitySet="UserBankAccount" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserPacka__Packa__48CFD27E" Association="FIXModel.FK__UserPacka__Packa__48CFD27E">
-            <End Role="Package" EntitySet="Package" />
-            <End Role="UserPackage" EntitySet="UserPackage" />
           </AssociationSet>
           <AssociationSet Name="FK__UserProfi__RoleI__4222D4EF" Association="FIXModel.FK__UserProfi__RoleI__4222D4EF">
             <End Role="Role" EntitySet="Role" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
-          <AssociationSet Name="FK__User__Status__5165187F" Association="FIXModel.FK__User__Status__5165187F">
+          <EntitySet Name="UserActivation" EntityType="FIXModel.UserActivation" />
+          <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="FIXModel.FK__UserActiv__Statu__5812160E">
             <End Role="Status" EntitySet="Status" />
-            <End Role="User" EntitySet="User" />
+            <End Role="UserActivation" EntitySet="UserActivation" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserPacka__Statu__534D60F1" Association="FIXModel.FK__UserPacka__Statu__534D60F1">
-            <End Role="Status" EntitySet="Status" />
-            <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
+          <EntitySet Name="UserPackage" EntityType="FIXModel.UserPackage" />
+          <AssociationSet Name="FK__UserPacka__Packa__48CFD27E" Association="FIXModel.FK__UserPacka__Packa__48CFD27E">
+            <End Role="Package" EntitySet="Package" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
           </AssociationSet>
           <AssociationSet Name="FK__UserPacka__Statu__5535A963" Association="FIXModel.FK__UserPacka__Statu__5535A963">
             <End Role="Status" EntitySet="Status" />
             <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <EntitySet Name="User" EntityType="FIXModel.User" />
+          <AssociationSet Name="FK__User__Status__5165187F" Association="FIXModel.FK__User__Status__5165187F">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="FIXModel.FK__UserActiv__UserI__59063A47">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserActivation" EntitySet="UserActivation" />
           </AssociationSet>
           <AssociationSet Name="FK__UserBankA__UserI__412EB0B6" Association="FIXModel.FK__UserBankA__UserI__412EB0B6">
             <End Role="User" EntitySet="User" />
@@ -385,18 +379,14 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
             <End Role="User" EntitySet="User" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
+          <EntitySet Name="UserPackageDetail" EntityType="FIXModel.UserPackageDetail" />
+          <AssociationSet Name="FK__UserPacka__Statu__534D60F1" Association="FIXModel.FK__UserPacka__Statu__534D60F1">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK__UserPacka__UserP__5441852A" Association="FIXModel.FK__UserPacka__UserP__5441852A">
             <End Role="UserPackage" EntitySet="UserPackage" />
             <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
-          </AssociationSet>
-          <EntitySet Name="UserActivation" EntityType="FIXModel.UserActivation" />
-          <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="FIXModel.FK__UserActiv__Statu__5812160E">
-            <End Role="Status" EntitySet="Status" />
-            <End Role="UserActivation" EntitySet="UserActivation" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="FIXModel.FK__UserActiv__UserI__59063A47">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserActivation" EntitySet="UserActivation" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Bank">
@@ -435,30 +425,10 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
           </Key>
           <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="Status" ToRole="UserActivation" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Statu__5535A963" FromRole="Status" ToRole="UserPackage" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="Status" ToRole="User" />
           <NavigationProperty Name="UserPackageDetail" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="Status" ToRole="UserPackageDetail" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Statu__5535A963" FromRole="Status" ToRole="UserPackage" />
-          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="Status" ToRole="UserActivation" />
-        </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="HasAcceptedTerms" Type="Boolean" Nullable="false" />
-          <Property Name="HasEmailVerified" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="User" ToRole="Status" />
-          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__412EB0B6" FromRole="User" ToRole="UserBankAccount" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="User" ToRole="UserPackage" />
-          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="User" ToRole="UserProfile" />
-          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="User" ToRole="UserActivation" />
         </EntityType>
         <EntityType Name="UserBankAccount">
           <Key>
@@ -477,24 +447,6 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
           <NavigationProperty Name="Bank" Relationship="FIXModel.FK__UserBankA__BankI__403A8C7D" FromRole="UserBankAccount" ToRole="Bank" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__UserBankA__UserI__412EB0B6" FromRole="UserBankAccount" ToRole="User" />
         </EntityType>
-        <EntityType Name="UserPackage">
-          <Key>
-            <PropertyRef Name="UserPackageId" />
-          </Key>
-          <Property Name="UserPackageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="PackageId" Type="Int32" Nullable="false" />
-          <Property Name="AmountInvested" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="AmountCollected" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Package" Relationship="FIXModel.FK__UserPacka__Packa__48CFD27E" FromRole="UserPackage" ToRole="Package" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__5535A963" FromRole="UserPackage" ToRole="Status" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="UserPackage" ToRole="User" />
-          <NavigationProperty Name="UserPackageDetail" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackage" ToRole="UserPackageDetail" />
-        </EntityType>
         <EntityType Name="UserProfile">
           <Key>
             <PropertyRef Name="UserId" />
@@ -512,20 +464,6 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
           <NavigationProperty Name="Role" Relationship="FIXModel.FK__UserProfi__RoleI__4222D4EF" FromRole="UserProfile" ToRole="Role" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="UserProfile" ToRole="User" />
         </EntityType>
-        <EntityType Name="UserPackageDetail">
-          <Key>
-            <PropertyRef Name="UserPackageId" />
-            <PropertyRef Name="ReturnDate" />
-            <PropertyRef Name="ReturnAmount" />
-            <PropertyRef Name="StatusId" />
-          </Key>
-          <Property Name="UserPackageId" Type="Int32" Nullable="false" />
-          <Property Name="ReturnDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="ReturnAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="UserPackageDetail" ToRole="Status" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackageDetail" ToRole="UserPackage" />
-        </EntityType>
         <Association Name="FK__UserBankA__BankI__403A8C7D">
           <End Type="FIXModel.Bank" Role="Bank" Multiplicity="1" />
           <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
@@ -535,18 +473,6 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
             </Principal>
             <Dependent Role="UserBankAccount">
               <PropertyRef Name="BankId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserPacka__Packa__48CFD27E">
-          <End Type="FIXModel.Package" Role="Package" Multiplicity="1" />
-          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Package">
-              <PropertyRef Name="PackageId" />
-            </Principal>
-            <Dependent Role="UserPackage">
-              <PropertyRef Name="PackageId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -562,27 +488,54 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__User__Status__5165187F">
+        <EntityType Name="UserActivation">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ActivationCode" Type="Guid" Nullable="false" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="UserActivation" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="UserActivation" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__UserActiv__Statu__5812160E">
           <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
-          <End Type="FIXModel.User" Role="User" Multiplicity="*" />
+          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
               <PropertyRef Name="StatusId" />
             </Principal>
-            <Dependent Role="User">
+            <Dependent Role="UserActivation">
               <PropertyRef Name="StatusId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserPacka__Statu__534D60F1">
-          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
-          <End Type="FIXModel.UserPackageDetail" Role="UserPackageDetail" Multiplicity="*" />
+        <EntityType Name="UserPackage">
+          <Key>
+            <PropertyRef Name="UserPackageId" />
+          </Key>
+          <Property Name="UserPackageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PackageId" Type="Int32" Nullable="false" />
+          <Property Name="TotalAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Package" Relationship="FIXModel.FK__UserPacka__Packa__48CFD27E" FromRole="UserPackage" ToRole="Package" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__5535A963" FromRole="UserPackage" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="UserPackage" ToRole="User" />
+          <NavigationProperty Name="UserPackageDetail" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackage" ToRole="UserPackageDetail" />
+        </EntityType>
+        <Association Name="FK__UserPacka__Packa__48CFD27E">
+          <End Type="FIXModel.Package" Role="Package" Multiplicity="1" />
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Status">
-              <PropertyRef Name="StatusId" />
+            <Principal Role="Package">
+              <PropertyRef Name="PackageId" />
             </Principal>
-            <Dependent Role="UserPackageDetail">
-              <PropertyRef Name="StatusId" />
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="PackageId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -595,6 +548,54 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
             </Principal>
             <Dependent Role="UserPackage">
               <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HasAcceptedTerms" Type="Boolean" Nullable="false" />
+          <Property Name="HasEmailVerified" Type="Boolean" Nullable="false" />
+          <Property Name="IsFirstTimeLogIn" Type="Boolean" />
+          <Property Name="TimeZoneId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="User" ToRole="Status" />
+          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="User" ToRole="UserActivation" />
+          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__412EB0B6" FromRole="User" ToRole="UserBankAccount" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="User" ToRole="UserPackage" />
+          <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="User" ToRole="UserProfile" />
+        </EntityType>
+        <Association Name="FK__User__Status__5165187F">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserActiv__UserI__59063A47">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserActivation">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -636,6 +637,30 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="UserPackageDetail">
+          <Key>
+            <PropertyRef Name="UserPackageDetailId" />
+          </Key>
+          <Property Name="UserPackageDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPackageId" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="UserPackageDetail" ToRole="Status" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackageDetail" ToRole="UserPackage" />
+        </EntityType>
+        <Association Name="FK__UserPacka__Statu__534D60F1">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.UserPackageDetail" Role="UserPackageDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="UserPackageDetail">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__UserPacka__UserP__5441852A">
           <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="1" />
           <End Type="FIXModel.UserPackageDetail" Role="UserPackageDetail" Multiplicity="*" />
@@ -645,42 +670,6 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
             </Principal>
             <Dependent Role="UserPackageDetail">
               <PropertyRef Name="UserPackageId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="UserActivation">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="ActivationCode" Type="Guid" Nullable="false" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="UserActivation" ToRole="Status" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="UserActivation" ToRole="User" />
-        </EntityType>
-        <Association Name="FK__UserActiv__Statu__5812160E">
-          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
-          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Status">
-              <PropertyRef Name="StatusId" />
-            </Principal>
-            <Dependent Role="UserActivation">
-              <PropertyRef Name="StatusId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserActiv__UserI__59063A47">
-          <End Type="FIXModel.User" Role="User" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="UserActivation">
-              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -728,22 +717,6 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="User">
-            <EntityTypeMapping TypeName="FIXModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
-                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
-                <ScalarProperty Name="HasEmailVerified" ColumnName="HasEmailVerified" />
-                <ScalarProperty Name="HasAcceptedTerms" ColumnName="HasAcceptedTerms" />
-                <ScalarProperty Name="IP" ColumnName="IP" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserBankAccount">
             <EntityTypeMapping TypeName="FIXModel.UserBankAccount">
               <MappingFragment StoreEntitySet="UserBankAccount">
@@ -755,21 +728,6 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
                 <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
                 <ScalarProperty Name="BankId" ColumnName="BankId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserPackage">
-            <EntityTypeMapping TypeName="FIXModel.UserPackage">
-              <MappingFragment StoreEntitySet="UserPackage">
-                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
-                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="AmountCollected" ColumnName="AmountCollected" />
-                <ScalarProperty Name="AmountInvested" ColumnName="AmountInvested" />
-                <ScalarProperty Name="PackageId" ColumnName="PackageId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -789,22 +747,55 @@ warning 6002: The table/view 'FIX02.dbo.UserPackageDetail' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserPackageDetail">
-            <EntityTypeMapping TypeName="FIXModel.UserPackageDetail">
-              <MappingFragment StoreEntitySet="UserPackageDetail">
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="ReturnAmount" ColumnName="ReturnAmount" />
-                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
-                <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserActivation">
             <EntityTypeMapping TypeName="FIXModel.UserActivation">
               <MappingFragment StoreEntitySet="UserActivation">
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPackage">
+            <EntityTypeMapping TypeName="FIXModel.UserPackage">
+              <MappingFragment StoreEntitySet="UserPackage">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="PackageId" ColumnName="PackageId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="FIXModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="TimeZoneId" ColumnName="TimeZoneId" />
+                <ScalarProperty Name="IsFirstTimeLogIn" ColumnName="IsFirstTimeLogIn" />
+                <ScalarProperty Name="HasEmailVerified" ColumnName="HasEmailVerified" />
+                <ScalarProperty Name="HasAcceptedTerms" ColumnName="HasAcceptedTerms" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPackageDetail">
+            <EntityTypeMapping TypeName="FIXModel.UserPackageDetail">
+              <MappingFragment StoreEntitySet="UserPackageDetail">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
+                <ScalarProperty Name="UserPackageDetailId" ColumnName="UserPackageDetailId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

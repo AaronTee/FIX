@@ -1,9 +1,16 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
 @{
+    Layout = "_Portal.cshtml";
     ViewBag.Title = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
+<div class="content-wrapper">
+    <div class="content-header">
+        We're sorry
+        <hr />
+    </div>
+    <div class="content-body">
+        There is an error occurred in our server while processing your request, please contact our support if further error persist.
+    </div>
+</div>

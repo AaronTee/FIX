@@ -4,7 +4,8 @@
     ViewBag.Title = "User Detail";
 }
 
-<div class="panel panel-primary">
+<div class="panel">
+    <div class="panel-content">
         <div class="form-section">
             @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal" }))
             {
@@ -44,3 +45,4 @@
             }
         </div>
     </div>
+</div>

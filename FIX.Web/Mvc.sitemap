@@ -9,6 +9,10 @@
       <mvcSiteMapNode title="Edit User" controller="User" action="Edit" preservedRouteParameters="lang, id"></mvcSiteMapNode>
       <mvcSiteMapNode title="User Detail" controller="User" action="Detail" preservedRouteParameters="lang, id"></mvcSiteMapNode>
     </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Investment" controller="Investment" action="Index" preservedRouteParameters="lang, id">
+      <mvcSiteMapNode title="Add Package" controller="Investment" action="Create" preservedRouteParameters="lang, id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
   </mvcSiteMapNode>
 
 </mvcSiteMap>

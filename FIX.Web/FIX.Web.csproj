@@ -221,21 +221,26 @@
     <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Extensions\IdentityExtension.cs" />
     <Compile Include="Extensions\MapperExtension.cs" />
+    <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AppSettingsHelper.cs" />
+    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\LanguageHelper.cs" />
     <Compile Include="Helpers\SVGHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\InvestmentModels.cs" />
     <Compile Include="Models\GoogleModels.cs" />
     <Compile Include="Models\ListViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\MenuItemModel.cs" />
     <Compile Include="Models\ControlModels.cs" />
+    <Compile Include="Models\UIMessageModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -246,6 +251,7 @@
     <Content Include="Content\css\bootswatch.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\loginpage.css" />
+    <Content Include="Content\css\portal.css" />
     <Content Include="Content\image\FIXLogo.png" />
     <Content Include="Content\image\loginbg.jpg" />
     <Content Include="Content\styles.min.css" />
@@ -256,6 +262,11 @@
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\app\bootstrap-table.custom.js" />
+    <Content Include="Scripts\app\bootstrap-modal.custom.js" />
+    <Content Include="Scripts\app\user.js" />
+    <Content Include="Scripts\app\user.min.js">
+      <DependentUpon>user.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -275,6 +286,7 @@
     <Content Include="Mvc.sitemap">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="bundleconfig.json" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -315,7 +327,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
@@ -354,7 +365,12 @@
     <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
-    <Content Include="Views\Shared\EmailVerification.cshtml" />
+    <Content Include="Views\Shared\ConfirmEmailSent.cshtml" />
+    <Content Include="Views\Shared\_Alerts.cshtml" />
+    <Content Include="Views\Shared\RequiredAction.cshtml" />
+    <Content Include="Views\Investment\Create.cshtml" />
+    <Content Include="Views\Shared\TermsAndConditions.cshtml" />
+    <Content Include="Views\Shared\_UserPackage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

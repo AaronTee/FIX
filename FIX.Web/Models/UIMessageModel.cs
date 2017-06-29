@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace FIX.Web.Models
 {
@@ -24,4 +25,16 @@ namespace FIX.Web.Models
         public AlertStyles Style { get; }
 
     }//end class
+
+    public class RequiredActionModel
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
+        public string SubmitButtonDescription { get; set; }
+        public string DataName { get; set; }
+        public object Data { get; set; }
+        public FormMethod FormMethod { get; set; }
+    }
 }

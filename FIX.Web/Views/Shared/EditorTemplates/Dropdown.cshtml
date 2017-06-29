@@ -4,5 +4,6 @@
     @Html.LabelFor(model => model, new { @class = "control-label" })
     <div class="">
         @Html.DropDownListFor(model => model, ViewData["DDL"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model)
     </div>
 </div>

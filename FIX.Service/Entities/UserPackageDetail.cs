@@ -14,9 +14,10 @@ namespace FIX.Service.Entities
     
     public partial class UserPackageDetail
     {
+        public int UserPackageDetailId { get; set; }
         public int UserPackageId { get; set; }
-        public System.DateTime ReturnDate { get; set; }
-        public decimal ReturnAmount { get; set; }
+        public System.DateTime Date { get; set; }
+        public decimal Amount { get; set; }
         public int StatusId { get; set; }
     
         public virtual Status Status { get; set; }

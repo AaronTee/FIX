@@ -28,11 +28,6 @@ body{
   overflow: hidden;
 }
 
-.AlertPartial{
-    position: relative;
-    
-}
-
 .wrapper { position: relative; }
 i.fa-icon { position: absolute; top: 10px; left: 50px; }
 
@@ -571,6 +566,44 @@ h2.headline{
     pointer-events: none !important;
 }
 
+.ui-message-wrapper{
+
+    & .ui-message-body{
+
+        position: relative;
+        height: auto;
+        overflow: hidden;
+
+        & .alert{
+            position:relative;
+            margin-bottom: 0;
+
+            a{
+                color: white;
+                text-decoration: underline;
+            }
+        }   
+    }
+}
+
+@mixin screen-large {
+  @media only screen and (max-width: 1500px) {
+    @content;
+  }
+}
+
+@mixin screen-medium {
+  @media only screen and (max-width: 1200px) {
+    @content;
+  }
+}
+
+@mixin screen-small {
+  @media only screen and (max-width: 767px) {
+    @content;
+  }
+}
+
 
 @media screen and (max-width: 1500px){
 
@@ -598,5 +631,9 @@ h2.headline{
         padding-left: 0;
         padding-right: 0;
         width: 100%;
+    }
+
+    .panel{
+        padding: 15px 0px;
     }
 }

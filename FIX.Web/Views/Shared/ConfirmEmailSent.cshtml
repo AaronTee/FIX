@@ -1,0 +1,13 @@
+﻿@{ 
+    Layout = "_Portal";
+}
+
+@using (Html.BeginForm("SendActivationEmail", "Account", FormMethod.Post))
+{
+    <div>
+        Email Verification sent. Please check your email to activate your account.
+    </div>
+    <div>
+        <a href="@Url.Action("Login")">Login</a>
+    </div>
+}

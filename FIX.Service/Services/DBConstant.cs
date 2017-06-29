@@ -15,6 +15,17 @@ namespace FIX.Service
             public const string Other = "O";
         }
 
+        public struct DBCPackageLifetime
+        {
+            public const int Month = 12;
+            public const int Year = 1;
+        }
+
+        public struct DBCDateFormat
+        {
+            public const string ddMMyyyy = "dd-MM-yyyy";
+        }
+
         //without going to db retrieve status.
         public enum EStatus
         {

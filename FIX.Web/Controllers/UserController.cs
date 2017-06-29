@@ -54,7 +54,7 @@ namespace FIX.Web.Controllers
                     Username = x.Username,
                     Email = x.Email,
                     RoleName = x.UserProfile.Role.Description,
-                    Status = x.StatusId,
+                    Status = x.Status.Description,
                     ActionLinks = new List<ActionLink>()
                     {
                         new ActionLink() {
@@ -116,6 +116,7 @@ namespace FIX.Web.Controllers
                 IP = Request.UserHostAddress,
                 HasAcceptedTerms = false,
                 HasEmailVerified = false,
+                IsFirstTimeLogIn = false,
                 CreatedTimestamp = DateTime.UtcNow,
                 StatusId = (int)DBConstant.EStatus.Active,
                 UserProfile = new UserProfile
@@ -153,7 +154,7 @@ namespace FIX.Web.Controllers
             var curUser = _userService.GetUserBy(user.Username);
 
             AccountController ac = new AccountController(_userService);
-            ac.SendActivationEmail(curUser.UserId);
+            ac.ActivationEmail(curUser.UserId);
 
             return RedirectToAction("Index");
         }
@@ -262,14 +263,16 @@ namespace FIX.Web.Controllers
             return View(model);
         }
 
-        public JsonResult ValidateUsername(string input)
+        [HttpPost]
+        public JsonResult ValidateUsername(string username)
         {
-            return Json(_userService.GetUserBy(input) == null, JsonRequestBehavior.AllowGet);
+            return Json(_userService.GetUserBy(username) == null, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ValidateEmail(string input)
+        [HttpPost]
+        public JsonResult ValidateEmail(string email)
         {
-            return Json(_userService.IsValidEmailAddress(input), JsonRequestBehavior.AllowGet);
+            return Json(_userService.IsValidEmailAddress(email), JsonRequestBehavior.AllowGet);
         }
 
     }

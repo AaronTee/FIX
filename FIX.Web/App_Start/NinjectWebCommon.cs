@@ -68,6 +68,7 @@ namespace FIX.Web.App_Start
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<IUserBankAccountService>().To<UserBankAccountService>(); 
             kernel.Bind<IBankService>().To<BankService>();
+            kernel.Bind<IInvestmentService>().To<InvestmentService>();
         }        
     }
 }

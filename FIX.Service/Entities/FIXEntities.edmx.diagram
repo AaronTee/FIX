@@ -9,24 +9,24 @@
         <EntityTypeShape EntityType="FIXModel.Package" Width="1.5" PointX="6" PointY="10" />
         <EntityTypeShape EntityType="FIXModel.Role" Width="1.5" PointX="3" PointY="2" />
         <EntityTypeShape EntityType="FIXModel.Status" Width="1.5" PointX="0.75" PointY="6" />
-        <EntityTypeShape EntityType="FIXModel.User" Width="1.5" PointX="3" PointY="5.125" />
         <EntityTypeShape EntityType="FIXModel.UserBankAccount" Width="1.5" PointX="5.25" PointY="5.5" />
-        <EntityTypeShape EntityType="FIXModel.UserPackage" Width="1.5" PointX="8.25" PointY="5.25" />
         <EntityTypeShape EntityType="FIXModel.UserProfile" Width="1.5" PointX="5.25" PointY="1.375" />
-        <EntityTypeShape EntityType="FIXModel.UserPackageDetail" Width="1.5" PointX="10.5" PointY="6" />
         <AssociationConnector Association="FIXModel.FK__UserBankA__BankI__403A8C7D" />
-        <AssociationConnector Association="FIXModel.FK__UserPacka__Packa__48CFD27E" />
         <AssociationConnector Association="FIXModel.FK__UserProfi__RoleI__4222D4EF" />
-        <AssociationConnector Association="FIXModel.FK__User__Status__5165187F" />
-        <AssociationConnector Association="FIXModel.FK__UserPacka__Statu__534D60F1" />
+        <EntityTypeShape EntityType="FIXModel.UserActivation" Width="1.5" PointX="8.25" PointY="10.125" />
+        <AssociationConnector Association="FIXModel.FK__UserActiv__Statu__5812160E" />
+        <EntityTypeShape EntityType="FIXModel.UserPackage" Width="1.5" PointX="8.25" PointY="5.875" />
+        <AssociationConnector Association="FIXModel.FK__UserPacka__Packa__48CFD27E" />
         <AssociationConnector Association="FIXModel.FK__UserPacka__Statu__5535A963" />
+        <EntityTypeShape EntityType="FIXModel.User" Width="1.5" PointX="3" PointY="5" />
+        <AssociationConnector Association="FIXModel.FK__User__Status__5165187F" />
+        <AssociationConnector Association="FIXModel.FK__UserActiv__UserI__59063A47" />
         <AssociationConnector Association="FIXModel.FK__UserBankA__UserI__412EB0B6" />
         <AssociationConnector Association="FIXModel.FK__UserPacka__UserI__47DBAE45" />
         <AssociationConnector Association="FIXModel.FK__UserProfi__UserI__4316F928" />
+        <EntityTypeShape EntityType="FIXModel.UserPackageDetail" Width="1.5" PointX="10.5" PointY="6.375" />
+        <AssociationConnector Association="FIXModel.FK__UserPacka__Statu__534D60F1" />
         <AssociationConnector Association="FIXModel.FK__UserPacka__UserP__5441852A" />
-        <EntityTypeShape EntityType="FIXModel.UserActivation" Width="1.5" PointX="8.25" PointY="10.125" />
-        <AssociationConnector Association="FIXModel.FK__UserActiv__Statu__5812160E" />
-        <AssociationConnector Association="FIXModel.FK__UserActiv__UserI__59063A47" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

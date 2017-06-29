@@ -2,7 +2,15 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model, new { @class = "control-label" })
-    <div class="">
-        @Html.TextBoxFor(model => model, new { @class = "form-control" })
+    <div>
+        @if (ViewData["readonly"] != null && (bool)ViewData["readonly"])
+        {
+            @Html.TextBoxFor(model => model, new { @class = "form-control", @readonly = "readonly" })
+        }
+        else
+        {
+            @Html.TextBoxFor(model => model, new { @class = "form-control"})
+            @Html.ValidationMessageFor(model => model)
+        }
     </div>
 </div>

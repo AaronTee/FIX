@@ -3,23 +3,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <title>@ViewBag.Title</title>
 
-    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/bootswatch.css"))" />
+    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/portal.css"))" />
+    <title>@ViewBag.Title</title>
 </head>
 <body>
-    <div class="body-content" style="background-color: transparent">
+    <div class="body-content container">
         @RenderBody()
     </div>
-    <footer>
-        @*<p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>*@
-    </footer>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
     <script>
         document.body.addEventListener('touchstart', function () { }, false);

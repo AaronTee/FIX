@@ -1,18 +1,94 @@
-function useClientSideValidation() {
+$(function(){
 
-    $("form").removeData("validator").removeData("unobtrusiveValidation");
-
-    $.validator.setDefaults({
-        onkeyup: false,
-        highlight: function (element) {
-            $(element).closest('.form-control').removeClass('got-success').addClass('got-error');
-        },
-        unhighlight: function (element) {
-            $(element).closest('.form-control').addClass('got-success').removeClass('got-error');
-        },
+    var $forms = $("form");
+    $forms.each(function () {
+        var validator = $(this).data('validator');
+        if (validator) {
+            $(validator).each(function () {
+                this.settings.onkeyup = false;
+            });
+        }
     })
+    
 
-}
+    //$("input,select").bind("keydown", function (e) {
+    //    var keyCode = e.keyCode || e.which;
+    //    if (keyCode === 13) {
+    //        e.preventDefault();
+    //        $('input, select, textarea')
+    //        [$('input,select,textarea').index(this) + 1].focus();
+    //    }
+    //});
+})
+
+    
+
+    //$("form").removeData("validator").removeData("unobtrusiveValidation");
+
+    //$.validator.setDefaults({
+    //    onkeyup: false,
+    //    onfocusout: function (element) {
+    //        this.element(element);
+    //    },
+    //    highlight: function (element) {
+    //        $(element).closest('.form-control').removeClass('got-success').addClass('got-error');
+    //    },
+    //    unhighlight: function (element) {
+    //        $(element).closest('.form-control').addClass('got-success').removeClass('got-error');
+    //    }
+    //});
+//template
+(function ($) {
+
+    $.modal = function (rowElem) {
+
+        var tr = $(rowElem.closest('tr'));
+        var _backStepTracker;
+
+        var init = function () {
+            _backStepTracker = 0;
+        }
+
+        var repositioning = function (pos) {
+            while (pos != 0) {
+                if (pos < 0) { //Move down
+                    if (tr.prev()[0]) _backStepTracker++;
+                    tr.insertBefore(tr.prev());
+
+                    pos++;
+                }
+                else { //Move up
+                    if (tr.next()[0]) _backStepTracker--;
+                    tr.insertAfter(tr.next());
+                    pos--;
+                }
+            }
+        }
+
+        this.moveRow = function (pos) {
+            repositioning(pos);
+        }
+
+        this.reset = function () {
+            repositioning(_backStepTracker);
+        }
+
+        init();
+        return this;
+    };
+
+    $.fn.modal = function () {
+        return this.each(function () {
+            // if plugin has not already been attached to the element
+            if ($(this).data('RowMover') == undefined) {
+                var _inst = new $.RowMover(this);
+                $(this).data('RowMover', _inst);
+            }
+        });
+    }
+    //$.fn.RowMover.defaults = {};
+
+})(jQuery);
 $(document).ready(function () {
     $("table[data-search-placeholder]").each(function () {
         $(this).parents("div.bootstrap-table")
@@ -168,3 +244,5 @@ if (touch) { // remove all :hover stylesheets
     } catch (ex) { }
 }
 });
+
+$(function(){useClientSideValidation();$form=$("#user-form");$form.validate({rules:{Email:{required:!0,email:!0,remote:{url:GetPath("User/ValidateEmail"),type:"post",data:{input:function(){return $("#Email").val()}},complete:function(){$("#Email").valid()}}},Username:{required:!0,remote:{url:GetPath("User/ValidateUsername"),type:"post",data:{input:function(){return $("#Username").val()}},complete:function(){$("#Username").valid()}}},Password:{required:!0},ConfirmPassword:{required:!0,equalTo:"#Password"},RoleId:{required:!0},FirstName:{required:!0},Gender:{required:!0},Country:{required:!0},PhoneNo:{required:!0},BankId:{required:!0},BankAccountHolder:{required:!0},BankAccountNo:{required:!0},BankBranch:{required:!0}},messages:{required:"Thie field is required.",Email:{remote:"Email has been used in one of the account, please enter another."},Username:{remote:"Username has been taken, please enter another."},ConfirmPassword:"Password not match."}})});

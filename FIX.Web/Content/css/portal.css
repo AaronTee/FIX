@@ -1,0 +1,65 @@
+﻿html{
+    background: url("../image/loginbg.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    touch-action: manipulation;
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    background-color: transparent;
+}
+
+
+.container {
+    width: 1200px;
+    height: 100%;
+
+    margin: 0 auto;
+    background-color: rgba(235,235,235,1);
+}
+
+hr{
+    border-color:#c2c2c2;
+}
+
+.content-wrapper{
+    padding: 75px 50px;
+}
+
+.content-body{
+    margin-bottom: 25px;
+}
+
+legend{
+    font-size: 28px;
+    border-bottom: 1px solid #ccc;
+}
+
+@media screen and (max-width: 1500px){
+
+    .container{
+        width: 1200px;
+    }
+}
+
+@media screen and (max-width: 1200px){
+
+    .container{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 767px){
+
+    .container{
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+    }
+}

@@ -67,7 +67,8 @@ namespace FIX.Service
             var newActivation = new UserActivation
             {
                 UserId = user.UserId,
-                ActivationCode = activationCode
+                ActivationCode = activationCode,
+                StatusId = (int)EStatus.Active
             };
             _uow.Repository<UserActivation>().Insert(newActivation);
 

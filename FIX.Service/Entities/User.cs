@@ -28,16 +28,18 @@ namespace FIX.Service.Entities
         public string IP { get; set; }
         public bool HasAcceptedTerms { get; set; }
         public bool HasEmailVerified { get; set; }
+        public Nullable<bool> IsFirstTimeLogIn { get; set; }
+        public string TimeZoneId { get; set; }
         public System.DateTime CreatedTimestamp { get; set; }
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
         public int StatusId { get; set; }
     
         public virtual Status Status { get; set; }
+        public virtual UserActivation UserActivation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserBankAccount> UserBankAccount { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         public virtual UserProfile UserProfile { get; set; }
-        public virtual UserActivation UserActivation { get; set; }
     }
 }

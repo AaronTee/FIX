@@ -1,0 +1,19 @@
+﻿@model RequiredActionModel
+@{
+    Layout = "_Portal.cshtml";
+}
+@using (Html.BeginForm(Model.Action, Model.Controller, Model.FormMethod))
+{
+    if (Model.Data != null) { @Html.Hidden(@Model.DataName, @Model.Data) }
+    <div class="content-wrapper">
+        <div class="content-header">
+            <h1>@Model.Title</h1>
+            <hr/>
+        </div>
+        <div class="content-body">
+            @Model.Content
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="@Model.SubmitButtonDescription" />
+    </div>
+}

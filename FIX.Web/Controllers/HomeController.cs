@@ -21,7 +21,9 @@ namespace FIX.Web.Controllers
         {
             HomeViewModels model = new HomeViewModels();
 
-            var user = _userService.GetUserBy(User.Identity.GetUserId());
+            var user = _userService.GetUserBy(User.Identity.GetUserId<int>());
+
+            var asdasd = User.Identity.GetUserId<int>();
 
             model.userModel = new UserViewModel()
             {
@@ -33,20 +35,7 @@ namespace FIX.Web.Controllers
                 CreatedTimestamp = user.CreatedTimestamp.Date
             };
 
-            if (!model.userModel.hasEmailVerified)
-            {
-                ViewBag.Url = ""
-
-                return View("RequiredAction");
-            }
-
             return View(model);
-        }
-
-        public ActionResult Contact()
-        {
-            //May change as per request
-            return View();
         }
     }
 }

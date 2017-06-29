@@ -15,6 +15,7 @@ using System.Threading;
 using FIX.Service;
 using System.Net.Mail;
 using FIX.Service.Entities;
+using FIX.Web.Extensions;
 
 namespace FIX.Web.Controllers
 {
@@ -62,15 +63,38 @@ namespace FIX.Web.Controllers
                     var currentUser = _userService.GetUserBy(model.Username);
                     var userRole = _userService.GetUserRoleBy(currentUser.UserProfile);
 
+                    //Verify email
+                    if (!currentUser.HasEmailVerified)
+                    {
+                        RequiredActionModel _raModel = new RequiredActionModel
+                        {
+                            Title = "Pending Email Verification",
+                            Controller = "Account",
+                            Action = "ActivationEmail",
+                            Content = @"Your email has not verified yet, please check your email to activate this account before continue.",
+                            SubmitButtonDescription = "Resend Verification Email",
+                            FormMethod = FormMethod.Post,
+                            DataName = "uid",
+                            Data = currentUser.UserId
+                        };
+
+                        return View("RequiredAction", _raModel);
+                    }
+
+                    //Verify email
+                    //if (!currentUser.HasAcceptedTerms)
+                    //{
+                    //    TempData["uid"] = EncryptionHelper.EncryptText(currentUser.UserId.ToString());
+                    //    RedirectToAction("TermsAndConditions");
+                    //}
+
                     var ident = new ClaimsIdentity(new[] { 
-                    // adding following 2 claim just for supporting default antiforgery provider
-                    new Claim(ClaimTypes.NameIdentifier, model.Username),
+                    new Claim(ClaimTypes.NameIdentifier, currentUser.UserId.ToString()),
                     new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
-
                     new Claim(ClaimTypes.Name, model.Username),
+                    new Claim("TimeZone", currentUser.TimeZoneId),
                     new Claim(ClaimTypes.Role, userRole.Description)
-
-                },
+                    },
                     DefaultAuthenticationTypes.ApplicationCookie);
 
                     HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties
@@ -78,7 +102,7 @@ namespace FIX.Web.Controllers
                         IsPersistent = false
                     }, ident);
 
-                    return RedirectToAction("Index", "Home"); // auth succeed 
+                    return RedirectToAction("Index", "Home");
                 }
 
                 // invalid username or password
@@ -167,44 +191,131 @@ namespace FIX.Web.Controllers
         [AllowAnonymous]
         public ActionResult Activation()
         {
-            ViewBag.Title = "Email Verification";
-            ViewBag.Message = "Verification Code is not valid, either has been removed or expired. Please log in to your account and request another email verification code.";
-
-            if (RouteData.Values["id"] != null)
+            try
             {
-                Guid activationCode = new Guid(RouteData.Values["id"].ToString());
-                if (_userService.ValidateActivationCode(activationCode)) ViewBag.Message = "Email has been successfully verified.";
-                ViewBag.Url = "/Account/Login";
-                ViewBag.UrlTitle = "Login to your account";
-            }
+                RequiredActionModel _raModel = new RequiredActionModel
+                {
+                    Controller = "Account",
+                    Action = "Login",
+                    FormMethod = FormMethod.Get,
+                    SubmitButtonDescription = "Login",
+                };
 
-            return View("RequiredAction");
+                if (RouteData.Values["id"] != null)
+                {
+                    var decryptedActivationCode = EncryptionHelper.Base64Decode(RouteData.Values["id"].ToString());
+                    Guid activationCode = Guid.ParseExact(decryptedActivationCode, "N");
+                    if (_userService.ValidateActivationCode(activationCode))
+                    {
+                        _raModel.Title = "Successfully verified";
+                        _raModel.Content = "Email has been successfully verified. You can now proceed to login.";
+                    }
+                    else
+                    {
+                        _raModel.Title = "Invalid Verification Request";
+                        _raModel.Content = "Verification link or code is not valid, either has been removed or expired. Please log in to your account to request another email verification code.";
+                    }
+                    ViewBag.Url = "/Account/Login";
+                    ViewBag.UrlTitle = "Login to your account";
+                }
+
+                return View("RequiredAction", _raModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return View("Error");
+            }
         }
 
-        public void SendActivationEmail(int userId)
+        [AllowAnonymous]
+        public ActionResult TermsAndConditions()
         {
-            var user = _userService.GetUserBy(userId);
+            try
+            {
+                var key = Convert.ToInt32(EncryptionHelper.DecryptText(TempData["uid"].ToString()));
+
+                if (key != 0)
+                {
+                    _userService.GetUserBy(key);
+
+                    TermsAndContitionsViewModel taModel = new TermsAndContitionsViewModel
+                    {
+                        Terms = "Some terms here"
+                    };
+                    return View(taModel);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+
+            return View("Error");
+        }
+        
+
+        //[HttpPost]
+        //public ActionResult TermsAndConditions(TermsAndContitionsViewModel model)
+        //{
+        //    //var user = _userService.GetUserBy(key);
+
+        //    //LoginViewModel lgModel = new LoginViewModel
+        //    //{
+        //    //    Username = user.Username,
+        //    //    Password = user.Password
+        //    //};
+
+        //    return View("Login", lgModel); 
+        //} 
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ActivationEmail(int? uid)
+        {
+            if (uid == 0 || uid == null)
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    uid = _userService.GetUserBy(User.Identity.Name).UserId;
+                }
+            }
+
+            var user = _userService.GetUserBy(uid);
 
             var activationCode = _userService.AssignNewValidationCode(user);
+            var encryptedActivationCode = EncryptionHelper.Base64Encode(activationCode.ToString("N"));
+
             _userService.SaveChanges();
 
             using (var mm = new MailMessage())
             {
-                string body = "Hello " + user.Username + ",";
+                string body = "Hi " + user.Username + ",";
                 body += "<br /><br />Please click the following link to activate your account";
-                body += "<br /><a href = '" + string.Format("{0}://{1}/Home/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, activationCode) + "'>Click here to activate your account.</a>";
-                body += "<br /><br />Thanks";
-                
+                body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, encryptedActivationCode) + "'>Click here to activate your account.</a>";
+                body += "<br /><br />*This is an automatic generated mail, please do not reply.";
+
+                var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");
+                var mailaddresspassword = AppSettingsHelper.GetKeyValue("MailingAddressPassword");
+
                 SmtpClient smtp = new SmtpClient();
                 smtp.Host = "smtp.gmail.com";
                 smtp.EnableSsl = true;
-                smtp.Credentials = new NetworkCredential("aarontee.tech@gmail.com", "asd123ASD123");
-                smtp.UseDefaultCredentials = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential(mailaddress, mailaddresspassword);
                 smtp.Port = 587;
                 smtp.Timeout = 20000;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
+                        System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                        System.Security.Cryptography.X509Certificates.X509Chain chain,
+                        System.Net.Security.SslPolicyErrors sslPolicyErrors)
+                {
+                    return true;
+                };
 
-                mm.From = new MailAddress("aarontee.tech@gmail.com");
+                mm.From = new MailAddress(mailaddress);
                 mm.To.Add(user.Email);
                 mm.Subject = "Account Activation";
                 mm.Body = body;
@@ -214,6 +325,18 @@ namespace FIX.Web.Controllers
                 try
                 {
                     smtp.Send(mm);
+
+                    RequiredActionModel _raModel = new RequiredActionModel
+                    {
+                        Title = "Email Verification Sent",
+                        Controller = "Account",
+                        Action = "Login",
+                        Content = "Email Verification sent. Please check your email to activate your account.",
+                        FormMethod = FormMethod.Get,
+                        SubmitButtonDescription = "Login",
+                    };
+
+                    return View("RequiredAction", _raModel);
                 }
                 catch (Exception ex)
                 {
@@ -224,7 +347,8 @@ namespace FIX.Web.Controllers
                     mm.Dispose();
                 }
             }
-        }
 
+            return View("Error");
+        }
     }
 }

@@ -4,5 +4,6 @@
     @Html.LabelFor(model => model, new { @class = "control-label" })
     <div class="">
         @Html.TextBoxFor(model => model, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model)
     </div>
 </div>

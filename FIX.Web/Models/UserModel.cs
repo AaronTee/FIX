@@ -27,12 +27,14 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Member ID")]
+        [System.Web.Mvc.Remote("ValidateUsername", "User", HttpMethod = "POST", ErrorMessage = "Username already exists")]
         public string Username { get; set; }
 
         [Required]
         [Display(Name = "Password")]
         public string Password { get; set; }
 
+        [Required]
         [Display(Name = "Confirm Password")]
         [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Password not match.")]
         public string ConfirmPassword { get; set; }
@@ -46,7 +48,9 @@ namespace FIX.Web.Models
         [Display(Name = "Address")]
         public string Address { get; set; }
 
+        [Required]
         [Display(Name = "Email")]
+        [Remote("ValidateEmail", "User", HttpMethod = "POST", ErrorMessage = "Email already exists")]
         [EmailAddress]
         public string Email { get; set; }
 
@@ -107,7 +111,7 @@ namespace FIX.Web.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string RoleName { get; set; }
-        public int Status { get; set; }
+        public string Status { get; set; }
     }
 
     public class UserRole
@@ -115,5 +119,11 @@ namespace FIX.Web.Models
         public const string SuperAdmin = "SuperAdmin";
         public const string Admin = "Admin";
         public const string User = "User";
+    }
+
+    public class TermsAndContitionsViewModel
+    {
+        public string Terms { get; set; }
+        public bool HasAgreed { get; set; }
     }
 }

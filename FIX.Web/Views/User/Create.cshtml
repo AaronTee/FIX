@@ -3,7 +3,8 @@
     ViewBag.Title = "Create New User";
 }
 
-<div class="panel panel-primary">
+<div class="panel">
+    <div class="panel-content">
         <div class="form-section">
             @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal", @id = "user-form" }))
             {
@@ -25,7 +26,7 @@
                                 @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
                                 @Html.EditorFor(x => x.PhoneNo, "Text")
                             </div>
-                            </div>
+                        </div>
                         <div class="col-lg-6">
                             <div class="panel-header">User Bank Account</div>
                             <div class="panel-body">
@@ -43,7 +44,7 @@
                     </div>
                 </fieldset>
             }
-        
+        </div>
     </div> 
 </div>
 
@@ -51,88 +52,88 @@
     <script>
         $(function () {
 
-            useClientSideValidation();
+            //useClientSideValidation();
 
-            $form = $('#user-form');
-            $form.validate({
-                rules: {
-                    Email: {
-                        required: true,
-                        email: true,
-                        remote: {
-                            url: GetPath('User/ValidateEmail'),
-                            type: "post",
-                            data: {
-                                input: function () {
-                                    return $("#Email").val();
-                                }
-                            },
-                            complete: function () {
-                                $('#Email').valid();
-                            }
-                        }
-                    },
-                    Username: {
-                        required: true,
-                        remote: {
-                            url: GetPath('User/ValidateUsername'),
-                            type: "post",
-                            data: {
-                                input: function () {
-                                    return $("#Username").val();
-                                }
-                            },
-                            complete: function () {
-                                $('#Username').valid();
-                            }
-                        }
-                    },
-                    Password: {
-                        required: true,
-                    },
-                    ConfirmPassword: {
-                        required: true,
-                        equalTo: "#Password"
-                    },
-                    RoleId : {
-                        required: true
-                    },
-                    FirstName: {
-                        required: true
-                    },
-                    Gender : {
-                        required: true
-                    },
-                    Country : {
-                        required: true
-                    },
-                    PhoneNo: {
-                        required: true
-                    },
-                    BankId : {
-                        required: true
-                    },
-                    BankAccountHolder: {
-                        required: true
-                    },
-                    BankAccountNo: {
-                        required: true
-                    },
-                    BankBranch: {
-                        required: true
-                    }
-                },
-                messages: {
-                    required: "Thie field is required.",
-                    Email: {
-                        remote: "Email has been used in one of the account, please enter another."
-                    },
-                    Username: {
-                        remote: "Username has been taken, please enter another."
-                    },
-                    ConfirmPassword : "Password not match."
-                }
-            });
+            //$form = $('#user-form');
+            //$form.validate({
+            //    rules: {
+            //        Email: {
+            //            required: true,
+            //            email: true,
+            //            remote: {
+            //                url: GetPath('User/ValidateEmail'),
+            //                type: "post",
+            //                data: {
+            //                    input: function () {
+            //                        return $("#Email").val();
+            //                    }
+            //                },
+            //                complete: function () {
+            //                    $('#Email').valid();
+            //                }
+            //            }
+            //        },
+            //        Username: {
+            //            required: true,
+            //            remote: {
+            //                url: GetPath('User/ValidateUsername'),
+            //                type: "post",
+            //                data: {
+            //                    input: function () {
+            //                        return $("#Username").val();
+            //                    }
+            //                },
+            //                complete: function () {
+            //                    $('#Username').valid();
+            //                }
+            //            }
+            //        },
+            //        Password: {
+            //            required: true,
+            //        },
+            //        ConfirmPassword: {
+            //            required: true,
+            //            equalTo: "#Password"
+            //        },
+            //        RoleId: {
+            //            required: true
+            //        },
+            //        FirstName: {
+            //            required: true
+            //        },
+            //        Gender: {
+            //            required: true
+            //        },
+            //        Country: {
+            //            required: true
+            //        },
+            //        PhoneNo: {
+            //            required: true
+            //        },
+            //        BankId: {
+            //            required: true
+            //        },
+            //        "BankAccountHolder": {
+            //            required: true
+            //        },
+            //        BankAccountNo: {
+            //            required: true
+            //        },
+            //        BankBranch: {
+            //            required: true
+            //        }
+            //    },
+            //    messages: {
+            //        required: "Thie field is required.",
+            //        Email: {
+            //            remote: "Email has been used in one of the account, please enter another."
+            //        },
+            //        Username: {
+            //            remote: "Username has been taken, please enter another."
+            //        },
+            //        ConfirmPassword: "Password not match."
+            //    }
+            //});
 
         });
     </script>
