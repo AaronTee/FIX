@@ -5,6 +5,7 @@ var sidebar = $('.' + toggler.attr("data-target"));
 var dimTarget = $('.' + toggler.attr("data-dim-target"));
 var bodyCanvas = $('.body-canvas');
 
+$('form').addClass('form-horizontal');
 
 /* Handler window onResize */
 $(window).resize(function () {

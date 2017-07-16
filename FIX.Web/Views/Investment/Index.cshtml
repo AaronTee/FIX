@@ -2,21 +2,21 @@
     ViewBag.Title = "My Investment";
 }
 
-<div class="panel">
-    <div class="panel-content">
-        <h1>My Investment</h1>
-        <a id="A1" href="@Url.Action("Create")"
-           class="btn btn-action">
-            <span class="glyphicon glyphicon-plus"></span> Add Package
-        </a>
-    </div>
-</div>
+<a id="A1" href="@Url.Action("Create")"
+    class="btn btn-action">
+    <span class="glyphicon glyphicon-plus"></span> Add Package
+</a>
+
+    <h1>My Investment</h1>
 
 @Html.Partial("_UserPackage")
 
 @section scripts{
     <script>
         $(function () {
+
+            $('#table_userpackagedetail').bootstrapTable('updateFormatText', 'NoMatches', 'Click / Tap one of your package to view its detail');
+
             $('#table_userpackage').on('click-row.bs.table', function (e, row, $element) {
                 $('#table_userpackage tr').removeClass('selected');
 

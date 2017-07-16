@@ -57,9 +57,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\AuditLog.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Bank.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\DailyTrading.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\database_firewall_rules.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\FIXDBContext.cs" />
     <Compile Include="Entities\FIXEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -78,6 +88,7 @@
     <Compile Include="Entities\Package.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Entities\Role.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -102,26 +113,27 @@
     <Compile Include="Entities\UserProfile.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IUserBankAccountService.cs" />
+    <Compile Include="Entities\vwPendingReturnInvestor.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\vwPendingReturnInvestor_Test.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IBankService.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
-    <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Entities\Repositories\Repository.cs" />
     <Compile Include="Entities\Repositories\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\DBConstant.cs" />
-    <Compile Include="Services\EntityService.cs" />
-    <Compile Include="Interfaces\IUserService.cs" />
-    <Compile Include="Interfaces\IUserProfileService.cs" />
-    <Compile Include="Interfaces\IRoleService.cs" />
-    <Compile Include="Interfaces\IEntityService.cs" />
-    <Compile Include="Interfaces\IBankService.cs" />
-    <Compile Include="Interfaces\IInvestmentService.cs" />
-    <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\BankService.cs" />
-    <Compile Include="Services\UserProfileService.cs" />
-    <Compile Include="Services\UserBankAccountService.cs" />
+    <Compile Include="Services\DBConstant.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Interfaces\IInvestmentService.cs" />
     <Compile Include="Services\InvestmentService.cs" />
+    <Compile Include="Interfaces\IRoleService.cs" />
+    <Compile Include="Interfaces\IReportService.cs" />
+    <Compile Include="Services\ReportService.cs" />
+    <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>

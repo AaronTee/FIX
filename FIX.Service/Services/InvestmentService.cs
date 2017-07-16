@@ -24,7 +24,7 @@ namespace FIX.Service
 
         public IQueryable<UserPackage> GetAllUserPackage(int userId)
         {
-            return _uow.Repository<UserPackage>().GetAsQueryable(filter: x=>x.UserId == userId);
+            return _uow.Repository<UserPackage>().GetAsQueryable(filter: x => x.UserId == userId);
         }
 
         public IQueryable<UserPackageDetail> GetAllUserPackageDetail(int userPackageId)
@@ -40,7 +40,32 @@ namespace FIX.Service
         public Package GetEntitledPackage(decimal amount)
         {
             var inrange = GetAllPackage().Where(x => x.Threshold <= amount).ToList();
-            return inrange.OrderBy(x => x.Threshold).Last();
+
+            if(inrange.Count > 0)
+            {
+                return inrange.OrderBy(x => x.Threshold).Last();
+            }
+
+            return new Package
+            {
+                Description = "N/A",
+                Rate = 0
+            };
+        }
+
+        public IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn()
+        {
+            return _uow.Repository<vwPendingReturnInvestor_Test>().GetAsQueryable();
+        }
+
+        public UserPackageDetail GetUserPackageDetail(int UPDId)
+        {
+            return _uow.Repository<UserPackageDetail>().GetByKey(UPDId);
+        }
+
+        public void UpdateUserPackageDetail(UserPackageDetail upd)
+        {
+            _uow.Repository<UserPackageDetail>().Update(upd);
         }
 
         public void InsertUserPackage(UserPackage userPackage)
@@ -51,6 +76,11 @@ namespace FIX.Service
         public void SaveChange()
         {
             _uow.Save();
+        }
+
+        public void SaveChange(int userId)
+        {
+            _uow.Save(userId);
         }
     }
 }

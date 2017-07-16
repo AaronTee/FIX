@@ -11,6 +11,10 @@ namespace FIX.Service
         decimal GetPackageRate(int PackageId);
         void InsertUserPackage(UserPackage userPackage);
         Package GetEntitledPackage(decimal amount);
+        IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn();
+        UserPackageDetail GetUserPackageDetail(int UPDId);
+        void UpdateUserPackageDetail(UserPackageDetail upd);
         void SaveChange();
+        void SaveChange(int userId);
     }
 }

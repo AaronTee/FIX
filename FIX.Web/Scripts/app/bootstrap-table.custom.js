@@ -17,3 +17,27 @@ function LinkFormatter(value, row, index) {
 
     return html;
 }
+
+/* Note: Dependent on ActionTag class @ ListViewModel.cs */
+function actionFormatter(value, row, index) {
+
+    var html = '';
+
+    value.forEach(function (data) {
+        html += "<a class='btn btn-actionlink action' data-action='" + data.Action + "'>" + data.Name + "</a>"
+    });
+
+    return html;
+}
+
+/* Note: Dependent on ActionTag class @ ListViewModel.cs */
+function percentageFormatter(value, row, index) {
+
+    return (value * 100).format() + '%';
+}
+
+
+function currencyFormatter(value, row, index) {
+
+    return value.format();
+}

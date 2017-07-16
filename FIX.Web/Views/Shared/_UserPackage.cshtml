@@ -1,40 +1,34 @@
-﻿<div class="panel">
-    <div class="panel-content">
-        <table id="table_userpackage"
-               data-toggle="table"
-               data-side-pagination="server"
-               data-classes="table table-no-bordered"
-               data-url="@(Url.Content("~/"))Investment/UserPackageList"
-               data-unique-id="UserPackageId">
-            <thead>
-                <tr>
-                    <th data-field="StartDate">Start Date</th>
-                    <th data-field="EndDate">End Date</th>
-                    <th data-field="Package">Package</th>
-                    <th data-field="ReturnRate">Return Rate</th>
-                    <th data-field="Status">Status</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-</div>
+﻿<div>
+    <table id="table_userpackage"
+           data-toggle="table"
+           data-side-pagination="server"
+           data-classes="table table-no-bordered"
+           data-url="@(Url.Content("~/"))Investment/UserPackageList"
+           data-unique-id="UserPackageId">
+        <thead>
+            <tr>
+                <th data-class="minw125" data-field="StartDate">Start Date</th>
+                <th data-class="minw125" data-field="EndDate">End Date</th>
+                <th data-field="Package">Package</th>
+                <th data-field="ReturnRate" data-formatter="percentageFormatter">Return Rate</th>
+                <th data-field="Status">Status</th>
+            </tr>
+        </thead>
+    </table>
 
-<div class="panel">
-    <div class="panel-content">
-        <table id="table_userpackagedetail"
-               data-toggle="table"
-               data-side-pagination="server"
-               data-classes="table table-no-bordered"
-               data-url="@(Url.Content("~/"))Investment/UserPackageDetailList"
-               data-unique-id="UserPackageId">
-            <thead>
-                <tr>
-                    <th data-field="Date">Date</th>
-                    <th data-field="ReturnRate">Return Rate</th>
-                    <th data-field="Amount">Amount</th>
-                    <th data-field="Status">Status</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+    <table id="table_userpackagedetail"
+           data-toggle="table"
+           data-side-pagination="server"
+           data-classes="table"
+           data-url="@(Url.Content("~/"))Investment/UserPackageDetailList"
+           data-unique-id="UserPackageId">
+        <thead>
+            <tr>
+                <th data-class="minw125" data-field="Date">Date</th>
+                <th data-field="ReturnRate" data-formatter="percentageFormatter">Return Rate</th>
+                <th data-field="Amount" data-formatter="currencyFormatter">Amount</th>
+                <th data-field="Status">Status</th>
+            </tr>
+        </thead>
+    </table>
 </div>

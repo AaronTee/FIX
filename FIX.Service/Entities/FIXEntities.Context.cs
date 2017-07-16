@@ -30,10 +30,15 @@ namespace FIX.Service.Entities
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Status> Status { get; set; }
         public virtual DbSet<UserBankAccount> UserBankAccount { get; set; }
-        public virtual DbSet<UserProfile> UserProfile { get; set; }
         public virtual DbSet<UserActivation> UserActivation { get; set; }
         public virtual DbSet<UserPackage> UserPackage { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserPackageDetail> UserPackageDetail { get; set; }
+        public virtual DbSet<vwPendingReturnInvestor> vwPendingReturnInvestor { get; set; }
+        public virtual DbSet<vwPendingReturnInvestor_Test> vwPendingReturnInvestor_Test { get; set; }
+        public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
+        public virtual DbSet<UserProfile> UserProfile { get; set; }
+        public virtual DbSet<AuditLog> AuditLog { get; set; }
+        public virtual DbSet<DailyTrading> DailyTrading { get; set; }
     }
 }

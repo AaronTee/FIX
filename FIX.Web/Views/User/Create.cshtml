@@ -3,138 +3,74 @@
     ViewBag.Title = "Create New User";
 }
 
-<div class="panel">
-    <div class="panel-content">
-        <div class="form-section">
-            @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal", @id = "user-form" }))
-            {
-                <fieldset>
-                    <legend>Create New User</legend>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="panel-header">User Profile</div>
-                            <div class="panel-body">
-                                @Html.EditorFor(x => x.Email, "Email")
-                                @Html.EditorFor(x => x.Username, "Text")
-                                @Html.EditorFor(x => x.Password, "Password")
-                                @Html.EditorFor(x => x.ConfirmPassword, "Password")
-                                @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
-                                @Html.EditorFor(x => x.FirstName, "Text")
-                                @Html.EditorFor(x => x.LastName, "Text")
-                                @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
-                                @Html.EditorFor(x => x.Address, "Text")
-                                @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
-                                @Html.EditorFor(x => x.PhoneNo, "Text")
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="panel-header">User Bank Account</div>
-                            <div class="panel-body">
-                                @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
-                                @Html.EditorFor(x => x.BankAccountHolder, "Text")
-                                @Html.EditorFor(x => x.BankAccountNo, "Text")
-                                @Html.EditorFor(x => x.BankBranch, "Text")
-                            </div>
-                        </div>
+<div class="form-section">
+    @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal", @id = "user-form" }))
+    {
+        <fieldset>
+            <legend>Create New User</legend>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-header">User Profile</div>
+                    <div class="form-body">
+                        @Html.EditorFor(x => x.Email, "Email")
+                        @Html.EditorFor(x => x.Username, "Text")
+                        @Html.EditorFor(x => x.Password, "Password")
+                        @Html.EditorFor(x => x.ConfirmPassword, "Password")
+                        @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
+                        @Html.EditorFor(x => x.FirstName, "Text")
+                        @Html.EditorFor(x => x.LastName, "Text")
+                        @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
+                        @Html.EditorFor(x => x.Address, "Text")
+                        @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
+                        @Html.EditorFor(x => x.PhoneNo, "Text")
+                        @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL})
                     </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-header">User Bank Account</div>
+                    <div class="form-body">
+                        @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
+                        @Html.EditorFor(x => x.BankAccountHolder, "Text")
+                        @Html.EditorFor(x => x.BankAccountNo, "Text")
+                        @Html.EditorFor(x => x.BankBranch, "Text")
+                    </div>
+                </div>
+            </div>
 
-                    <div class="action-panel">
-                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-                        <button class="btn btn-success" id="Button1" type="submit">Submit</button>
-                    </div>
-                </fieldset>
-            }
-        </div>
-    </div> 
+            <div class="action-panel">
+                <button class="btn btn-submit" id="Button1" type="submit">Submit</button>
+            </div>
+            
+        </fieldset>
+    }
 </div>
 
 @section scripts{
+
     <script>
         $(function () {
+            $('#ReferralId').select2({
+                dropdownParent: $('#ReferralId').parent(),
+                ajax: {
+                    url: GetPath('User/Search'),
+                    dataType: 'json',
+                    delay: 500,
+                    data: function (params) {
+                        return {
+                            input: params.term, // search term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        }
+                    }
+                }
+            });
+        });
 
-            //useClientSideValidation();
-
-            //$form = $('#user-form');
-            //$form.validate({
-            //    rules: {
-            //        Email: {
-            //            required: true,
-            //            email: true,
-            //            remote: {
-            //                url: GetPath('User/ValidateEmail'),
-            //                type: "post",
-            //                data: {
-            //                    input: function () {
-            //                        return $("#Email").val();
-            //                    }
-            //                },
-            //                complete: function () {
-            //                    $('#Email').valid();
-            //                }
-            //            }
-            //        },
-            //        Username: {
-            //            required: true,
-            //            remote: {
-            //                url: GetPath('User/ValidateUsername'),
-            //                type: "post",
-            //                data: {
-            //                    input: function () {
-            //                        return $("#Username").val();
-            //                    }
-            //                },
-            //                complete: function () {
-            //                    $('#Username').valid();
-            //                }
-            //            }
-            //        },
-            //        Password: {
-            //            required: true,
-            //        },
-            //        ConfirmPassword: {
-            //            required: true,
-            //            equalTo: "#Password"
-            //        },
-            //        RoleId: {
-            //            required: true
-            //        },
-            //        FirstName: {
-            //            required: true
-            //        },
-            //        Gender: {
-            //            required: true
-            //        },
-            //        Country: {
-            //            required: true
-            //        },
-            //        PhoneNo: {
-            //            required: true
-            //        },
-            //        BankId: {
-            //            required: true
-            //        },
-            //        "BankAccountHolder": {
-            //            required: true
-            //        },
-            //        BankAccountNo: {
-            //            required: true
-            //        },
-            //        BankBranch: {
-            //            required: true
-            //        }
-            //    },
-            //    messages: {
-            //        required: "Thie field is required.",
-            //        Email: {
-            //            remote: "Email has been used in one of the account, please enter another."
-            //        },
-            //        Username: {
-            //            remote: "Username has been taken, please enter another."
-            //        },
-            //        ConfirmPassword: "Password not match."
-            //    }
-            //});
-
+        $("#ReferralId").on("select2:open", function () {
+            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Enter username to search...");
         });
     </script>
 }

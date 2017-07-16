@@ -9,7 +9,7 @@ namespace FIX.Service
 {
     public class UserService : IUserService
     {
-
+        protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IUnitOfWork _uow;
 
         public UserService(IUnitOfWork uow)
@@ -95,6 +95,16 @@ namespace FIX.Service
             return false;
         }
 
+        public IQueryable<User> GetReferralChildren(int? id)
+        {
+            return GetAllUsers().Where(x => x.UserProfile.ReferralId == id);
+        }
+
+        public IQueryable<User> GetUsersWithoutAdmin()
+        {
+            return GetAllUsers().Where(x => x.UserProfile.RoleId != (int)DBCRole.Id.Admin);
+        }
+
         public void InsertUser(User user)
         {
             _uow.Repository<User>().Insert(user);
@@ -103,6 +113,11 @@ namespace FIX.Service
         public void UpdateUser(User user)
         {
             _uow.Repository<User>().Update(user);
+        }
+
+        public void SaveChanges(int userId)
+        {
+            _uow.Save(userId);
         }
 
         public void SaveChanges()

@@ -116,7 +116,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
@@ -218,8 +218,12 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\HtmlLoaderController.cs" />
+    <Compile Include="Controllers\DailyTradingController.cs" />
     <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReferralController.cs" />
+    <Compile Include="Controllers\ReturnManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Extensions\IdentityExtension.cs" />
     <Compile Include="Extensions\MapperExtension.cs" />
@@ -233,6 +237,9 @@
     <Compile Include="Helpers\LanguageHelper.cs" />
     <Compile Include="Helpers\SVGHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DailyTradingModels.cs" />
+    <Compile Include="Models\ReferralModels.cs" />
+    <Compile Include="Models\ReturnManagerModels.cs" />
     <Compile Include="Models\InvestmentModels.cs" />
     <Compile Include="Models\GoogleModels.cs" />
     <Compile Include="Models\ListViewModel.cs" />
@@ -247,7 +254,8 @@
     <Compile Include="Utils\CultureConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\css\bootstrap.custom.css" />
+    <None Include="Content\sass\bootstrap.custom.scss" />
+    <Content Include="Content\css\bootstrap-datepicker.css" />
     <Content Include="Content\css\bootswatch.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\loginpage.css" />
@@ -261,12 +269,14 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
+    <Content Include="gulpfile.min.js">
+      <DependentUpon>gulpfile.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\app\bootstrap-table.custom.js" />
     <Content Include="Scripts\app\bootstrap-modal.custom.js" />
+    <Content Include="Scripts\app\extension.js" />
     <Content Include="Scripts\app\user.js" />
-    <Content Include="Scripts\app\user.min.js">
-      <DependentUpon>user.js</DependentUpon>
-    </Content>
+    <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -287,6 +297,7 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="bundleconfig.json" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -354,7 +365,6 @@
     <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Dropdown.cshtml" />
     <Content Include="Views\User\Create.cshtml" />
-    <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Display.cshtml" />
     <Content Include="Views\Shared\Sidebar.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
@@ -371,10 +381,19 @@
     <Content Include="Views\Investment\Create.cshtml" />
     <Content Include="Views\Shared\TermsAndConditions.cshtml" />
     <Content Include="Views\Shared\_UserPackage.cshtml" />
+    <Content Include="Views\ReturnManager\Index.cshtml" />
+    <Content Include="Views\Shared\Html\Modal.html" />
+    <Content Include="Views\Shared\EditorTemplates\Dropdown2.cshtml" />
+    <Content Include="Views\Referral\Index.cshtml" />
+    <Content Include="Views\DailyTrading\Index.cshtml" />
+    <Content Include="Views\DailyTrading\Create.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Number.cshtml" />
+    <Content Include="Views\DailyTrading\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\svg\" />
+    <Folder Include="Views\HtmlLoader\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

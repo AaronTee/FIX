@@ -22,18 +22,19 @@ var config = {
         'jquery.js': ['Scripts/jquery-*.min.js'],
         'jqueryval.js': ['Scripts/jquery.validate*.min.js'],
         'modernizr.js': ['Scripts/modernizr-*.js'],
-        'bootstrap.js': ['Scripts/bootstrap.js', 'Scripts/respond.js'],
-        'app.js': ['Scripts/app/settings.js', 'Scripts/app/*.js']
+        'bootstrap.js': ['Scripts/bootstrap*.js', 'Scripts/respond.js'],
+        'app.js': ['Scripts/app/extension.js', 'Scripts/app/settings.js', 'Scripts/app/*.js']
     },
-
+    
     srcCss: [
-        './Content/css/bootswatch.css',
-        './Content/css/font-awesome.css',
-        './Content/css/bootstrap.custom.css'
+        './Content/css/*.css',
+        '!./Content/css/loginpage.css',
+        '!./Content/css/portal.css'
     ],
 
     srcsass: [
-        './Content/sass/styles.scss'
+        './Content/sass/styles.scss',
+        './Content/sass/bootstrap.custom.scss'
     ],
 
     production: !!util.env.production
@@ -55,7 +56,7 @@ gulp.task('style', function () {
     ;
 
     var scssStream = gulp.src(config.srcsass)
-        .pipe(sass())
+        .pipe(sass({ style: 'expanded' }))
         .pipe(concat('style-sass.scss'))
     ;
 

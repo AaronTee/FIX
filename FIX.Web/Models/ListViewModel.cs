@@ -15,4 +15,10 @@ namespace FIX.Web.Models
         public string Name { get; set; }
         public string Url { get; set; }
     }
+
+    public class ActionTag
+    {
+        public string Action { get; set; }
+        public string Name { get; set; }
+    }
 }

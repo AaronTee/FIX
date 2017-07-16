@@ -7,10 +7,11 @@ using FIX.Service.Entities;
 using FIX.Service;
 using FIX.Web.Extensions;
 using static FIX.Service.DBConstant;
+using Microsoft.AspNet.Identity;
 
 namespace FIX.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = DBCRole.Admin)]
     public class UserController : BaseController
     {
 
@@ -90,17 +91,24 @@ namespace FIX.Web.Controllers
         {
             UserViewModel model = new UserViewModel();
 
-            model.RoleDDL = _userService.GetAllRoles().Select(x => new SelectListItem()
+            model.RoleDDL = new SelectList(_userService.GetAllRoles().Select(x => new SelectListItem()
             {
                 Text = x.Description,
                 Value = x.RoleId.ToString()
-            });
+            }), "Value", "Text");
 
-            model.BankDDL = _bankService.GetAllBank().Select(x => new SelectListItem()
+            model.BankDDL = new SelectList(_bankService.GetAllBank().Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.BankId.ToString()
-            });
+            }), "Value", "Text");
+
+            model.ReferralDDL = new SelectList(_userService.GetAllUsers().ToList().Where(x => x.UserProfile.Role.Description != DBCRole.Admin)
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.UserId + " - " + x.Username,
+                    Value = x.UserId.ToString()
+                }), "Value", "Text");
 
             return View(model);
         }
@@ -118,6 +126,7 @@ namespace FIX.Web.Controllers
                 HasEmailVerified = false,
                 IsFirstTimeLogIn = false,
                 CreatedTimestamp = DateTime.UtcNow,
+                TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
                 StatusId = (int)DBConstant.EStatus.Active,
                 UserProfile = new UserProfile
                 {
@@ -128,6 +137,7 @@ namespace FIX.Web.Controllers
                     LastName = model.LastName,
                     PhoneNo = model.PhoneNo,
                     RoleId = model.RoleId,
+                    ReferralId = model.ReferralId,
                     CreatedTimestamp = DateTime.UtcNow,
                 },
                 UserBankAccount = new List<UserBankAccount>
@@ -140,21 +150,16 @@ namespace FIX.Web.Controllers
                         IsPrimary = true,
                         BankId = model.BankId
                     }
-                },
-                UserActivation = new UserActivation
-                {
-                    ActivationCode = Guid.NewGuid(),
-                    StatusId = (int)EStatus.Active
                 }
             };
             _userService.InsertUser(user);
 
-            _userService.SaveChanges();
+            _userService.SaveChanges(User.Identity.GetUserId<int>());
 
             var curUser = _userService.GetUserBy(user.Username);
 
             AccountController ac = new AccountController(_userService);
-            ac.ActivationEmail(curUser.UserId);
+            ac.SendActivationEmail(curUser.UserId);
 
             return RedirectToAction("Index");
         }
@@ -177,6 +182,7 @@ namespace FIX.Web.Controllers
             model.Address = userInfo.UserProfile.Address;
             model.Country = userInfo.UserProfile.Country;
             model.PhoneNo = userInfo.UserProfile.PhoneNo;
+            model.ReferralName = (userInfo.UserProfile.ReferralId == (int?)null) ? "" : _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username;
 
             if (userInfo.UserBankAccount.Count > 0)
             {
@@ -187,18 +193,18 @@ namespace FIX.Web.Controllers
                 model.BankBranch = userBank.BankBranch;
             }
 
-            model.RoleDDL = _userService.GetAllRoles().Select(x => new SelectListItem()
+            model.RoleDDL = new SelectList(_userService.GetAllRoles().Select(x => new SelectListItem()
             {
                 Text = x.Description,
                 Value = x.RoleId.ToString()
-            });
+            }), "Value", "Text", model.RoleId);
 
-            model.BankDDL = _bankService.GetAllBank().Select(x => new SelectListItem()
+            model.BankDDL = new SelectList(_bankService.GetAllBank().Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.BankId.ToString()
-            });
-
+            }), "Value", "Text", model.BankId);
+            
             return View(model);
         }
 
@@ -207,13 +213,14 @@ namespace FIX.Web.Controllers
         {
 
             var userInfo = _userService.GetUserBy(model.Id);
-            userInfo.Email = model.Email;
+            userInfo.UserProfile.RoleId = model.RoleId;
             userInfo.UserProfile.FirstName = model.FirstName;
             userInfo.UserProfile.LastName = model.LastName;
             userInfo.UserProfile.Gender = model.Gender;
             userInfo.UserProfile.Address = model.Address;
             userInfo.UserProfile.Country = model.Country;
             userInfo.UserProfile.PhoneNo = model.PhoneNo;
+            userInfo.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
 
             if (userInfo.UserBankAccount.Count > 0)
             {
@@ -229,7 +236,7 @@ namespace FIX.Web.Controllers
 
             _userService.UpdateUser(userInfo);
 
-            _userService.SaveChanges();
+            _userService.SaveChanges(User.Identity.GetUserId<int>());
 
             return RedirectToAction("Index");
         }
@@ -250,6 +257,7 @@ namespace FIX.Web.Controllers
             model.Address = userInfo.UserProfile.Address;
             model.Country = userInfo.UserProfile.Country;
             model.PhoneNo = userInfo.UserProfile.PhoneNo;
+            model.ReferralName = (userInfo.UserProfile.ReferralId == (int?)null) ? "" : _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username;
 
             if (userInfo.UserBankAccount.Count > 0)
             {
@@ -273,6 +281,22 @@ namespace FIX.Web.Controllers
         public JsonResult ValidateEmail(string email)
         {
             return Json(_userService.IsValidEmailAddress(email), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Search(string input)
+        {
+            object data = new { };
+
+            if (!input.IsNullOrEmpty())
+            {
+                data = _userService.GetUsersWithoutAdmin().Where(x => x.Username.Contains(input)).Select(x => new
+                {
+                    text = x.UserId.ToString() + " - " + x.Username,
+                    id = x.UserId.ToString()
+                });
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
     }

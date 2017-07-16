@@ -68,7 +68,7 @@ namespace FIX.Web.Controllers
 
             _investmentService.InsertUserPackage(up);
 
-            _investmentService.SaveChange();
+            _investmentService.SaveChange(User.Identity.GetUserId<int>());
 
             Success("Added new package " + package.Description + ".", true, true);
 
@@ -84,7 +84,7 @@ namespace FIX.Web.Controllers
                 Package = x.Package.Description,
                 StartDate = x.Date.ToUserLocalDate(tz),
                 EndDate = x.Date.AddMonths(DBCPackageLifetime.Month).ToUserLocalDate(tz),
-                ReturnRate = (x.Package.Rate * 100).ToString("#0.00") + "%",
+                ReturnRate = x.Package.Rate,
                 Status = x.Status.Description
             });
 
@@ -106,8 +106,8 @@ namespace FIX.Web.Controllers
                 {
                     UserPackageId = x.UserPackageId,
                     Date = x.Date.ToUserLocalDate(tz),
-                    ReturnRate = (x.UserPackage.Package.Rate * 100).ToString("#0.000") + "%",
-                    Amount = x.Amount.ToString("#0.000"),
+                    ReturnRate = x.UserPackage.Package.Rate,
+                    Amount = x.Amount,
                     Status = x.Status.Description
                 });
 
@@ -141,13 +141,22 @@ namespace FIX.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult EntitledPackage(decimal amount, string order)
+        public JsonResult EntitledPackage(decimal? amount, string order)
         {
-            var package = _investmentService.GetEntitledPackage(amount);
+            if (amount != null)
+            {
+                var package = _investmentService.GetEntitledPackage(amount.Value);
+                return Json(new
+                {
+                    Rate = (package.Rate * 100) + "%",
+                    Description = package.Description
+                }, JsonRequestBehavior.AllowGet);
+            }
+
             return Json(new
             {
-                Rate = (package.Rate * 100).ToString() + "%",
-                Description = package.Description
+                Rate = "-",
+                Description = "-",
             }, JsonRequestBehavior.AllowGet);
         }
     }

@@ -1348,7 +1348,7 @@ a.text-primary:focus {
   color: #1967be;
 }
 .text-success {
-  color: #ffffff;
+  color: green;
 }
 a.text-success:hover,
 a.text-success:focus {
@@ -1369,7 +1369,7 @@ a.text-warning:focus {
   color: #e6e6e6;
 }
 .text-danger {
-  color: #ffffff;
+  color: red;
 }
 a.text-danger:hover,
 a.text-danger:focus {

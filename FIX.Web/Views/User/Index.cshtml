@@ -3,72 +3,31 @@
     ViewBag.Title = "User Management";
 }
 
-<div class="panel panel-primary">
-    <div class="panel-content">
-        <a id="A1" href="@Url.Action("Create")"
-           class="btn btn-action">
-            <span class="glyphicon glyphicon-plus"></span> User
-        </a>
+<a href="@Url.Action("Create")"
+    class="btn btn-action">
+    <span class="glyphicon glyphicon-plus"></span> User
+</a>
 
-        <table
-               data-toggle="table"
-               data-search="true"
-               data-side-pagination="server"
-               data-pagination="true"
-               data-classes="table table-no-bordered" 
-               data-page-list="[10, 25, 50, 100]"
-               data-url="@(Url.Content("~/"))User/GetListViewData"
-               data-unique-id="UserId"
-               data-search-placeholder="Search Username">
-            <thead>
-                <tr>
-                    <th data-field="Username" data-sortable="true">Username</th>
-                    <th data-field="Email">Email</th>
-                    <th data-field="RoleName">Role</th>
-                    <th data-field="Status" data-sortable="true">Status</th>
-                    <th data-field="ActionLinks" data-formatter="LinkFormatter">Action</th>
-                </tr>
-            </thead>
-        </table>
-
-
-        @*<div>
-            <table id="dttable" class="table table-bordered" style="width: 100%">
-                <thead>
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.Username)</th>
-                        <th>@Html.DisplayNameFor(model => model.Email)</th>
-                        <th>@Html.DisplayNameFor(model => model.RoleName)</th>
-                        <th class="nosort">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Username)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Email)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.RoleName)
-                            </td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit",
-                        new { id = item.Id })
-                                @Html.ActionLink("Details", "Detail",
-                        new { id = item.Id })
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-        </div>*@
-    </div>
-</div> 
+<table
+        data-toggle="table"
+        data-search="true"
+        data-side-pagination="server"
+        data-pagination="true"
+        data-classes="table table-no-bordered" 
+        data-page-list="[10, 25, 50, 100]"
+        data-url="@(Url.Content("~/"))User/GetListViewData"
+        data-unique-id="UserId"
+        data-search-placeholder="Search Username">
+    <thead>
+        <tr>
+            <th data-field="Username" data-sortable="true">Username</th>
+            <th data-field="Email">Email</th>
+            <th data-field="RoleName">Role</th>
+            <th data-field="Status" data-sortable="true">Status</th>
+            <th data-field="ActionLinks" data-formatter="LinkFormatter">Action</th>
+        </tr>
+    </thead>
+</table>
 
 @section scripts{
     @*DataTable*@
@@ -88,7 +47,4 @@
             });
         });
     </script>*@
-
-    
-
 }

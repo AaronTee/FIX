@@ -4,73 +4,63 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="panel no-padding">
-    <div class="panel-userprofile">
-        <div class="panel-content">
-            <h2 class="headline red">Profile</h2>
+<div class="panel dark-background">
+    <h2 class="headline red">Profile</h2>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <table class="table-display-list">
-                        <tr>
-                            <td>Member ID / Name</td>
-                            <td>@Html.DisplayFor(x => x.userModel.Username) / @Html.DisplayFor(x => x.userModel.FirstName) @Html.DisplayFor(x => x.userModel.LastName) </td>
-                        </tr>
-                        <tr>
-                            <td>Date Joined</td>
-                            <td>@Html.DisplayFor(x => x.userModel.CreatedTimestamp)</td>
-                        </tr>
-                        <tr>
-                            <td>Package</td>
-                            <td>Platinum</td>
-                        </tr>
-                        <tr>
-                            <td>Group Members</td>
-                            <td>2332</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <table class="table-display-list">
-                        <tr>
-                            <td>Remark 1</td>
-                            <td>Remark 1</td>
-                        </tr>
-                        <tr>
-                            <td>Remark 2</td>
-                            <td>Remark 2</td>
-                        </tr>
-                        <tr>
-                            <td>Remark 3</td>
-                            <td>Remark 3</td>
-                        </tr>
-                        <tr>
-                            <td>Remark 4</td>
-                            <td>Remark 4</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table-display-list">
+                <tr>
+                    <td>Member ID / Name</td>
+                    <td>@Html.DisplayFor(x => x.userModel.Username) / @Html.DisplayFor(x => x.userModel.FirstName) @Html.DisplayFor(x => x.userModel.LastName) </td>
+                </tr>
+                <tr>
+                    <td>Date Joined</td>
+                    <td>@Html.DisplayFor(x => x.userModel.CreatedTimestamp)</td>
+                </tr>
+                <tr>
+                    <td>Package</td>
+                    <td>Platinum</td>
+                </tr>
+                <tr>
+                    <td>Group Members</td>
+                    <td>2332</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table-display-list">
+                <tr>
+                    <td>Remark 1</td>
+                    <td>Remark 1</td>
+                </tr>
+                <tr>
+                    <td>Remark 2</td>
+                    <td>Remark 2</td>
+                </tr>
+                <tr>
+                    <td>Remark 3</td>
+                    <td>Remark 3</td>
+                </tr>
+                <tr>
+                    <td>Remark 4</td>
+                    <td>Remark 4</td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>
 
 
-<div class="panel">
-    <div class="panel-content">
-        
-        <div class="row">
-            <div class="col-md-6">
-                <h2 class="headline green">Announcement</h2>
-                <div class="panel-board left">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <h2 class="headline blue">Stats</h2>
-                <div class="panel-board right">
-
-                </div>
-            </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel">
+            <h2 class="headline green">Announcement</h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel">
+            <h2 class="headline blue">Stats</h2>
         </div>
     </div>
 </div>

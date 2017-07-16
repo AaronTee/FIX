@@ -65,22 +65,22 @@ namespace FIX.Web.Controllers
             base.OnActionExecuting(filterContext);
         }
 
-        public void Success(string message, bool autoDisappear = false, bool dismissable = true)
+        public void Success(string message, bool autoDisappear = true, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Success, autoDisappear, message, dismissable);
         }
 
-        public void Information(string message, bool autoDisappear = false, bool dismissable = true)
+        public void Information(string message, bool autoDisappear = true, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Information, autoDisappear, message, dismissable);
         }
 
-        public void Warning(string message, bool autoDisappear = false, bool dismissable = true)
+        public void Warning(string message, bool autoDisappear = true, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Warning, autoDisappear, message, dismissable);
         }
 
-        public void Danger(string message, bool autoDisappear = false, bool dismissable = true)
+        public void Danger(string message, bool autoDisappear = true, bool dismissable = true)
         {
             AddAlert(AlertModel.AlertStyles.Danger, autoDisappear, message, dismissable);
         }

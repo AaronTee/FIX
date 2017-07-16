@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
+using static FIX.Service.DBConstant;
 
 namespace FIX.Web.Extensions
 {
@@ -38,6 +40,24 @@ namespace FIX.Web.Extensions
                 bytes[i / 2] = Convert.ToByte(hexInput.Substring(i, 2), 16);
             }
             return encoding.GetString(bytes);
+        }
+
+        public static DateTime? ConvertToDate(this String date, string format = null)
+        {
+            DateTime result;
+            DateTime.TryParseExact(date, format ?? DBCDateFormat.ddMMMyyyy, CultureInfo.CurrentCulture, DateTimeStyles.None, out result);
+
+            //valid date
+            if (result != null)
+            {
+                return result;
+            }
+            else return null;
+        }
+
+        public static bool IsValidStringDate(this String dateString)
+        {
+            return ConvertToDate(dateString) != null;
         }
     }
 }

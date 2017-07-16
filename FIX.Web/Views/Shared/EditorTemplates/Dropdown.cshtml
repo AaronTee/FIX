@@ -1,9 +1,9 @@
 ﻿@model object
 
 <div class="form-group">
-    @Html.LabelFor(model => model, new { @class = "control-label" })
-    <div class="">
-        @Html.DropDownListFor(model => model, ViewData["DDL"] as IEnumerable<SelectListItem>, new { @class = "form-control" })
+    @Html.LabelFor(model => model, new { @class = "control-label col-lg-3" })
+    <div class="col-lg-9">
+        @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"], "---------- Choose one ----------", new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model)
     </div>
 </div>

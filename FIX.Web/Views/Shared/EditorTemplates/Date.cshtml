@@ -1,1 +1,9 @@
-﻿
+﻿@model string
+
+<div class="form-group">
+    @Html.LabelFor(model => model, new { @class = "control-label col-lg-3" })
+    <div class="col-lg-9">
+        @Html.TextBoxFor(model => model, new { @class = "form-control datepicker " + ((ViewData["class"] != null) ? ViewData["class"] : ""), @style = "max-width: 150px" })
+        @Html.ValidationMessageFor(model => model)
+    </div>
+</div>

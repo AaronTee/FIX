@@ -5,11 +5,12 @@
 }
 
 <div class="ui-message-wrapper">
-    <div class="ui-message-body">
 
-        @if (alerts.Count > 0)
-        {
-            if (alerts.FirstOrDefault().AutoDisappear)
+
+    @if (alerts.Count > 0)
+    {
+        <div class="ui-message-body">
+            @if (alerts.FirstOrDefault().AutoDisappear)
             {
                 <input type="hidden" id="isAutoDisappear" value="1" />
             }
@@ -17,26 +18,27 @@
             {
                 <input type="hidden" id="isAutoDisappear" value="0" />
             }
-        }
 
-        @foreach (var alert in alerts)
-        {
-            var dismissableClass = alert.Dismissable ? "alert-dismissable" : null;
-            <div class="alert alert-@alert.AlertStyle @dismissableClass">
-                @if (alert.Dismissable)
-                {
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                }
-                @Html.Raw(alert.Message)
-            </div>
-        }
-    </div>
+            @foreach (var alert in alerts)
+            {
+                var dismissableClass = alert.Dismissable ? "alert-dismissable" : null;
+                <div class="alert alert-@alert.AlertStyle @dismissableClass">
+                    @if (alert.Dismissable)
+                    {
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    }
+                    @Html.Raw(alert.Message)
+                </div>
+            }
+        </div>
+    }
+
 </div>
 
 <script type="text/javascript">
     $(function () {
-        var  isAutoDisappear=$("#isAutoDisappear").val();
-        if (isAutoDisappear==="1")
+        var isAutoDisappear = $("#isAutoDisappear").val();
+        if (isAutoDisappear === "1")
             $(".ui-message-body").delay(8000).fadeOut(300);
     });
 </script>

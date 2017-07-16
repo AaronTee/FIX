@@ -80,15 +80,7 @@ namespace FIX.Web.Controllers
 
                         return View("RequiredAction", _raModel);
                     }
-
-                    //Verify email
-                    //if (!currentUser.HasAcceptedTerms)
-                    //{
-                    //    TempData["uid"] = EncryptionHelper.EncryptText(currentUser.UserId.ToString());
-                    //    RedirectToAction("TermsAndConditions");
-                    //}
-
-                    var ident = new ClaimsIdentity(new[] { 
+                    var ident = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.NameIdentifier, currentUser.UserId.ToString()),
                     new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
                     new Claim(ClaimTypes.Name, model.Username),
@@ -121,13 +113,8 @@ namespace FIX.Web.Controllers
             var response = Request["g-recaptcha-response"];
             string secretKey = AppSettingsHelper.GetKeyValue("GoogleRecaptchaSecretKey");
 
-            Log.Info("Response : " + response);
-            Log.Info("Key : " + secretKey);
-
             var client = new WebClient();
             var result = client.DownloadString(string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}", secretKey, response));
-
-            Log.Info("Result : " + result);
 
             var JResponse = JsonConvert.DeserializeObject<GoogleRecaptchaResponse>(result);
 
@@ -245,7 +232,7 @@ namespace FIX.Web.Controllers
                     };
                     return View(taModel);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -254,7 +241,7 @@ namespace FIX.Web.Controllers
 
             return View("Error");
         }
-        
+
 
         //[HttpPost]
         //public ActionResult TermsAndConditions(TermsAndContitionsViewModel model)
@@ -274,6 +261,31 @@ namespace FIX.Web.Controllers
         [AllowAnonymous]
         public ActionResult ActivationEmail(int? uid)
         {
+            try
+            {
+                SendActivationEmail(uid);
+
+                RequiredActionModel _raModel = new RequiredActionModel
+                {
+                    Title = "Email Verification Sent",
+                    Controller = "Account",
+                    Action = "Login",
+                    Content = "Email Verification sent. Please check your email to activate your account.",
+                    FormMethod = FormMethod.Get,
+                    SubmitButtonDescription = "Login",
+                };
+
+                return View("RequiredAction", _raModel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return View("Error");
+            }
+        }
+
+        public void SendActivationEmail(int? uid)
+        {
             if (uid == 0 || uid == null)
             {
                 if (User.Identity.IsAuthenticated)
@@ -287,56 +299,45 @@ namespace FIX.Web.Controllers
             var activationCode = _userService.AssignNewValidationCode(user);
             var encryptedActivationCode = EncryptionHelper.Base64Encode(activationCode.ToString("N"));
 
-            _userService.SaveChanges();
+            _userService.SaveChanges(uid.Value);
 
             using (var mm = new MailMessage())
             {
-                string body = "Hi " + user.Username + ",";
-                body += "<br /><br />Please click the following link to activate your account";
-                body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, encryptedActivationCode) + "'>Click here to activate your account.</a>";
-                body += "<br /><br />*This is an automatic generated mail, please do not reply.";
-
-                var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");
-                var mailaddresspassword = AppSettingsHelper.GetKeyValue("MailingAddressPassword");
-
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new NetworkCredential(mailaddress, mailaddresspassword);
-                smtp.Port = 587;
-                smtp.Timeout = 20000;
-                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
-                        System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                        System.Security.Cryptography.X509Certificates.X509Chain chain,
-                        System.Net.Security.SslPolicyErrors sslPolicyErrors)
-                {
-                    return true;
-                };
-
-                mm.From = new MailAddress(mailaddress);
-                mm.To.Add(user.Email);
-                mm.Subject = "Account Activation";
-                mm.Body = body;
-                mm.IsBodyHtml = true;
-                mm.BodyEncoding = System.Text.Encoding.UTF8;
-                mm.SubjectEncoding = System.Text.Encoding.Default;
                 try
                 {
-                    smtp.Send(mm);
+                    string body = "Hi " + user.Username + ",";
+                    body += "<br /><br />Please click the following link to activate your account";
+                    body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, encryptedActivationCode) + "'>Click here to activate your account.</a>";
+                    body += "<br /><br />*This is an automatic generated mail, please do not reply.";
 
-                    RequiredActionModel _raModel = new RequiredActionModel
+                    var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");
+                    var mailaddresspassword = AppSettingsHelper.GetKeyValue("MailingAddressPassword");
+
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(mailaddress, mailaddresspassword);
+                    smtp.Port = 587;
+                    smtp.Timeout = 20000;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
+                            System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                            System.Security.Cryptography.X509Certificates.X509Chain chain,
+                            System.Net.Security.SslPolicyErrors sslPolicyErrors)
                     {
-                        Title = "Email Verification Sent",
-                        Controller = "Account",
-                        Action = "Login",
-                        Content = "Email Verification sent. Please check your email to activate your account.",
-                        FormMethod = FormMethod.Get,
-                        SubmitButtonDescription = "Login",
+                        return true;
                     };
 
-                    return View("RequiredAction", _raModel);
+                    mm.From = new MailAddress(mailaddress);
+                    mm.To.Add(user.Email);
+                    mm.Subject = "Account Activation";
+                    mm.Body = body;
+                    mm.IsBodyHtml = true;
+                    mm.BodyEncoding = System.Text.Encoding.UTF8;
+                    mm.SubjectEncoding = System.Text.Encoding.Default;
+
+                    smtp.Send(mm);
                 }
                 catch (Exception ex)
                 {
@@ -347,8 +348,7 @@ namespace FIX.Web.Controllers
                     mm.Dispose();
                 }
             }
-
-            return View("Error");
         }
+
     }
 }

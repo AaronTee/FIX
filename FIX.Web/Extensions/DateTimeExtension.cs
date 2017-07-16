@@ -11,19 +11,35 @@ namespace FIX.Web.Extensions
 {
     public static class DateTimeExtension
     {
-        public static string ToUserLocalDate(this DateTime d, string TimeZoneId)
+        public static string ToUserLocalDate(this DateTime d, string TimeZoneId = null)
         {
             if (d == null) return string.Empty;
+            if (TimeZoneId == null) TimeZoneId = "UTC";
             var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var tzTime = TimeZoneInfo.ConvertTimeFromUtc(d, tz);
 
             return tzTime.ConvertToDateString();
         }
 
+        public static string ToUserLocalDateTime(this DateTime d, string TimeZoneId = null)
+        {
+            if (d == null) return string.Empty;
+            if (TimeZoneId == null) TimeZoneId = "UTC";
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
+            var tzTime = TimeZoneInfo.ConvertTimeFromUtc(d, tz);
+
+            return tzTime.ConvertToDateTimeString();
+        }
+
 
         public static string ConvertToDateString(this DateTime d)
         {
-            return d.ToString(DBCDateFormat.ddMMyyyy);
+            return d.ToString(DBCDateFormat.ddMMMyyyy);
+        }
+
+        public static string ConvertToDateTimeString(this DateTime d)
+        {
+            return d.ToString(DBCDateFormat.ddMMMyyyyHHmmsstt);
         }
     }
 }

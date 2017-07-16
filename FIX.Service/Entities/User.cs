@@ -19,6 +19,7 @@ namespace FIX.Service.Entities
         {
             this.UserBankAccount = new HashSet<UserBankAccount>();
             this.UserPackage = new HashSet<UserPackage>();
+            this.AuditLog = new HashSet<AuditLog>();
         }
     
         public int UserId { get; set; }
@@ -41,5 +42,7 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AuditLog> AuditLog { get; set; }
     }
 }

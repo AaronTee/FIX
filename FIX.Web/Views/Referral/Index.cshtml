@@ -1,0 +1,71 @@
+﻿@model ReferralListViewModels
+
+@using Microsoft.AspNet.Identity;
+
+@Html.Hidden("rootId", User.Identity.GetUserId<int>())
+
+<h1>Sponsor Tree</h1>
+<hr />
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(model => model.Username, new { @class = "control-label col-lg-3" })
+        <div class="col-lg-9">
+            @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+            <div class="action-panel no-margin-left">
+                <button class="btn btn-primary" id="search_child">Search</button>
+                <span id="search_result"></span>
+            </div>
+        </div>
+    </div>
+    @*@Html.EditorFor(x => x.Username, "Text")*@
+</div>
+<hr />
+<div id="treeview"></div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $('#treeview').on('click', '.jstree-anchor', function (e) {
+                $(this).jstree(true).toggle_node(e.target);
+            }).jstree({
+                'core': {
+                    dblclick_toggle: false,
+                    'data': {
+                        "url": GetPath('Referral/Follower'),
+                        "dataType": "json",
+                        "data": function (node) {
+                            return { "uid": node.id === "#" ? $("#rootId").val() : node.id, "curLevel": node.parents.length };
+                        }
+                    }
+                },
+                types: {
+                    "default": {
+                        "icon": "glyphicon glyphicon-user"
+                    }
+                },
+                plugins: ["search", "themes", "types"]
+            });
+
+            $('#search_child').click(function () {
+                $('#search_result').removeClass();
+                $('#search_result').text('');
+                $.ajax({
+                    type: 'get',
+                    url: GetPath('Referral/SearchFollower'),
+                    data: { username: $('#Username').val() },
+                    success: function (result) {
+
+                        if (result.isFollower) {
+                            $('#search_result').text("This member is under your tree, at level " + result.atLevel + ".")
+                            $('#search_result').addClass('text-success');
+                        } else {
+                            $('#search_result').text("This member is not under your tree.");
+                            $('#search_result').addClass('text-danger');
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}

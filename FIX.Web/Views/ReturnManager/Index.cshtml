@@ -1,0 +1,102 @@
+﻿@model ReturnManagerModels
+
+<div id="modal"></div>
+
+<h1>Showing rows of pending returns</h1>
+    <table id="table_member_return"
+            data-toggle="table"
+            data-search="true"
+            data-side-pagination="server"
+            data-pagination="true"
+            data-classes="table table-no-bordered"
+            data-page-list="[10, 25, 50, 100]"
+            data-url="@(Url.Content("~/"))ReturnManager/GetPendingReturnList"
+            data-unique-id="UPDId">
+        <thead>
+            <tr>
+                <th data-field="UPDId">Id</th>
+                <th data-field="Date">Date</th>
+                <th data-field="Username">Username</th>
+                <th data-field="Package">Package</th>
+                <th data-field="TotalInvest">Total Invested</th>
+                <th data-field="Rate">Rate</th>
+                <th data-field="Amount">Amount</th>
+                <th data-field="Status">Status</th>
+                <th data-field="ActionText" data-formatter="actionFormatter" data-events="statusEvents">Action</th>
+            </tr>
+        </thead>
+    </table>
+
+
+@section scripts{
+    <script>
+        var m = $('#modal').modalCreator();
+
+        window.statusEvents = {
+            'click .action': function (e, value, row, index) {
+
+                var $toggleElem = $(e.target);
+                var $action = $toggleElem.data('action');
+
+                if ($action == 'approve') {
+
+                    m.make({
+                        title: 'Approving',
+                        body: function () {
+                            return html = 'Make sure the Id you wanted to APPROVE is correct. ( Id : ' + row.UPDId + ' )';
+                        }(),
+                        confirmText: "Approve",
+                        confirmButtonStyle: 'btn-success',
+                        onConfirm: function () {
+                            $.ajax({
+                                url: GetPath('ReturnManager/ApproveReturn'),
+                                type: 'POST',
+                                data: { UPDId: row.UPDId },
+                                success: function (complete) {
+                                    if (complete) {
+                                        $('#table_member_return').bootstrapTable('removeByUniqueId', row.UPDId);
+                                    }
+                                },
+                                complete: function () {
+                                    m.hide();
+                                }
+                            })
+                        }
+                    });
+                    
+                    m.show();
+                }
+
+                if ($action == 'void') {
+
+                    m.make({
+                        title: 'Voiding',
+                        body: function () {
+                            return html = 'Are you sure you want to VOID this return? ( Id : ' + row.UPDId + ' )';
+                        }(),
+                        confirmText: "Void",
+                        confirmButtonStyle: 'btn-danger',
+                        onConfirm: function () {
+                            $.ajax({
+                                url: GetPath('ReturnManager/VoidReturn'),
+                                type: 'POST',
+                                data: { UPDId: row.UPDId },
+                                success: function (complete) {
+                                    if (complete) {
+                                        $('#table_member_return').bootstrapTable('removeByUniqueId', row.UPDId);
+                                    }
+                                },
+                                complete: function () {
+                                    m.hide();
+                                }
+                            })
+                        }
+                    });
+
+                    m.show();
+                }
+            }
+        }
+
+    </script>    
+}

@@ -5,15 +5,18 @@ using FIX.Service.Entities;
 
 namespace FIX.Service
 {
-    public class RoleService : EntityService<Role>, IRoleService
+    public class RoleService : IRoleService
     {
-        public RoleService(IUnitOfWork uow) : base(uow)
+        private IRepository<Role> _roleService;
+
+        public RoleService(IUnitOfWork uow)
         {
+            _roleService = uow.Repository<Role>();
         }
 
         public Role GetBy(UserProfile userProfile)
         {
-            return Get().Where(x => x.RoleId == userProfile.RoleId).FirstOrDefault();
+            return _roleService.Get().Where(x => x.RoleId == userProfile.RoleId).FirstOrDefault();
         }
     }
 }

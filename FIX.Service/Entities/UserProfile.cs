@@ -22,6 +22,7 @@ namespace FIX.Service.Entities
         public string PhoneNo { get; set; }
         public string Gender { get; set; }
         public int RoleId { get; set; }
+        public Nullable<int> ReferralId { get; set; }
         public System.DateTime CreatedTimestamp { get; set; }
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
     

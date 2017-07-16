@@ -5,16 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>@ViewBag.Title</title>
 
-    @Styles.Render("~/Content/style")
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/app")
+
+    @*Bootstrap table*@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    @*select2*@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+    @*Recaptcha*@
     <script src='https://www.google.com/recaptcha/api.js'></script>
+
+    @*Treeview*@
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/themes/default/style.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/jstree.min.js"></script>
+
+    @*Font*@
+    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+    @Styles.Render("~/Content/style")
 </head>
 <body ontouchstart="">
     @if (User.Identity.IsAuthenticated)
@@ -32,6 +46,10 @@
                     </li>
                     <li>@Html.ActionLink("FIX", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</li>
                 </ul>
+                <div style="right: 25px; color: #ddd; font-size:12px; position:absolute; bottom: 0">
+                    Date: @DateTime.UtcNow.ToUserLocalDateTime(User.Identity.GetUserTimeZone())
+                </div>
+
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
@@ -39,9 +57,10 @@
     <div class="container">
         @Html.Partial("Sidebar")
         <div class="body-canvas has-sidebar has-fixed-header">
+            @{Html.RenderPartial("_Alerts", new { });}
+            @Html.MvcSiteMap().SiteMapPath(false)
+
             <div class="body-content">
-                @{Html.RenderPartial("_Alerts", new { });}
-                @Html.MvcSiteMap().SiteMapPath(false)
                 @RenderBody()
             </div>
         </div>
@@ -62,7 +81,6 @@
         </div>
     }  
 
-    @RenderSection("scripts", required: false)
     <script>
         document.addEventListener("touchstart", function () { }, true);
         var rootpath = '@Url.Content("~/")';
@@ -71,5 +89,7 @@
             return rootpath + url;
         }
     </script>
+    @RenderSection("scripts", required: false)
+    
 </body>
 </html>

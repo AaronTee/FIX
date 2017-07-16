@@ -6,33 +6,26 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace FIX.Service.Models.Repositories
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        #region Defination
-        readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected FIXEntities _context = null;
         public Dictionary<Type, object> repositories;
         private bool disposed = false;
-
-        #endregion
-        #region Contructor
         public UnitOfWork()
         {
             _context = DependencyResolver.Current.GetService<FIXEntities>();
             repositories = new Dictionary<Type, object>();
         }
-        #endregion
-        #region Property
+
         public FIXEntities Context
         {
             get { return _context; }
-            //set{ }
         }
-        #endregion
-        #region Public Functions
 
         public IRepository<T> Repository<T>() where T : class
         {
@@ -45,21 +38,48 @@ namespace FIX.Service.Models.Repositories
             return repo;
         }
 
-        public void Save()
+        public bool Save(int userId, bool goAsync = false)
         {
             try
             {
-                _context.SaveChanges();
+                _context.SaveChanges(userId, goAsync);
+                return true;
             }
             catch (DbEntityValidationException ve)
             {
                 var error = ve.EntityValidationErrors.First().ValidationErrors.First();
-                Logger.Error(error.ErrorMessage);
-                var msg = String.Format("Validation Error :: {0} - {1}",
-                           error.PropertyName, error.ErrorMessage);
+                Log.Error(error.ErrorMessage);
+                var msg = String.Format("Validation Error :: {0} - {1}", error.PropertyName, error.ErrorMessage);
                 throw;
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+            return false;
         }
+
+        public bool Save()
+        {
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (DbEntityValidationException ve)
+            {
+                var error = ve.EntityValidationErrors.First().ValidationErrors.First();
+                Log.Error(error.ErrorMessage);
+                var msg = String.Format("Validation Error :: {0} - {1}", error.PropertyName, error.ErrorMessage);
+                throw;
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+            return false;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -69,15 +89,14 @@ namespace FIX.Service.Models.Repositories
                     this._context.Dispose();
                 }
             }
-
             this.disposed = true;
         }
+
         public void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
     }
 }

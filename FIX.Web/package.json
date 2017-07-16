@@ -12,6 +12,7 @@
     "browserify": "^14.3.0",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
+    "gulp-bless": "^4.0.0",
     "gulp-clean-css": "^3.3.1",
     "gulp-concat": "^2.6.1",
     "gulp-less": "^3.3.0",

@@ -3,41 +3,35 @@
     ViewBag.Title = "Add Package";
 }
 
-<div class="panel">
-    <div class="panel-content">
-        <h1>Current Rates</h1>
-        <table  data-toggle="table"
-                data-side-pagination="server"
-                data-classes="table table-no-bordered"
-                data-url="@(Url.Content("~/"))Investment/PackageList">
-            <thead>
-                <tr>
-                    <th data-field="Description">Package</th>
-                    <th data-field="Rate">Return Rate</th>
-                    <th data-field="Threshold">Minimum Amount</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+<h1>Current Rates</h1>
+<table  data-toggle="table"
+        data-side-pagination="server"
+        data-classes="table"
+        data-url="@(Url.Content("~/"))Investment/PackageList">
+    <thead>
+        <tr>
+            <th data-halign="center" data-field="Description">Package</th>
+            <th data-halign="center" data-field="Rate" data-formatter="percentageFormatter">Return Rate</th>
+            <th data-halign="center" data-field="Threshold" data-formatter="currencyFormatter">Minimum Amount</th>
+        </tr>
+    </thead>
+</table>
 
-    <div class="panel-content">
-        <fieldset>
-            <legend>Add Package</legend>
-            <div class="form-section">
-                @using (Html.BeginForm("Create", "Investment", FormMethod.Post))
-                {
-                    @Html.EditorFor(x => x.Amount, "Text");
-                    @Html.EditorFor(x => x.PackageName, "Text", new { @readonly = true });
-                    @Html.EditorFor(x => x.Rate, "Text", new { @readonly = true });
-                    <div class="action-panel">
-                        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-                        <button class="btn btn-success" id="Button1" type="submit">Submit</button>
-                    </div>
-                }
+<fieldset class="spacing">
+    <legend>Add Package</legend>
+    <div class="form-section">
+        @using (Html.BeginForm("Create", "Investment", FormMethod.Post))
+        {
+            @Html.EditorFor(x => x.Amount, "Text");
+            @Html.EditorFor(x => x.PackageName, "Text", new { @readonly = true });
+            @Html.EditorFor(x => x.Rate, "Text", new { @readonly = true });
+            <div class="action-panel">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+                <button class="btn btn-submit" id="Button1" type="submit">Submit</button>
             </div>
-        </fieldset>
+        }
     </div>
-</div>
+</fieldset>
 
 @section scripts{
     <script>

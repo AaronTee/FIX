@@ -42,12 +42,15 @@ namespace FIX.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap-*",
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                      "~/Scripts/app/extension.js",
                       "~/Scripts/app/settings.js",
                       "~/Scripts/app/styles.js",
-                      "~/Scripts/app/bootstrap-table.custom.js"));
+                      "~/Scripts/app/bootstrap-table.custom.js",
+                      "~/Scripts/app/bootstrap-modal.custom.js"));
 #endif
 
             bundles.Add(new StyleBundle("~/Content/style").Include(

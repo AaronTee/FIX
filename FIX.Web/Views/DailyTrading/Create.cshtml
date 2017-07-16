@@ -1,0 +1,43 @@
+﻿@model DailyTradingCreateViewModels
+
+<div class="form-section">
+    @using (Html.BeginForm("Create", "DailyTrading", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-header">Create New Daily Report</div>
+                <div class="form-body">
+                    @Html.EditorFor(x => x.Date, "Date")
+                    @Html.EditorFor(x => x.EURJPY, "Number", new { @class = "dec sm profit" })
+                    @Html.EditorFor(x => x.EURUSD, "Number", new { @class = "dec sm profit" })
+                    @Html.EditorFor(x => x.EURNZD, "Number", new { @class = "dec sm profit" })
+                    @Html.EditorFor(x => x.USDCAD, "Number", new { @class = "dec sm profit" })
+                    @Html.EditorFor(x => x.GBPUSD, "Number", new { @class = "dec sm profit" })
+                    @Html.EditorFor(x => x.USDSGD, "Number", new { @class = "dec sm profit" })
+                    @Html.EditorFor(x => x.Profit, "Number", new { @class = "dec sm", @readonly = true })
+                    <div class="form-group action-panel">
+                        @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-default" })
+                        <button class="btn btn-submit" type="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section scripts{
+    <script>
+        (function ($) {
+            $('input.profit').on('change', function (e) {
+                var total = 0;
+                $('.profit').each(function () {
+                    total += Number($(this).val().format());
+                });
+                $('#Profit').val(total.format());
+            });
+        })(jQuery);
+    </script>
+}

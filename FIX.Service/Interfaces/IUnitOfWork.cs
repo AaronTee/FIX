@@ -1,11 +1,12 @@
-﻿using FIX.Service.Entities;
-using System;
-
-namespace FIX.Service
+﻿namespace FIX.Service
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
+        FIXEntities Context { get; }
+
+        void Dispose();
         IRepository<T> Repository<T>() where T : class;
-        void Save();
+        bool Save();
+        bool Save(int userId, bool goAsync = false);
     }
 }

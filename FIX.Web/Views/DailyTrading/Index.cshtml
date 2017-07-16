@@ -1,0 +1,78 @@
+﻿@model DailyTradingSearchViewModels
+
+@using FIX.Service
+
+@if (User.IsInRole(DBConstant.DBCRole.Admin))
+{
+    <a href="@Url.Action("Create")"
+       class="btn btn-action">
+        <span class="glyphicon glyphicon-plus"></span> Create
+    </a>
+}
+
+<div class="form-section form-horizontal spacing">
+    <div class="form-header">Daily Trading Report</div>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.DateFrom, "Date", new { @class = "trigger-search" })
+            </div>
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.DateTo, "Date", new { @class = "trigger-search" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="table_dailyreport"
+       data-toggle="table"
+       data-side-pagination="server"
+       data-pagination="true"
+       data-classes="table"
+       data-query-params="queryParams"
+       data-page-list="[10, 25, 50, 100]"
+       data-url="@(Url.Content("~/"))DailyTrading/DailyTradingReportList"
+       data-unique-id="TradeId">
+    <thead>
+        <tr>
+            <th data-field="Date" data-class="minw100" data-align="center" rowspan="2" data-valign="middle">Date</th>
+            <th colspan="6" data-align="center">Currency (%)</th>
+            <th data-field="Profit" data-align="center" rowspan="2" data-formatter="currencyFormatter" data-valign="middle">Total Profit</th>
+            @if (User.IsInRole(DBConstant.DBCRole.Admin))
+            {
+            <th data-field="ActionLinks" data-align="center" data-formatter="LinkFormatter" rowspan="2" data-valign="middle">Action</th>
+            }
+        </tr>
+        <tr>
+            <th data-field="EURJPY" data-formatter="currencyFormatter">EURJPY</th>
+            <th data-field="EURUSD" data-formatter="currencyFormatter">EURUSD</th>
+            <th data-field="EURNZD" data-formatter="currencyFormatter">EURNZD</th>
+            <th data-field="USDCAD" data-formatter="currencyFormatter">USDCAD</th>
+            <th data-field="GBPUSD" data-formatter="currencyFormatter">GBPUSD</th>
+            <th data-field="USDSGD" data-formatter="currencyFormatter">USDSGD</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+    <script>
+        var dateFromVal = $('#DateFrom').val();
+        var dateToVal = $('#DateTo').val();
+
+        function queryParams() {
+            return {
+                dateFrom: $('#DateFrom').val(),
+                dateTo: $('#DateTo').val(),
+                offset: 0,
+                limit: 10,
+                sort: 'Date',
+                order: 'desc',
+            }
+        }
+
+        $('.trigger-search').change(function () {
+            $('#table_dailyreport').bootstrapTable('refresh');
+        });
+
+    </script>
+}

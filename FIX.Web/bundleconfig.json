@@ -4,5 +4,11 @@
     "inputFiles": [
       "Scripts/app/user.js"
     ]
+  },
+  {
+    "outputFileName": "gulpfile.min.js",
+    "inputFiles": [
+      "gulpfile.js"
+    ]
   }
 ]

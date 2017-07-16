@@ -2,7 +2,7 @@
 
 namespace FIX.Service
 {
-    public interface IRoleService : IEntityService<Role>
+    public interface IRoleService
     {
         Role GetBy(UserProfile userProfile);
     }

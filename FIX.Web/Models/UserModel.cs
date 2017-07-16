@@ -10,17 +10,24 @@ namespace FIX.Web.Models
     {
         public UserViewModel()
         {
-            CountryDDL = new List<SelectListItem>()
-            {
-                new SelectListItem() { Text = "Malaysia", Value = "MY" }
-            };
-            RoleDDL = new List<SelectListItem>();
-            GenderDDL = new List<SelectListItem>()
+            RoleDDL = new SelectList(new List<SelectListItem>());
+            ReferralDDL = new SelectList(new List<SelectListItem>());
+            CountryDDL = new SelectList(
+                new List<SelectListItem>()
+                {
+                    new SelectListItem
+                    {
+                        Text = "Malaysia",
+                        Value = "MY"
+                    }
+                }, "Value", "Text", Country);
+
+            GenderDDL = new SelectList(new List<SelectListItem>()
             {
                 new SelectListItem() { Text = "Male", Value = DBConstant.DBCGender.Male },
                 new SelectListItem() { Text = "Female", Value = DBConstant.DBCGender.Female },
                 new SelectListItem() { Text = "Other", Value = DBConstant.DBCGender.Other }
-            };
+            }, "Value", "Text", Gender);
         }
 
         public int Id { get; set; }
@@ -74,6 +81,12 @@ namespace FIX.Web.Models
         [Display(Name = "Role")]
         public int RoleId { get; set; }
 
+        [Display(Name = "Referral")]
+        public int? ReferralId { get; set; }
+
+        [Display(Name = "Referral")]
+        public string ReferralName { get; set; }
+
         [Required]
         [Display(Name = "Phone No.")]
         public string PhoneNo { get; set; }
@@ -100,10 +113,11 @@ namespace FIX.Web.Models
         public bool hasEmailVerified { get; set; }
         public bool hasAcceptedTerms { get; set; }
 
-        public IEnumerable<SelectListItem> CountryDDL { get; set; }
-        public IEnumerable<SelectListItem> RoleDDL { get; set; }
-        public IEnumerable<SelectListItem> GenderDDL { get; set; }
-        public IEnumerable<SelectListItem> BankDDL { get; set; }
+        public SelectList CountryDDL { get; set; }
+        public SelectList RoleDDL { get; set; }
+        public SelectList GenderDDL { get; set; }
+        public SelectList BankDDL { get; set; }
+        public SelectList ReferralDDL { get; set; }
     }
 
     public class UserListViewModel : ListViewModel{

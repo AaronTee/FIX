@@ -17,8 +17,11 @@ namespace FIX.Service
         bool IsValidEmailAddress(string email);
         Guid AssignNewValidationCode(User user);
         bool ValidateActivationCode(Guid activationCode);
+        IQueryable<User> GetReferralChildren(int? id);
+        IQueryable<User> GetUsersWithoutAdmin();
         void InsertUser(User user);
         void UpdateUser(User user);
         void SaveChanges();
+        void SaveChanges(int userId);
     }
 }
