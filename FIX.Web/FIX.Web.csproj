@@ -222,6 +222,7 @@
     <Compile Include="Controllers\DailyTradingController.cs" />
     <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MatchingBonusController.cs" />
     <Compile Include="Controllers\ReferralController.cs" />
     <Compile Include="Controllers\ReturnManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="Helpers\SVGHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DailyTradingModels.cs" />
+    <Compile Include="Models\MatchingBonusModels.cs" />
     <Compile Include="Models\ReferralModels.cs" />
     <Compile Include="Models\ReturnManagerModels.cs" />
     <Compile Include="Models\InvestmentModels.cs" />
@@ -394,6 +396,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\svg\" />
     <Folder Include="Views\HtmlLoader\" />
+    <Folder Include="Views\MatchingBonus\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
