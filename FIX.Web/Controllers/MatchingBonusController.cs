@@ -21,20 +21,20 @@ namespace FIX.Web.Controllers
             return View();
         }
 
-        public ActionResult Create()
-        {
-            //Find all downline users
-            MatchingBonusListViewModels model = new MatchingBonusListViewModels
-            {
-                UserId = 
-            };
-        }
+        //public ActionResult Create()
+        //{
+        //    //Find all downline users
+        //    MatchingBonusListViewModels model = new MatchingBonusListViewModels
+        //    {
+        //        UserId = 
+        //    };
+        //}
 
-        [HttpPost]
-        public ActionResult Create()
-        {
+        //[HttpPost]
+        //public ActionResult Create()
+        //{
 
-        }
+        //}
 
         public JsonResult MatchingBonusList(int offset, int limit, string sort, string order)
         {
@@ -46,7 +46,7 @@ namespace FIX.Web.Controllers
             var rowsResult = queryableList.ToList()
                 .Select(x => new MatchingBonusListViewModels()
                 {
-                    MatchingBonusId = 
+                    //MatchingBonusId = 
                 });
 
             var model = new

@@ -9985,10 +9985,11 @@ ul {
             }*/ }
       .sidebar .sidebar-nav .nav-menu.has-child .sidebar-subnav {
         max-height: 0px;
-        overflow-y: hidden; }
+        overflow-y: auto;
+        height: 100%; }
         .sidebar .sidebar-nav .nav-menu.has-child .sidebar-subnav.show {
           max-height: 300px;
-          transition: max-height cubic-bezier(0.2, 1, 0.6, 1) 3s; }
+          transition: max-height cubic-bezier(0.2, 1, 0.6, 1) 0.2s; }
     .sidebar .sidebar-nav .nav-menu.has-child::before {
       font-family: FontAwesome;
       font-style: normal;
@@ -10053,6 +10054,9 @@ ul {
   transition: filter cubic-bezier(0.2, 1, 0.6, 1) 0.4s; }
   .body-canvas .body-content {
     padding: 15px 30px; }
+    @media only screen and (max-width: 767px) {
+      .body-canvas .body-content {
+        padding: 15px 15px; } }
   .body-canvas.dim {
     filter: brightness(30%); }
 

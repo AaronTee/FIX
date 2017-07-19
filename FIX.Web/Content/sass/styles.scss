@@ -311,12 +311,12 @@ ul{
             
             & .sidebar-subnav{
                 max-height: 0px;
-                overflow-y: hidden;
-
+                overflow-y: auto;
+                height: 100%;
 
                 &.show{
                     max-height: 300px;
-                    transition: max-height cubic-bezier(.2,1,.6,1) 3s;
+                    transition: max-height cubic-bezier(.2,1,.6,1) .2s;
                 }
             }
 
@@ -423,6 +423,10 @@ ul{
 
     & .body-content{
         padding: 15px 30px;
+
+        @include screen-small{
+            padding: 15px 15px;
+        }
     }
 
     &.dim{

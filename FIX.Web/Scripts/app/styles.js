@@ -1,70 +1,70 @@
 ﻿$(function () {
 
-var toggler = $('.navbar-toggle');
-var sidebar = $('.' + toggler.attr("data-target"));
-var dimTarget = $('.' + toggler.attr("data-dim-target"));
-var bodyCanvas = $('.body-canvas');
+    var toggler = $('.navbar-toggle');
+    var sidebar = $('.' + toggler.attr("data-target"));
+    var dimTarget = $('.' + toggler.attr("data-dim-target"));
+    var bodyCanvas = $('.body-canvas');
 
-$('form').addClass('form-horizontal');
+    $('form').addClass('form-horizontal');
 
-/* Handler window onResize */
-$(window).resize(function () {
+    /* Handler window onResize */
+    $(window).resize(function () {
 
-    var width = $(window).width();
+        var width = $(window).width();
 
-    /* ENTER MOBILE VIEW */
-    //if (width < 768) {
-    //    slideInSideBar();
-    //}
+        /* ENTER MOBILE VIEW */
+        //if (width < 768) {
+        //    slideInSideBar();
+        //}
 
-    /* EXIT MOBILE VIEW */
-    if (width > 767) {
+        /* EXIT MOBILE VIEW */
+        if (width > 767) {
+            slideOutSideBar();
+        }
+    });
+
+    bodyCanvas.on("click", function () {
         slideOutSideBar();
-    }
-});
+    });
 
-bodyCanvas.on("click", function () {
-    slideOutSideBar();
-});
+    function slideInSideBar() {
+        sidebar.addClass('responsive-sidebar');
+        sidebar.addClass('responsive');
+        dimTarget.addClass('dim');
 
-function slideInSideBar() {
-    sidebar.addClass('responsive-sidebar');
-    sidebar.addClass('responsive');
-    dimTarget.addClass('dim');
-
-}
-
-function slideOutSideBar() {
-    sidebar.removeClass('responsive');
-    sidebar.removeClass('responsive-sidebar');
-    dimTarget.removeClass('dim');
-}
-
-toggler.click(function () {
-
-    if (sidebar.hasClass('responsive')) {
-        slideOutSideBar();
-    } else {
-        slideInSideBar();
     }
 
-});
+    function slideOutSideBar() {
+        sidebar.removeClass('responsive');
+        sidebar.removeClass('responsive-sidebar');
+        dimTarget.removeClass('dim');
+    }
 
-//end navbar
+    toggler.click(function () {
 
-//start submenu
-var parentMenu = $(".nav-menu.has-child");
-var childMenu = $(".nav-menu.has-child .sidebar-subnav");
+        if (sidebar.hasClass('responsive')) {
+            slideOutSideBar();
+        } else {
+            slideInSideBar();
+        }
 
-parentMenu.click(function () {
-    var $this = $(this);
+    });
 
-    $this.toggleClass('expanding');
-    childMenu.toggleClass('show');
-});
+    //end navbar
+
+    //start submenu
+    var parentMenu = $(".nav-menu.has-child");
+    var childMenu = $(".nav-menu.has-child .sidebar-subnav");
+
+    parentMenu.click(function () {
+        var $this = $(this);
+
+        $this.toggleClass('expanding');
+        childMenu.toggleClass('show');
+    });
 
     //--------------disable overlay scroll body------------
-$(function () {
+    
     var _overlay = document.getElementsByClassName('scrollable')[0];
     var _clientY = null; // remember Y position on touch start
 
@@ -107,30 +107,29 @@ $(function () {
         .closest(".form-group")
         .children("label")
         .addClass("required-field");
-})
-
+    
     
 
 
-//--------- disable touch hover------------
-var touch = 'ontouchstart' in document.documentElement
-            || navigator.maxTouchPoints > 0
-            || navigator.msMaxTouchPoints > 0;
+    //--------- disable touch hover------------
+    var touch = 'ontouchstart' in document.documentElement
+                || navigator.maxTouchPoints > 0
+                || navigator.msMaxTouchPoints > 0;
 
-if (touch) { // remove all :hover stylesheets
-    try { // prevent exception on browsers not supporting DOM styleSheets properly
-        for (var si in document.styleSheets) {
-            var styleSheet = document.styleSheets[si];
-            if (!styleSheet.rules) continue;
+    if (touch) { // remove all :hover stylesheets
+        try { // prevent exception on browsers not supporting DOM styleSheets properly
+            for (var si in document.styleSheets) {
+                var styleSheet = document.styleSheets[si];
+                if (!styleSheet.rules) continue;
 
-            for (var ri = styleSheet.rules.length - 1; ri >= 0; ri--) {
-                if (!styleSheet.rules[ri].selectorText) continue;
+                for (var ri = styleSheet.rules.length - 1; ri >= 0; ri--) {
+                    if (!styleSheet.rules[ri].selectorText) continue;
 
-                if (styleSheet.rules[ri].selectorText.match(':hover')) {
-                    styleSheet.deleteRule(ri);
+                    if (styleSheet.rules[ri].selectorText.match(':hover')) {
+                        styleSheet.deleteRule(ri);
+                    }
                 }
             }
-        }
-    } catch (ex) { }
-}
+        } catch (ex) { }
+    }
 });
