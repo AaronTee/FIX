@@ -4,6 +4,7 @@ using System;
 using FIX.Service.Entities;
 using System.Threading.Tasks;
 using static FIX.Service.DBConstant;
+using System.Collections.Generic;
 
 namespace FIX.Service
 {
@@ -56,6 +57,25 @@ namespace FIX.Service
         public IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn()
         {
             return _uow.Repository<vwPendingReturnInvestor_Test>().GetAsQueryable();
+        }
+
+        public IEnumerable<spMatchingBonus_Result> GetMatchingBonusResult(int? userId)
+        {
+
+            if (userId != null)
+            {
+                var param1 = new System.Data.SqlClient.SqlParameter("level", 2);
+                var param2 = new System.Data.SqlClient.SqlParameter("userId", userId);
+
+                var result = _uow.Repository<spMatchingBonus_Result>().ExecWithStoreProcedure("spMatchingBonus @level, @userId", new[]
+                {
+                    param1, param2
+                });
+
+                return result;
+            }
+
+            throw new Exception("userId cannot be null");
         }
 
         public UserPackageDetail GetUserPackageDetail(int UPDId)

@@ -115,6 +115,9 @@
     <Compile Include="Entities\Package.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\spMatchingBonus_Result.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Entities\Role.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>

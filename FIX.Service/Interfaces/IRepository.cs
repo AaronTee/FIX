@@ -17,5 +17,6 @@ namespace FIX.Service
         void Insert(TEntity entity);
         void Update(TEntity entity);
         void UpdateAll(IEnumerable<TEntity> entities);
+        IEnumerable<TEntity> ExecWithStoreProcedure(string query, params object[] paramVal);
     }
 }

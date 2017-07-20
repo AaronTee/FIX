@@ -392,12 +392,12 @@
     <Content Include="Views\DailyTrading\Create.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Number.cshtml" />
     <Content Include="Views\DailyTrading\Edit.cshtml" />
+    <Content Include="Views\MatchingBonus\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\svg\" />
     <Folder Include="Views\HtmlLoader\" />
-    <Folder Include="Views\MatchingBonus\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

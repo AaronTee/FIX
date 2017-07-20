@@ -11,13 +11,22 @@ using System.Web.Mvc;
 
 namespace FIX.Web.Controllers
 {
-    public class MatchingBonusController : Controller
+    public class MatchingBonusController : BaseController
     {
         private IUserService _userService;
+        private IInvestmentService _investmentService;
 
         // GET: MatchingBonus
-        public ActionResult Index(IUserService userService)
+        public MatchingBonusController(IUserService userService, IInvestmentService investmentService)
         {
+            _userService = userService;
+            _investmentService = investmentService;
+        }
+
+        public ActionResult Index()
+        {
+            //Show matching bonus of this month by default.
+            var result = _investmentService.GetMatchingBonusResult(User.Identity.GetUserId<int>());
             return View();
         }
 
@@ -26,15 +35,15 @@ namespace FIX.Web.Controllers
         //    //Find all downline users
         //    MatchingBonusListViewModels model = new MatchingBonusListViewModels
         //    {
-        //        UserId = 
+                
         //    };
         //}
 
-        //[HttpPost]
-        //public ActionResult Create()
-        //{
-
-        //}
+        [HttpPost]
+        public ActionResult Create()
+        {
+            return View();
+        }
 
         public JsonResult MatchingBonusList(int offset, int limit, string sort, string order)
         {

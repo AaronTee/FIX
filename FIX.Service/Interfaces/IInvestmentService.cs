@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FIX.Service.Entities;
+using System.Collections.Generic;
 
 namespace FIX.Service
 {
@@ -13,6 +14,7 @@ namespace FIX.Service
         Package GetEntitledPackage(decimal amount);
         IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn();
         UserPackageDetail GetUserPackageDetail(int UPDId);
+        IEnumerable<spMatchingBonus_Result> GetMatchingBonusResult(int? userId);
         void UpdateUserPackageDetail(UserPackageDetail upd);
         void SaveChange();
         void SaveChange(int userId);

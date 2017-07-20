@@ -314,13 +314,6 @@ namespace FIX.Web.Controllers
                     var mailaddresspassword = AppSettingsHelper.GetKeyValue("MailingAddressPassword");
 
                     SmtpClient smtp = new SmtpClient();
-                    //ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
-                    //        System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                    //        System.Security.Cryptography.X509Certificates.X509Chain chain,
-                    //        System.Net.Security.SslPolicyErrors sslPolicyErrors)
-                    //{
-                    //    return true;
-                    //};
 
                     mm.From = new MailAddress(mailaddress);
                     mm.To.Add(user.Email);

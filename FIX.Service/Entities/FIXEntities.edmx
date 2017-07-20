@@ -366,6 +366,10 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="spMatchingBonus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="level" Type="int" Mode="In" />
+          <Parameter Name="userId" Type="nvarchar" Mode="In" />
+        </Function>
         <EntityContainer Name="FIXModelStoreContainer">
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
@@ -538,6 +542,10 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="AuditLog" EntitySet="AuditLog" />
           </AssociationSet>
           <EntitySet Name="DailyTrading" EntityType="FIXModel.DailyTrading" />
+          <FunctionImport Name="spMatchingBonus" ReturnType="Collection(FIXModel.spMatchingBonus_Result)">
+          <Parameter Name="level" Mode="In" Type="Int32" />
+            <Parameter Name="userId" Mode="In" Type="String" />
+          </FunctionImport>
           </EntityContainer>
         <EntityType Name="Bank">
           <Key>
@@ -920,6 +928,12 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
         </EntityType>
+        <ComplexType Name="spMatchingBonus_Result">
+          <Property Type="Int32" Name="UserId" Nullable="false" />
+          <Property Type="Int32" Name="Generation" Nullable="true" />
+          <Property Type="String" Name="MemberUsername" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="MemberUserId" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1119,6 +1133,16 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spMatchingBonus" FunctionName="FIXModel.Store.spMatchingBonus">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="FIXModel.spMatchingBonus_Result">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Generation" ColumnName="Generation" />
+                <ScalarProperty Name="MemberUsername" ColumnName="MemberUsername" />
+                <ScalarProperty Name="MemberUserId" ColumnName="MemberUserId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

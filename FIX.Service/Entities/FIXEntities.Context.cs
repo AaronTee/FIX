@@ -12,6 +12,8 @@ namespace FIX.Service.Entities
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class FIXEntities : DbContext
     {
@@ -40,5 +42,18 @@ namespace FIX.Service.Entities
         public virtual DbSet<UserProfile> UserProfile { get; set; }
         public virtual DbSet<AuditLog> AuditLog { get; set; }
         public virtual DbSet<DailyTrading> DailyTrading { get; set; }
+    
+        public virtual ObjectResult<spMatchingBonus_Result> spMatchingBonus(Nullable<int> level, string userId)
+        {
+            var levelParameter = level.HasValue ?
+                new ObjectParameter("level", level) :
+                new ObjectParameter("level", typeof(int));
+    
+            var userIdParameter = userId != null ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spMatchingBonus_Result>("spMatchingBonus", levelParameter, userIdParameter);
+        }
     }
 }

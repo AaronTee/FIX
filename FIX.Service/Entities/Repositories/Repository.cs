@@ -202,5 +202,11 @@ namespace FIX.Service.Models.Repositories
 
             return count;
         }
+
+        //Stored Procedure
+        public IEnumerable<TEntity> ExecWithStoreProcedure(string query, params object[] paramVal)
+        {
+            return dbContext.Database.SqlQuery<TEntity>("EXEC " + query, paramVal).ToList();
+        }
     }
 }
