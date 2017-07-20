@@ -314,20 +314,13 @@ namespace FIX.Web.Controllers
                     var mailaddresspassword = AppSettingsHelper.GetKeyValue("MailingAddressPassword");
 
                     SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new NetworkCredential(mailaddress, mailaddresspassword);
-                    smtp.Port = 587;
-                    smtp.Timeout = 20000;
-                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
-                            System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                            System.Security.Cryptography.X509Certificates.X509Chain chain,
-                            System.Net.Security.SslPolicyErrors sslPolicyErrors)
-                    {
-                        return true;
-                    };
+                    //ServicePointManager.ServerCertificateValidationCallback = delegate (object s,
+                    //        System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                    //        System.Security.Cryptography.X509Certificates.X509Chain chain,
+                    //        System.Net.Security.SslPolicyErrors sslPolicyErrors)
+                    //{
+                    //    return true;
+                    //};
 
                     mm.From = new MailAddress(mailaddress);
                     mm.To.Add(user.Email);
