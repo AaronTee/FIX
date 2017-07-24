@@ -84,6 +84,7 @@ namespace FIX.Web.Controllers
                 Package = x.Package.Description,
                 StartDate = x.Date.ToUserLocalDate(tz),
                 EndDate = x.Date.AddMonths(DBCPackageLifetime.Month).ToUserLocalDate(tz),
+                InvestedAmount = x.TotalAmount,
                 ReturnRate = x.Package.Rate,
                 Status = x.Status.Description
             });
@@ -130,7 +131,7 @@ namespace FIX.Web.Controllers
                 Description = x.Description,
                 Rate = x.Rate,
                 Threshold = x.Threshold
-            });
+            }).OrderBy(x => x.Threshold);
 
             var model = new
             {

@@ -38,7 +38,13 @@
 <script type="text/javascript">
     $(function () {
         var isAutoDisappear = $("#isAutoDisappear").val();
-        if (isAutoDisappear === "1")
+        if (isAutoDisappear === "1") {
             $(".ui-message-body").delay(8000).fadeOut(300);
+        }
+
+        $('button[data-dismiss="alert"]').click(function () {
+            $(".ui-message-body").hide();
+
+        });
     });
 </script>

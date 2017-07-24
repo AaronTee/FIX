@@ -46,14 +46,27 @@ namespace FIX.Web.Models
         [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Password not match.")]
         public string ConfirmPassword { get; set; }
 
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; }
+        [Required]
+        [Display(Name = "Security Password")]
+        public string SecurityPassword { get; set; }
 
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Display(Name = "I/C Number")]
+        public string ICNumber { get; set; }
 
         [Display(Name = "Address")]
         public string Address { get; set; }
+
+        [Display(Name = "City")]
+        public string City { get; set; }
+
+        [Display(Name = "State")]
+        public string State { get; set; }
+
+        [Display(Name = "Post Code")]
+        public string PostCode { get; set; }
 
         [Required]
         [Display(Name = "Email")]
@@ -81,8 +94,9 @@ namespace FIX.Web.Models
         [Display(Name = "Role")]
         public int RoleId { get; set; }
 
+        [Required]
         [Display(Name = "Referral")]
-        public int? ReferralId { get; set; }
+        public int ReferralId { get; set; }
 
         [Display(Name = "Referral")]
         public string ReferralName { get; set; }

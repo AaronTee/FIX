@@ -34,16 +34,16 @@ namespace FIX.Service.Entities
         public virtual DbSet<UserBankAccount> UserBankAccount { get; set; }
         public virtual DbSet<UserActivation> UserActivation { get; set; }
         public virtual DbSet<UserPackage> UserPackage { get; set; }
-        public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserPackageDetail> UserPackageDetail { get; set; }
         public virtual DbSet<vwPendingReturnInvestor> vwPendingReturnInvestor { get; set; }
         public virtual DbSet<vwPendingReturnInvestor_Test> vwPendingReturnInvestor_Test { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
-        public virtual DbSet<UserProfile> UserProfile { get; set; }
         public virtual DbSet<AuditLog> AuditLog { get; set; }
         public virtual DbSet<DailyTrading> DailyTrading { get; set; }
+        public virtual DbSet<UserProfile> UserProfile { get; set; }
+        public virtual DbSet<User> User { get; set; }
     
-        public virtual ObjectResult<spMatchingBonus_Result> spMatchingBonus(Nullable<int> level, string userId)
+        public virtual ObjectResult<spMatchingBonus_Result> spMatchingBonus(Nullable<int> level, string userId, Nullable<double> tier1BonusPerc, Nullable<double> tier2BonusPerc, Nullable<double> tier3BonusPerc)
         {
             var levelParameter = level.HasValue ?
                 new ObjectParameter("level", level) :
@@ -53,7 +53,19 @@ namespace FIX.Service.Entities
                 new ObjectParameter("userId", userId) :
                 new ObjectParameter("userId", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spMatchingBonus_Result>("spMatchingBonus", levelParameter, userIdParameter);
+            var tier1BonusPercParameter = tier1BonusPerc.HasValue ?
+                new ObjectParameter("tier1BonusPerc", tier1BonusPerc) :
+                new ObjectParameter("tier1BonusPerc", typeof(double));
+    
+            var tier2BonusPercParameter = tier2BonusPerc.HasValue ?
+                new ObjectParameter("tier2BonusPerc", tier2BonusPerc) :
+                new ObjectParameter("tier2BonusPerc", typeof(double));
+    
+            var tier3BonusPercParameter = tier3BonusPerc.HasValue ?
+                new ObjectParameter("tier3BonusPerc", tier3BonusPerc) :
+                new ObjectParameter("tier3BonusPerc", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spMatchingBonus_Result>("spMatchingBonus", levelParameter, userIdParameter, tier1BonusPercParameter, tier2BonusPercParameter, tier3BonusPercParameter);
         }
     }
 }

@@ -116,7 +116,7 @@ namespace FIX.Web.Controllers
                 }
             }
 
-            queryableList = queryableList.PaginateList("Date", sort, order, offset, limit);
+            queryableList = queryableList.PaginateList(x => x.Date, sort, order, offset, limit);
 
             var rowsResult = queryableList.ToList()
                 .Select(x => new DailyTradingListViewModels()

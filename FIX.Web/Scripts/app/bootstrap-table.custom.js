@@ -41,3 +41,26 @@ function currencyFormatter(value, row, index) {
 
     return value.format();
 }
+
+function runningFormatter(value, row, index) {
+    var tableOptions = $(row).find('table').bootstrapTable('getOptions');
+    return ((tableOptions.pageNumber - 1) * tableOptions.pageSize) + (1 + index);
+}
+
+function hasFooterRowStyle(row, index) {
+    var tableOptions = $('table[data-row-style="hasFooterRowStyle"]').bootstrapTable('getOptions');
+    var totalRow = tableOptions.totalRows;
+    var totalPage = tableOptions.totalPages || 1;
+    var currentPage = tableOptions.pageNumber || 1;
+    var currentRowCount = tableOptions.data.length - 1 || 0;
+    
+    var isFirstPage = totalRow == 0;
+    var isLastPage = totalPage == currentPage;
+    if ((index == currentRowCount && isLastPage) || isFirstPage) {
+        return {
+            classes: 'footer success'
+        };
+    }
+
+    return {};
+}

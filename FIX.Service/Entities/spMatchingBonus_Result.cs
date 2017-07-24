@@ -13,9 +13,15 @@ namespace FIX.Service.Entities
     
     public partial class spMatchingBonus_Result
     {
+        public System.DateTime Date { get; set; }
         public int UserId { get; set; }
+        public string Username { get; set; }
+        public string description { get; set; }
         public Nullable<int> Generation { get; set; }
         public string MemberUsername { get; set; }
         public Nullable<int> MemberUserId { get; set; }
+        public decimal MemberInvestedAmount { get; set; }
+        public Nullable<double> Rate { get; set; }
+        public Nullable<double> BonusAmount { get; set; }
     }
 }

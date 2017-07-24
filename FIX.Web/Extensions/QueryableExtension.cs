@@ -46,15 +46,23 @@ namespace FIX.Web.Extensions
             return new List<string>() as IQueryable;
         }
 
-        public static IQueryable<T> PaginateList<T>(this IQueryable<T> source, string defaultProperty, string property, string order, int offset, int limit)
+        public static IQueryable<TSource> PaginateList<TSource, TResult>(this IQueryable<TSource> source, Expression<Func<TSource, TResult>> selector, string sort, string order, int offset, int limit)
         {
-            var _property = (property.IsNullOrEmpty()) ? defaultProperty : property;
+            if (sort.IsNullOrEmpty()) return source.OrderBy(selector).Skip(offset).Take(limit);
             var orderCommand = (order == "desc") ? "OrderByDescending" : "OrderBy";
 
-            return ApplyOrder<T>(source, _property, orderCommand).Skip(offset).Take(limit);
+            return ApplyOrder<TSource>(source, sort, orderCommand).Skip(offset).Take(limit);
         }
-        
-        static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName)
+
+        public static IEnumerable<TSource> PaginateList<TSource, TResult>(this IEnumerable<TSource> source, string sort, string order, int offset, int limit, Func<TSource, TResult> selector)
+        {
+            if (sort.IsNullOrEmpty()) return source.OrderBy(selector).Skip(offset).Take(limit);
+            var orderCommand = (order == "desc") ? "OrderByDescending" : "OrderBy";
+
+            return ApplyOrder<TSource>(source, sort, orderCommand).Skip(offset).Take(limit);
+        }
+
+        static IOrderedQueryable<T> ApplyOrder<T>(IEnumerable<T> source, string property, string methodName)
         {
             string[] props = property.Split('.');
             Type type = typeof(T);

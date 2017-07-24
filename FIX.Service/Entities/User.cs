@@ -17,14 +17,15 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
+            this.AuditLog = new HashSet<AuditLog>();
             this.UserBankAccount = new HashSet<UserBankAccount>();
             this.UserPackage = new HashSet<UserPackage>();
-            this.AuditLog = new HashSet<AuditLog>();
         }
     
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string SecurityPassword { get; set; }
         public string Email { get; set; }
         public string IP { get; set; }
         public bool HasAcceptedTerms { get; set; }
@@ -35,6 +36,8 @@ namespace FIX.Service.Entities
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
         public int StatusId { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AuditLog> AuditLog { get; set; }
         public virtual Status Status { get; set; }
         public virtual UserActivation UserActivation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -42,7 +45,5 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         public virtual UserProfile UserProfile { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AuditLog> AuditLog { get; set; }
     }
 }

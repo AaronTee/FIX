@@ -1,3 +1,66 @@
-﻿@{
+﻿@model MatchingBonusSearchViewModels
+@{
     ViewBag.Title = "Matching Bonus";
+}
+@using FIX.Service
+
+<div class="form-section form-horizontal spacing">
+    <div class="form-header">Matching Bonus</div>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.Date, "Date", new { @class = "trigger-search" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="table_matching_bonus"
+       data-toggle="table"
+       data-side-pagination="server"
+       data-pagination="true"
+       data-classes="table table-hover"
+       data-row-style="hasFooterRowStyle"
+       data-query-params="queryParams"
+       data-page-list="[10, 25, 50, 100]"
+       data-url="@(Url.Content("~/"))MatchingBonus/MatchingBonusList"
+       data-unique-id="TradeId">
+    <thead>
+        <tr>
+            <th data-align="center" data-field="Pos">#</th>
+            <th data-class="minw125" data-field="Date">Date</th>
+            <th data-field="Username">Username</th>
+            <th data-field="Package">Package</th>
+            <th data-field="Generation">Generation</th>
+            <th data-field="BonusAmount" data-align="right" data-halign="left" data-formatter="currencyFormatter">Bonus Amount</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+    <script>
+
+        function queryParams(p) {
+            return {
+                date: $('#Date').val(),
+                limit: p.limit,
+                offset: p.offset
+            }
+        }
+
+        $(function(){
+            $('.datepicker').datepicker('destroy');
+            $('.datepicker').datepicker({
+                format: "M/yyyy",
+                minViewMode: 1,
+                endDate: '+1y',
+            });
+        });
+
+
+        $('.trigger-search').change(function () {
+            $('#table_matching_bonus').bootstrapTable('refresh');
+        });
+
+    </script>
 }

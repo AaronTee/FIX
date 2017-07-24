@@ -3,6 +3,8 @@
     ViewBag.Title = "Create New User";
 }
 
+@using FIX.Service
+
 <div class="form-section">
     @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal", @id = "user-form" }))
     {
@@ -12,18 +14,22 @@
                 <div class="col-lg-6">
                     <div class="form-header">User Profile</div>
                     <div class="form-body">
-                        @Html.EditorFor(x => x.Email, "Email")
+                        @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
+                        @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL})
                         @Html.EditorFor(x => x.Username, "Text")
                         @Html.EditorFor(x => x.Password, "Password")
                         @Html.EditorFor(x => x.ConfirmPassword, "Password")
-                        @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
-                        @Html.EditorFor(x => x.FirstName, "Text")
-                        @Html.EditorFor(x => x.LastName, "Text")
+                        @Html.EditorFor(x => x.SecurityPassword, "Text")
                         @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
-                        @Html.EditorFor(x => x.Address, "Text")
-                        @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
+                        @Html.EditorFor(x => x.Name, "Text")
+                        @Html.EditorFor(x => x.ICNumber, "Text")
+                        @Html.EditorFor(x => x.Email, "Email")
                         @Html.EditorFor(x => x.PhoneNo, "Text")
-                        @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL})
+                        @Html.EditorFor(x => x.Address, "Text")
+                        @Html.EditorFor(x => x.State, "Text")
+                        @Html.EditorFor(x => x.City, "Text")
+                        @Html.EditorFor(x => x.PostCode, "Text")
+                        @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
                     </div>
                 </div>
                 <div class="col-lg-6">

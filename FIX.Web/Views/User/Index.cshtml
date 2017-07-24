@@ -13,17 +13,17 @@
         data-search="true"
         data-side-pagination="server"
         data-pagination="true"
-        data-classes="table table-no-bordered" 
+        data-classes="table table-no-bordered table-hover" 
         data-page-list="[10, 25, 50, 100]"
         data-url="@(Url.Content("~/"))User/GetListViewData"
         data-unique-id="UserId"
         data-search-placeholder="Search Username">
     <thead>
         <tr>
-            <th data-field="Username" data-sortable="true">Username</th>
-            <th data-field="Email">Email</th>
-            <th data-field="RoleName">Role</th>
-            <th data-field="Status" data-sortable="true">Status</th>
+            <th data-sortable="true" data-field="Username">Username</th>
+            <th data-sortable="true" data-field="Email">Email</th>
+            <th data-sortable="true" data-field="RoleName">Role</th>
+            <th data-sortable="true" data-field="Status">Status</th>
             <th data-field="ActionLinks" data-formatter="LinkFormatter">Action</th>
         </tr>
     </thead>

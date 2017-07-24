@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Home Page";
+    var userJoinDate = Model.userModel.CreatedTimestamp.ConvertToDateString();
 }
 
 <div class="panel dark-background">
@@ -12,39 +13,19 @@
             <table class="table-display-list">
                 <tr>
                     <td>Member ID / Name</td>
-                    <td>@Html.DisplayFor(x => x.userModel.Username) / @Html.DisplayFor(x => x.userModel.FirstName) @Html.DisplayFor(x => x.userModel.LastName) </td>
+                    <td>@Html.DisplayFor(x => x.userModel.Username) / @Html.DisplayFor(x => x.userModel.Name)</td>
                 </tr>
                 <tr>
                     <td>Date Joined</td>
-                    <td>@Html.DisplayFor(x => x.userModel.CreatedTimestamp)</td>
+                    <td>@Html.DisplayFor(x => userJoinDate)</td>
                 </tr>
                 <tr>
-                    <td>Package</td>
+                    <td>Subscribed Package(s)</td>
                     <td>Platinum</td>
                 </tr>
                 <tr>
-                    <td>Group Members</td>
+                    <td>Member Tree Count</td>
                     <td>2332</td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-md-6">
-            <table class="table-display-list">
-                <tr>
-                    <td>Remark 1</td>
-                    <td>Remark 1</td>
-                </tr>
-                <tr>
-                    <td>Remark 2</td>
-                    <td>Remark 2</td>
-                </tr>
-                <tr>
-                    <td>Remark 3</td>
-                    <td>Remark 3</td>
-                </tr>
-                <tr>
-                    <td>Remark 4</td>
-                    <td>Remark 4</td>
                 </tr>
             </table>
         </div>

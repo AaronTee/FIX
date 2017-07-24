@@ -31,6 +31,10 @@ namespace FIX.Web.Extensions
             return tzTime.ConvertToDateTimeString();
         }
 
+        public static string ConvertToDateYearMonthString(this DateTime d)
+        {
+            return d.ToString(DBCDateFormat.MMMyyyy);
+        }
 
         public static string ConvertToDateString(this DateTime d)
         {

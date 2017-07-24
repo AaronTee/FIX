@@ -13,16 +13,18 @@
                 <div class="col-lg-6">
                     <div class="form-header">User Profile</div>
                     <div class="form-body no-padding-side no-padding-top">
-                        @Html.EditorFor(x => x.Email, "Display")
-                        @Html.EditorFor(x => x.Username, "Display")
                         @Html.EditorFor(x => x.RoleName, "Display")
-                        @Html.EditorFor(x => x.FirstName, "Display")
-                        @Html.EditorFor(x => x.LastName, "Display")
+                        @Html.EditorFor(x => x.Username, "Display")
                         @Html.EditorFor(x => x.Gender, "Display")
-                        @Html.EditorFor(x => x.Address, "Display")
-                        @Html.EditorFor(x => x.Country, "Display")
+                        @Html.EditorFor(x => x.Name, "Display")
+                        @Html.EditorFor(x => x.ICNumber, "Display")
+                        @Html.EditorFor(x => x.Email, "Display")
                         @Html.EditorFor(x => x.PhoneNo, "Display")
-                        @Html.EditorFor(x => x.ReferralName, "Display")
+                        @Html.EditorFor(x => x.Address, "Display")
+                        @Html.EditorFor(x => x.State, "Display")
+                        @Html.EditorFor(x => x.City, "Display")
+                        @Html.EditorFor(x => x.PostCode, "Display")
+                        @Html.EditorFor(x => x.Country, "Display")
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -32,6 +34,10 @@
                         @Html.EditorFor(x => x.BankAccountHolder, "Display")
                         @Html.EditorFor(x => x.BankAccountNo, "Display")
                         @Html.EditorFor(x => x.BankBranch, "Display")
+                    </div>
+                    <div class="form-header">Referral</div>
+                    <div class="form-body no-padding-side no-padding-top">
+                        @Html.EditorFor(x => x.ReferralName, "Display")
                     </div>
                 </div>
             </div>

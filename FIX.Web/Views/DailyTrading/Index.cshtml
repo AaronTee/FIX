@@ -28,28 +28,28 @@
        data-toggle="table"
        data-side-pagination="server"
        data-pagination="true"
-       data-classes="table"
+       data-classes="table table-hover"
        data-query-params="queryParams"
        data-page-list="[10, 25, 50, 100]"
        data-url="@(Url.Content("~/"))DailyTrading/DailyTradingReportList"
        data-unique-id="TradeId">
     <thead>
         <tr>
-            <th data-field="Date" data-class="minw100" data-align="center" rowspan="2" data-valign="middle">Date</th>
-            <th colspan="6" data-align="center">Currency (%)</th>
-            <th data-field="Profit" data-align="center" rowspan="2" data-formatter="currencyFormatter" data-valign="middle">Total Profit</th>
+            <th data-field="Date" data-class="minw100" data-halign="center" rowspan="2" data-valign="middle">Date</th>
+            <th colspan="6" data-halign="center">Currency (%)</th>
+            <th data-field="Profit" data-halign="center" data-align="right" rowspan="2" data-formatter="currencyFormatter" data-valign="middle">Total Profit</th>
             @if (User.IsInRole(DBConstant.DBCRole.Admin))
             {
             <th data-field="ActionLinks" data-align="center" data-formatter="LinkFormatter" rowspan="2" data-valign="middle">Action</th>
             }
         </tr>
         <tr>
-            <th data-field="EURJPY" data-formatter="currencyFormatter">EURJPY</th>
-            <th data-field="EURUSD" data-formatter="currencyFormatter">EURUSD</th>
-            <th data-field="EURNZD" data-formatter="currencyFormatter">EURNZD</th>
-            <th data-field="USDCAD" data-formatter="currencyFormatter">USDCAD</th>
-            <th data-field="GBPUSD" data-formatter="currencyFormatter">GBPUSD</th>
-            <th data-field="USDSGD" data-formatter="currencyFormatter">USDSGD</th>
+            <th data-field="EURJPY" data-halign="center" data-align="right" data-formatter="currencyFormatter">EURJPY</th>
+            <th data-field="EURUSD" data-halign="center" data-align="right" data-formatter="currencyFormatter">EURUSD</th>
+            <th data-field="EURNZD" data-halign="center" data-align="right" data-formatter="currencyFormatter">EURNZD</th>
+            <th data-field="USDCAD" data-halign="center" data-align="right" data-formatter="currencyFormatter">USDCAD</th>
+            <th data-field="GBPUSD" data-halign="center" data-align="right" data-formatter="currencyFormatter">GBPUSD</th>
+            <th data-field="USDSGD" data-halign="center" data-align="right" data-formatter="currencyFormatter">USDSGD</th>
         </tr>
     </thead>
 </table>

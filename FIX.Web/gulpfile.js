@@ -17,12 +17,12 @@ var order = require("gulp-order");
 
 var config = {
     //Include all js files but exclude any min.js files
-    prodsrc: ['Scripts/**/*.js', '!Scripts/**/*.min.js'],
+    //prodsrc: ['Scripts/**/*.js', '!Scripts/**/*.min.js'],
     srcJs: {
         'jquery.js': ['Scripts/jquery-*.min.js'],
         'jqueryval.js': ['Scripts/jquery.validate*.min.js'],
         'modernizr.js': ['Scripts/modernizr-*.js'],
-        'bootstrap.js': ['Scripts/bootstrap*.js', 'Scripts/respond.js'],
+        'bootstrap.js': ['Scripts/bootstrap.min.js', 'Scripts/respond.js'],
         'app.js': ['Scripts/app/extension.js', 'Scripts/app/settings.js', 'Scripts/app/*.js']
     },
     

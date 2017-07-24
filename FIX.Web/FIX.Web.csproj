@@ -278,7 +278,6 @@
     <Content Include="Scripts\app\bootstrap-modal.custom.js" />
     <Content Include="Scripts\app\extension.js" />
     <Content Include="Scripts\app\user.js" />
-    <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">

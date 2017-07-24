@@ -38,7 +38,7 @@ namespace FIX.Web.Controllers
                 queryableList = queryableList.Where(x => x.Username.ToString().Contains(search));
             }
 
-            queryableList = queryableList.PaginateList("Date", sort, order, offset, limit);
+            queryableList = queryableList.PaginateList(x => x.Date, sort, order, offset, limit);
 
             var rowsResult = queryableList.ToList().Select(x => new
             {
@@ -47,7 +47,7 @@ namespace FIX.Web.Controllers
                 Date = x.Date.ToUserLocalDate(User.Identity.GetUserTimeZone()),
                 Package = x.Package,
                 TotalInvest = x.TotalInvest,
-                Rate = x.Rate * 100,
+                Rate = x.Rate,
                 Amount = x.Amount,
                 Status = x.Status,
                 ActionText = new List<ActionTag>

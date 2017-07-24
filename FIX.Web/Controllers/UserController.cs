@@ -47,7 +47,11 @@ namespace FIX.Web.Controllers
                 queryableList = queryableList.Where(x => x.Username.Contains(search));
             }
 
-            queryableList = queryableList.PaginateList("Username", sort, order, offset, limit);
+            //Limit
+
+            if (sort == "RoleName") sort = "UserProfile.Role.Description";
+            //Sort
+            queryableList = queryableList.PaginateList(x => x.Username, sort, order, offset, limit);
 
             var rowsResult = queryableList.ToList()
                 .Select(x => new UserListViewModel() {
@@ -116,31 +120,37 @@ namespace FIX.Web.Controllers
         [HttpPost]
         public ActionResult Create(UserViewModel model)
         {
-            User user = new User()
+            try
             {
-                Username = model.Username,
-                Email = model.Email,
-                Password = model.Password,
-                IP = Request.UserHostAddress,
-                HasAcceptedTerms = false,
-                HasEmailVerified = false,
-                IsFirstTimeLogIn = false,
-                CreatedTimestamp = DateTime.UtcNow,
-                TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
-                StatusId = (int)DBConstant.EStatus.Active,
-                UserProfile = new UserProfile
+                User user = new User()
                 {
-                    Address = model.Address,
-                    Country = model.Country,
-                    FirstName = model.FirstName,
-                    Gender = model.Gender,
-                    LastName = model.LastName,
-                    PhoneNo = model.PhoneNo,
-                    RoleId = model.RoleId,
-                    ReferralId = model.ReferralId,
+                    Username = model.Username,
+                    Email = model.Email,
+                    Password = model.Password,
+                    SecurityPassword = model.SecurityPassword,
+                    IP = Request.UserHostAddress,
+                    HasAcceptedTerms = false,
+                    HasEmailVerified = false,
+                    IsFirstTimeLogIn = false,
                     CreatedTimestamp = DateTime.UtcNow,
-                },
-                UserBankAccount = new List<UserBankAccount>
+                    TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
+                    StatusId = (int)DBConstant.EStatus.Active,
+                    UserProfile = new UserProfile
+                    {
+                        ReferralId = model.ReferralId,
+                        Name = model.Name,
+                        ICNumber = model.ICNumber,
+                        Address = model.Address,
+                        City = model.City,
+                        State = model.State,
+                        PostCode = model.PostCode,
+                        Country = model.Country,
+                        Gender = model.Gender,
+                        PhoneNo = model.PhoneNo,
+                        RoleId = model.RoleId,
+                        CreatedTimestamp = DateTime.UtcNow,
+                    },
+                    UserBankAccount = new List<UserBankAccount>
                 {
                     new UserBankAccount() {
                         BankAccountHolder = model.BankAccountHolder,
@@ -151,15 +161,23 @@ namespace FIX.Web.Controllers
                         BankId = model.BankId
                     }
                 }
-            };
-            _userService.InsertUser(user);
+                };
+                _userService.InsertUser(user);
 
-            _userService.SaveChanges(User.Identity.GetUserId<int>());
+                _userService.SaveChanges(User.Identity.GetUserId<int>());
 
-            var curUser = _userService.GetUserBy(user.Username);
+                var curUser = _userService.GetUserBy(user.Username);
 
-            AccountController ac = new AccountController(_userService);
-            ac.SendActivationEmail(curUser.UserId);
+                AccountController ac = new AccountController(_userService);
+                ac.SendActivationEmail(curUser.UserId);
+
+                Success("Successfully created user " + model.Username + ".");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                Danger("Failed to create user " + model.Username + ", you can check logs files regarding the error detail.");
+            }
 
             return RedirectToAction("Index");
         }
@@ -168,21 +186,24 @@ namespace FIX.Web.Controllers
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            UserViewModel model = new UserViewModel();
-
             var userInfo = _userService.GetUserBy(id);
 
-            model.Username = userInfo.Username;
-            model.Email = userInfo.Email;
-            model.RoleId = userInfo.UserProfile.RoleId;
-
-            model.FirstName = userInfo.UserProfile.FirstName;
-            model.LastName = userInfo.UserProfile.LastName;
-            model.Gender = userInfo.UserProfile.Gender;
-            model.Address = userInfo.UserProfile.Address;
-            model.Country = userInfo.UserProfile.Country;
-            model.PhoneNo = userInfo.UserProfile.PhoneNo;
-            model.ReferralName = (userInfo.UserProfile.ReferralId == (int?)null) ? "" : _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username;
+            UserViewModel model = new UserViewModel
+            {
+                Username = userInfo.Username,
+                Email = userInfo.Email,
+                RoleId = userInfo.UserProfile.RoleId,
+                Name = userInfo.UserProfile.Name,
+                ICNumber = userInfo.UserProfile.ICNumber,
+                Address = userInfo.UserProfile.Address,
+                Gender = userInfo.UserProfile.Gender,
+                State = userInfo.UserProfile.State,
+                City = userInfo.UserProfile.City,
+                PostCode = userInfo.UserProfile.PostCode,
+                Country = userInfo.UserProfile.Country,
+                PhoneNo = userInfo.UserProfile.PhoneNo,
+                ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username
+            };
 
             if (userInfo.UserBankAccount.Count > 0)
             {
@@ -204,60 +225,92 @@ namespace FIX.Web.Controllers
                 Text = x.Name,
                 Value = x.BankId.ToString()
             }), "Value", "Text", model.BankId);
-            
+
+            model.GenderDDL = new SelectList(new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = "Male", Value = DBConstant.DBCGender.Male },
+                new SelectListItem() { Text = "Female", Value = DBConstant.DBCGender.Female },
+                new SelectListItem() { Text = "Other", Value = DBConstant.DBCGender.Other }
+            }, "Value", "Text", model.Gender);
+
+            model.CountryDDL = new SelectList(
+                new List<SelectListItem>()
+                {
+                    new SelectListItem
+                    {
+                        Text = "Malaysia",
+                        Value = "MY"
+                    }
+                }, "Value", "Text", model.Country);
+
             return View(model);
         }
 
         [HttpPost]
         public ActionResult Edit(UserViewModel model)
         {
-
             var userInfo = _userService.GetUserBy(model.Id);
-            userInfo.UserProfile.RoleId = model.RoleId;
-            userInfo.UserProfile.FirstName = model.FirstName;
-            userInfo.UserProfile.LastName = model.LastName;
-            userInfo.UserProfile.Gender = model.Gender;
-            userInfo.UserProfile.Address = model.Address;
-            userInfo.UserProfile.Country = model.Country;
-            userInfo.UserProfile.PhoneNo = model.PhoneNo;
-            userInfo.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
-
-            if (userInfo.UserBankAccount.Count > 0)
+            try
             {
-                foreach (var bankAccount in userInfo.UserBankAccount)
+                userInfo.UserProfile.RoleId = model.RoleId;
+                userInfo.UserProfile.City = model.City;
+                userInfo.UserProfile.State = model.State;
+                userInfo.UserProfile.PostCode = model.PostCode;
+                userInfo.UserProfile.Gender = model.Gender;
+                userInfo.UserProfile.Address = model.Address;
+                userInfo.UserProfile.Country = model.Country;
+                userInfo.UserProfile.PhoneNo = model.PhoneNo;
+                userInfo.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
+
+                if (userInfo.UserBankAccount.Count > 0)
                 {
-                    bankAccount.BankId = model.BankId;
-                    bankAccount.BankAccountHolder = model.BankAccountHolder;
-                    bankAccount.BankAccountNo = model.BankAccountNo;
-                    bankAccount.BankBranch = model.BankBranch;
-                    break; //support only one account for now hence break.
+                    foreach (var bankAccount in userInfo.UserBankAccount)
+                    {
+                        bankAccount.BankId = model.BankId;
+                        bankAccount.BankAccountHolder = model.BankAccountHolder;
+                        bankAccount.BankAccountNo = model.BankAccountNo;
+                        bankAccount.BankBranch = model.BankBranch;
+                        break; //support only one account for now hence break.
+                    }
                 }
+
+                _userService.UpdateUser(userInfo);
+
+                _userService.SaveChanges(User.Identity.GetUserId<int>());
+
+                Success("Successfully modified user " + userInfo.Username + ".");
+
             }
-
-            _userService.UpdateUser(userInfo);
-
-            _userService.SaveChanges(User.Identity.GetUserId<int>());
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                Danger("Failed to modify user " + userInfo.Username + ", you can check logs files regarding the error detail.");
+            }
 
             return RedirectToAction("Index");
         }
 
         public ActionResult Detail(int? id)
         {
-            UserViewModel model = new UserViewModel();
-
             var userInfo = _userService.GetUserBy(id);
-
-            model.Username = userInfo.Username;
-            model.Email = userInfo.Email;
-            model.RoleName = userInfo.UserProfile.Role.Description;
-
-            model.FirstName = userInfo.UserProfile.FirstName;
-            model.LastName = userInfo.UserProfile.LastName;
-            model.Gender = userInfo.UserProfile.Gender;
-            model.Address = userInfo.UserProfile.Address;
-            model.Country = userInfo.UserProfile.Country;
-            model.PhoneNo = userInfo.UserProfile.PhoneNo;
-            model.ReferralName = (userInfo.UserProfile.ReferralId == (int?)null) ? "" : _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username;
+            UserViewModel model = new UserViewModel
+            {
+                Username = userInfo.Username,
+                Email = userInfo.Email,
+                hasEmailVerified = userInfo.HasEmailVerified,
+                hasAcceptedTerms = userInfo.HasAcceptedTerms,
+                RoleName = userInfo.UserProfile.Role.Description,
+                Name = userInfo.UserProfile.Name,
+                ICNumber = userInfo.UserProfile.ICNumber,
+                Gender = userInfo.UserProfile.Gender,
+                PhoneNo = userInfo.UserProfile.PhoneNo,
+                Address = userInfo.UserProfile.Address,
+                City = userInfo.UserProfile.City,
+                State = userInfo.UserProfile.State,
+                PostCode = userInfo.UserProfile.PostCode,
+                Country = userInfo.UserProfile.Country,
+                ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username
+            };
 
             if (userInfo.UserBankAccount.Count > 0)
             {

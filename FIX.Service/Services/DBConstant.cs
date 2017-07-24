@@ -20,11 +20,13 @@ namespace FIX.Service
             public enum Id
             {
                 Admin = 3,
-                User = 4
+                User = 4,
+                SuperAdmin = 5
             }
 
             public const string Admin = "Admin";
             public const string User = "User";
+            public const string SuperAdmin = "SuperAdmin";
         }
 
         public struct DBCPackageLifetime
@@ -37,6 +39,7 @@ namespace FIX.Service
         {
             public const string ddMMyyyy = "dd-MM-yyyy";
             public const string ddMMMyyyy = "dd-MMM-yyyy";
+            public const string MMMyyyy = "MMM/yyyy";
             public const string ddMMMyyyyHHmmsstt = "dd-MMM-yyyy hh:mm:ss tt";
         }
 

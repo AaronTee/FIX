@@ -15,14 +15,17 @@ namespace FIX.Service.Entities
     public partial class UserProfile
     {
         public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Address { get; set; }
-        public string Country { get; set; }
+        public int ReferralId { get; set; }
+        public string Name { get; set; }
+        public string ICNumber { get; set; }
         public string PhoneNo { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string PostCode { get; set; }
+        public string Country { get; set; }
         public string Gender { get; set; }
         public int RoleId { get; set; }
-        public Nullable<int> ReferralId { get; set; }
         public System.DateTime CreatedTimestamp { get; set; }
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
     

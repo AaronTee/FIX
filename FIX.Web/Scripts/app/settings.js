@@ -1,4 +1,9 @@
-﻿$(function() {
+﻿//Toplevel
+if ($.validator) {
+    $.validator.setDefaults({ ignore: [] });
+}
+
+$(function () {
 
     /*======================= Default ========================*/
     /* Assign a class for select2 plugin */
@@ -14,6 +19,11 @@
         $.fn.datepicker.defaults.maxViewMode = 2;
         $.fn.datepicker.defaults.orientation = 'bottom';
         $('.datepicker').datepicker();
+    }
+
+    //wenzhixin
+    if($.fn.bootstrapTable){
+        $.fn.bootstrapTable.defaults.undefinedText = "";
     }
 
     /*======================= Events ========================*/
@@ -40,6 +50,15 @@
         if (validator) {
             $(validator).each(function () {
                 this.settings.onkeyup = false;
+            });
+        }
+    });
+
+    /* Prevent user click submit form twice or more */
+    $forms.submit(function () {
+        if ($(this).valid()) {
+            $forms.submit(function () {
+                return false;
             });
         }
     });

@@ -193,6 +193,7 @@ tr td a.btn.btn-actionlink:not(:last-child) {
 
     & .form-body{
         padding: 15px 10px 10px 10px;
+        margin-bottom: 15px;
         border: 1px solid #ddd;
         border-top: 0;
         border-bottom-left-radius: 5px;
@@ -310,16 +311,37 @@ select{
 
 .bootstrap-table{
     margin: 15px 0px;
-}
 
-.bootstrap-table .fixed-table-container tbody .selected td{
-    background-color: #aaa;
-}
+    & .fixed-table-container{
 
-.fixed-table-container{
-    border-bottom: 0;
-}
+        border-bottom: 0;
 
+        & table tbody{
+
+            & tr.selected td{
+                background-color: #aaa;
+            }
+
+            & tr.footer{
+                & td{
+                    border-right: 0;
+                    border-left: 0;
+                }
+            }
+            
+        }
+
+        & th.align-left{
+            text-align: left !important;
+        }
+
+        & th.align-right{
+            text-align: right !important;
+        }
+
+    }
+    
+}
 
 @include keyframes(slide-down) {
 

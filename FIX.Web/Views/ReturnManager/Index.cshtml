@@ -3,24 +3,28 @@
 <div id="modal"></div>
 
 <h1>Showing rows of pending returns</h1>
+@*Developer Note Begin*@
+<p style="color: red">To Tester: This is a testing environment, for testing purpose, overdue date has been adjusted 1 month in advanced. This message shall be removed by developer on release version.</p>
+<p style="color: red">To Developer: Please remove tag under "Developer Note" terms before release, and switch/use entity without suffix of "*_Test"</p>
+@*Developer Note End*@
     <table id="table_member_return"
             data-toggle="table"
             data-search="true"
             data-side-pagination="server"
             data-pagination="true"
-            data-classes="table table-no-bordered"
+            data-classes="table table-bordered table-hover"
             data-page-list="[10, 25, 50, 100]"
             data-url="@(Url.Content("~/"))ReturnManager/GetPendingReturnList"
             data-unique-id="UPDId">
         <thead>
             <tr>
                 <th data-field="UPDId">Id</th>
-                <th data-field="Date">Date</th>
+                <th data-field="Date" data-class="minw125">Date</th>
                 <th data-field="Username">Username</th>
                 <th data-field="Package">Package</th>
-                <th data-field="TotalInvest">Total Invested</th>
-                <th data-field="Rate">Rate</th>
-                <th data-field="Amount">Amount</th>
+                <th data-field="TotalInvest" data-align="right" data-halign="left" data-formatter="currencyFormatter">Total Invested</th>
+                <th data-field="Rate" data-formatter="percentageFormatter" data-align="right" data-halign="left">Rate</th>
+                <th data-field="Amount" data-align="right" data-halign="left" data-formatter="currencyFormatter">Amount</th>
                 <th data-field="Status">Status</th>
                 <th data-field="ActionText" data-formatter="actionFormatter" data-events="statusEvents">Action</th>
             </tr>

@@ -61,10 +61,9 @@ namespace FIX.Service
 
         public IEnumerable<spMatchingBonus_Result> GetMatchingBonusResult(int? userId)
         {
-
             if (userId != null)
             {
-                var param1 = new System.Data.SqlClient.SqlParameter("level", 2);
+                var param1 = new System.Data.SqlClient.SqlParameter("level", 3);
                 var param2 = new System.Data.SqlClient.SqlParameter("userId", userId);
 
                 var result = _uow.Repository<spMatchingBonus_Result>().ExecWithStoreProcedure("spMatchingBonus @level, @userId", new[]

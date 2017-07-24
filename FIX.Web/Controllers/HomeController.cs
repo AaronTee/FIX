@@ -28,8 +28,7 @@ namespace FIX.Web.Controllers
             model.userModel = new UserViewModel()
             {
                 Username = user.Username,
-                FirstName = user.UserProfile?.FirstName,
-                LastName = user.UserProfile?.LastName,
+                Name = user.UserProfile.Name,
                 hasEmailVerified = user.HasEmailVerified,
                 hasAcceptedTerms = user.HasAcceptedTerms,
                 CreatedTimestamp = user.CreatedTimestamp.Date

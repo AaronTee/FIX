@@ -20,6 +20,9 @@
     <mvcSiteMapNode title="Sponsor Tree" controller="Referral" action="Index" preservedRouteParameters="lang, id">
     </mvcSiteMapNode>
 
+    <mvcSiteMapNode title="Matching Bonus" controller="MatchingBonus" action="Index" preservedRouteParameters="lang, id">
+    </mvcSiteMapNode>
+
     <mvcSiteMapNode title="Daily Trading Report" controller="DailyTrading" action="Index" preservedRouteParameters="lang, id">
       <mvcSiteMapNode title="Create" controller="DailyTrading" action="Create" preservedRouteParameters="lang, id"></mvcSiteMapNode>
     </mvcSiteMapNode>
