@@ -12,16 +12,15 @@ namespace FIX.Service.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class AuditLog
+    public partial class WalletTransaction
     {
-        public System.Guid AuditLogId { get; set; }
-        public int UserId { get; set; }
-        public System.DateTime EventTimestamp { get; set; }
-        public string EventType { get; set; }
-        public string TableName { get; set; }
-        public string RecordId { get; set; }
-        public string ColumnName { get; set; }
-        public string OriginalValue { get; set; }
-        public string NewValue { get; set; }
+        public int WalletTransactionId { get; set; }
+        public System.Guid WalletId { get; set; }
+        public System.DateTime TransactionDate { get; set; }
+        public string TransactionType { get; set; }
+        public Nullable<decimal> Debit { get; set; }
+        public Nullable<decimal> Credit { get; set; }
+    
+        public virtual UserWallet UserWallet { get; set; }
     }
 }

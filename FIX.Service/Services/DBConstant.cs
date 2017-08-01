@@ -50,6 +50,18 @@ namespace FIX.Service
             public const string Deleted = "Deleted";
         }
 
+        public struct Currency
+        {
+            public const string USD = "USD";
+        }
+
+        public struct MatchingBonusSetting
+        {
+            public const int Level = 3;
+            public const decimal StartingRate = 0.3M;
+            public const decimal DecreaseRate = 0.1M;
+        }
+
         //without going to db retrieve status.
         public enum EStatus
         {
@@ -65,6 +77,7 @@ namespace FIX.Service
             return Enum.GetName(typeof(EStatus), s);
         }
 
+        public const int SUPER_ADMIN_REFERRAL_ID = 0;
         public const int MAX_REFERRAL_TREE_LEVEL = 5;
         public const int MAX_REFERRAL_TREE_SEARCH_LEVEL = 25;
         public const string DEFAULT_TIMEZONEID = "Singapore Standard Time";

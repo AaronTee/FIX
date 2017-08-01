@@ -45,11 +45,8 @@ namespace FIX.Web
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
-                      "~/Scripts/app/extension.js",
-                      "~/Scripts/app/settings.js",
-                      "~/Scripts/app/styles.js",
-                      "~/Scripts/app/bootstrap-table.custom.js",
-                      "~/Scripts/app/bootstrap-modal.custom.js"));
+                        "~/Scripts/app/lib/pikaday-responsive.min.js").IncludeDirectory(
+                        "~/Scripts/app", "*.js", true));
 #endif
 
             bundles.Add(new StyleBundle("~/Content/style").Include(

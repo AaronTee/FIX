@@ -121,6 +121,9 @@ namespace FIX.Web.Models
         [Display(Name = "Bank Branch")]
         public string BankBranch { get; set; }
 
+        [Display(Name = "Balance")]
+        public string CreditBalance { get; set; }
+
         [Display(Name = "Created Date")]
         public DateTime CreatedTimestamp { get; set; }
 

@@ -261,6 +261,7 @@
     <Content Include="Content\css\bootswatch.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\loginpage.css" />
+    <Content Include="Content\css\pikaday-responsive.min.css" />
     <Content Include="Content\css\portal.css" />
     <Content Include="Content\image\FIXLogo.png" />
     <Content Include="Content\image\loginbg.jpg" />
@@ -321,6 +322,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\app\lib\pikaday-responsive.min.js" />
     <Content Include="Scripts\require.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />

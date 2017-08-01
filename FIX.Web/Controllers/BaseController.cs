@@ -85,6 +85,7 @@ namespace FIX.Web.Controllers
             AddAlert(AlertModel.AlertStyles.Danger, autoDisappear, message, dismissable);
         }
 
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
         private void AddAlert(string alertStyle, bool autoDisappear, string message, bool dismissable)
         {
             var alerts = TempData.ContainsKey(AlertModel.TempDataKey)

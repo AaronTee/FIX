@@ -59,19 +59,11 @@ namespace FIX.Service
             return _uow.Repository<vwPendingReturnInvestor_Test>().GetAsQueryable();
         }
 
-        public IEnumerable<spMatchingBonus_Result> GetMatchingBonusResult(int? userId)
+        public IQueryable<MatchingBonus> GetMatchingBonusList(int? userId)
         {
             if (userId != null)
             {
-                var param1 = new System.Data.SqlClient.SqlParameter("level", 3);
-                var param2 = new System.Data.SqlClient.SqlParameter("userId", userId);
-
-                var result = _uow.Repository<spMatchingBonus_Result>().ExecWithStoreProcedure("spMatchingBonus @level, @userId", new[]
-                {
-                    param1, param2
-                });
-
-                return result;
+                return _uow.Repository<MatchingBonus>().GetAsQueryable(filter: x => x.ReferralId == userId);
             }
 
             throw new Exception("userId cannot be null");
@@ -100,6 +92,30 @@ namespace FIX.Service
         public void SaveChange(int userId)
         {
             _uow.Save(userId);
+        }
+
+        public UserPackage GetUserPackage(int UPId)
+        {
+            return _uow.Repository<UserPackage>().GetByKey(UPId);
+        }
+
+        public double GetMatchingBonusAmount(int? userId, int? UPDId)
+        {
+            if (userId != null && UPDId != null)
+            {
+                var param1 = new System.Data.SqlClient.SqlParameter("level", 3);
+                var param2 = new System.Data.SqlClient.SqlParameter("userId", userId);
+                var param3 = new System.Data.SqlClient.SqlParameter("updId", UPDId);
+
+                var result = _uow.Repository<spMatchingBonus_Result>().ExecWithStoreProcedure("spMatchingBonus @level, @userId, @updId", new[]
+                {
+                    param1, param2, param3
+                });
+
+                return result.First()?.BonusAmount ?? 0;
+            }
+
+            throw new Exception("userId cannot be null");
         }
     }
 }

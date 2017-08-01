@@ -17,9 +17,11 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.AuditLog = new HashSet<AuditLog>();
             this.UserBankAccount = new HashSet<UserBankAccount>();
             this.UserPackage = new HashSet<UserPackage>();
+            this.UserWallet = new HashSet<UserWallet>();
+            this.MatchingBonus = new HashSet<MatchingBonus>();
+            this.MatchingBonus1 = new HashSet<MatchingBonus>();
         }
     
         public int UserId { get; set; }
@@ -36,8 +38,6 @@ namespace FIX.Service.Entities
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
         public int StatusId { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AuditLog> AuditLog { get; set; }
         public virtual Status Status { get; set; }
         public virtual UserActivation UserActivation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -45,5 +45,11 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserWallet> UserWallet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MatchingBonus> MatchingBonus1 { get; set; }
     }
 }

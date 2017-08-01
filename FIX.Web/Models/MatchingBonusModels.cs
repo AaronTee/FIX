@@ -12,6 +12,7 @@ namespace FIX.Web.Models
 
     public class MatchingBonusListViewModels{
         public string Pos { get; set; }
+        public int MatchingBonusId { get; set; }
         public string Date { get; set; }
         public int UserId { get; set; }
         public string Username { get; set; }

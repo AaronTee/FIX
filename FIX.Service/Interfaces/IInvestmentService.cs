@@ -4,19 +4,21 @@ using System.Collections.Generic;
 
 namespace FIX.Service
 {
-    public interface IInvestmentService
+    public interface IInvestmentService/* : IBaseService*/
     {
         IQueryable<Package> GetAllPackage();
+        IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn();
         IQueryable<UserPackage> GetAllUserPackage(int userId);
         IQueryable<UserPackageDetail> GetAllUserPackageDetail(int userPackageId);
-        decimal GetPackageRate(int PackageId);
-        void InsertUserPackage(UserPackage userPackage);
         Package GetEntitledPackage(decimal amount);
-        IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn();
+        double GetMatchingBonusAmount(int? userId, int? UPDId);
+        IQueryable<MatchingBonus> GetMatchingBonusList(int? userId);
+        decimal GetPackageRate(int PackageId);
+        UserPackage GetUserPackage(int UPId);
         UserPackageDetail GetUserPackageDetail(int UPDId);
-        IEnumerable<spMatchingBonus_Result> GetMatchingBonusResult(int? userId);
-        void UpdateUserPackageDetail(UserPackageDetail upd);
+        void InsertUserPackage(UserPackage userPackage);
         void SaveChange();
         void SaveChange(int userId);
+        void UpdateUserPackageDetail(UserPackageDetail upd);
     }
 }

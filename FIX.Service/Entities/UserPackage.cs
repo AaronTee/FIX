@@ -18,6 +18,7 @@ namespace FIX.Service.Entities
         public UserPackage()
         {
             this.UserPackageDetail = new HashSet<UserPackageDetail>();
+            this.MatchingBonus = new HashSet<MatchingBonus>();
         }
     
         public int UserPackageId { get; set; }
@@ -31,8 +32,10 @@ namespace FIX.Service.Entities
     
         public virtual Package Package { get; set; }
         public virtual Status Status { get; set; }
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
-        public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
     }
 }

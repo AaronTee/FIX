@@ -90,6 +90,7 @@
     <Compile Include="Entities\Bank.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\CustomMatchingBonus.cs" />
     <Compile Include="Entities\DailyTrading.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -112,10 +113,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FIXEntities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Entities\MatchingBonus.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Package.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\spMatchingBonusFormula_experimental_Result.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\spMatchingBonus_Result.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\UserWallet.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\WalletTransaction.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IUnitOfWork.cs" />
@@ -156,14 +169,18 @@
     <Compile Include="Entities\Repositories\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BankService.cs" />
+    <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\DBConstant.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Interfaces\IInvestmentService.cs" />
+    <Compile Include="Interfaces\IFinancialService.cs" />
+    <Compile Include="Interfaces\IBaseService.cs" />
     <Compile Include="Services\InvestmentService.cs" />
     <Compile Include="Interfaces\IRoleService.cs" />
     <Compile Include="Interfaces\IReportService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\FinancialService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>

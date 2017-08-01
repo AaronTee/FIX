@@ -24,7 +24,7 @@
        data-query-params="queryParams"
        data-page-list="[10, 25, 50, 100]"
        data-url="@(Url.Content("~/"))MatchingBonus/MatchingBonusList"
-       data-unique-id="TradeId">
+       data-unique-id="MatchingBonusId">
     <thead>
         <tr>
             <th data-align="center" data-field="Pos">#</th>
@@ -33,6 +33,7 @@
             <th data-field="Package">Package</th>
             <th data-field="Generation">Generation</th>
             <th data-field="BonusAmount" data-align="right" data-halign="left" data-formatter="currencyFormatter">Bonus Amount</th>
+            <th data-field="Action" @*data-formatter="actionFormatter"*@>Action</th>
         </tr>
     </thead>
 </table>

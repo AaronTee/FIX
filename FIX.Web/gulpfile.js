@@ -23,7 +23,7 @@ var config = {
         'jqueryval.js': ['Scripts/jquery.validate*.min.js'],
         'modernizr.js': ['Scripts/modernizr-*.js'],
         'bootstrap.js': ['Scripts/bootstrap.min.js', 'Scripts/respond.js'],
-        'app.js': ['Scripts/app/extension.js', 'Scripts/app/settings.js', 'Scripts/app/*.js']
+        'app.js': ['Scripts/app/extension.js', 'Scripts/app/settings.js', 'Scripts/app/*.js', 'Scripts/app/lib/*.js']
     },
     
     srcCss: [

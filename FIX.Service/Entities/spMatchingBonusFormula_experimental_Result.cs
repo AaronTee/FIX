@@ -11,7 +11,7 @@ namespace FIX.Service.Entities
 {
     using System;
     
-    public partial class spMatchingBonus_Result
+    public partial class spMatchingBonusFormula_experimental_Result
     {
         public Nullable<System.DateTime> ReturnDate { get; set; }
         public int UserPackageId { get; set; }

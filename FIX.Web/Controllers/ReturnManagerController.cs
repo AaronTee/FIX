@@ -16,8 +16,9 @@ namespace FIX.Web.Controllers
     public class ReturnManagerController : BaseController
     {
         private IInvestmentService _investmentService;
+        private IFinancialService _financialService;
 
-        public ReturnManagerController(IInvestmentService investmentService) : base()
+        public ReturnManagerController(IInvestmentService investmentService, IFinancialService financialService) : base()
         {
             _investmentService = investmentService;
         }
@@ -76,12 +77,37 @@ namespace FIX.Web.Controllers
         //Return update row information to bootstrap table.
         public JsonResult ApproveReturn(int UPDId)
         {
-            var upd = _investmentService.GetUserPackageDetail(UPDId);
-            upd.StatusId = (int)EStatus.Approved;
+            try
+            {
+                var upd = _investmentService.GetUserPackageDetail(UPDId);
+                upd.StatusId = (int)EStatus.Approved;
 
-            _investmentService.SaveChange(User.Identity.GetUserId<int>());
+                //Add to wallet
+                //Formulae : Interest (upd.Amount) + Matching Bonus (spMatchingBonus.BonusAmount)
+                var bonusAmount = _investmentService.GetMatchingBonusAmount(upd.UserPackage.UserId, UPDId);
 
-            return Json(true, JsonRequestBehavior.AllowGet);
+                var userWallet = _financialService.GetUserWallet(upd.UserPackage.UserId);
+                var totalEarning = upd.Amount + Convert.ToDecimal(bonusAmount);
+                userWallet.Balance += totalEarning;
+
+                //Check if package subscription ended, update status.
+                var packagesDetail = _investmentService.GetAllUserPackageDetail(upd.UserPackageId);
+                if (!packagesDetail.Any(x => x.StatusId == (int)EStatus.Active))
+                {
+                    var package = _investmentService.GetUserPackage(upd.UserPackageId);
+                    package.StatusId = (int)EStatus.Deactivated;
+                }
+
+                _investmentService.SaveChange(User.Identity.GetUserId<int>());
+                _financialService.SaveChange(User.Identity.GetUserId<int>());
+
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
         }
 
         //Return update row information to bootstrap table.

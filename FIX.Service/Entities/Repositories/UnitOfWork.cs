@@ -16,6 +16,8 @@ namespace FIX.Service.Models.Repositories
         protected FIXEntities _context = null;
         public Dictionary<Type, object> repositories;
         private bool disposed = false;
+        private DbContextTransaction _transaction { get; set; }
+
         public UnitOfWork()
         {
             _context = DependencyResolver.Current.GetService<FIXEntities>();
@@ -36,6 +38,27 @@ namespace FIX.Service.Models.Repositories
             IRepository<T> repo = new Repository<T>(_context);
             repositories.Add(typeof(T), repo);
             return repo;
+        }
+
+        public IUnitOfWork BeginTransaction()
+        {
+            _transaction = _context.Database.BeginTransaction();
+            return this;
+        }
+
+        public bool EndTransaction(int userId, bool goAsync = false)
+        {
+            try
+            {
+                Save(userId, goAsync);
+                _transaction.Commit();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+
+            return true;
         }
 
         public bool Save(int userId, bool goAsync = false)
@@ -86,7 +109,7 @@ namespace FIX.Service.Models.Repositories
             {
                 if (disposing)
                 {
-                    this._context.Dispose();
+                    _context.Dispose();
                 }
             }
             this.disposed = true;

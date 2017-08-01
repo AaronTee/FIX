@@ -18,6 +18,7 @@ namespace FIX.Service
         Guid AssignNewValidationCode(User user);
         bool ValidateActivationCode(Guid activationCode);
         IQueryable<User> GetReferralChildren(int? id);
+        User GetReferralBy(int? id);
         IQueryable<User> GetUsersWithoutAdmin();
         void InsertUser(User user);
         void UpdateUser(User user);

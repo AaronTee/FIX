@@ -151,27 +151,37 @@ namespace FIX.Web.Controllers
                         CreatedTimestamp = DateTime.UtcNow,
                     },
                     UserBankAccount = new List<UserBankAccount>
-                {
-                    new UserBankAccount() {
-                        BankAccountHolder = model.BankAccountHolder,
-                        BankAccountNo = model.BankAccountNo,
-                        BankBranch = model.BankBranch,
-                        CreatedTimestamp = DateTime.UtcNow,
-                        IsPrimary = true,
-                        BankId = model.BankId
+                    {
+                        new UserBankAccount()
+                        {
+                            BankAccountHolder = model.BankAccountHolder,
+                            BankAccountNo = model.BankAccountNo,
+                            BankBranch = model.BankBranch,
+                            CreatedTimestamp = DateTime.UtcNow,
+                            IsPrimary = true,
+                            BankId = model.BankId
+                        }
+                    },
+                    UserWallet = new List<UserWallet>
+                    {
+                        new UserWallet()
+                        {
+                            WalletId = Guid.NewGuid(),
+                            Currency = Currency.USD,
+                            Balance = decimal.Zero,
+                        }
                     }
-                }
                 };
-                _userService.InsertUser(user);
 
+                _userService.InsertUser(user);
                 _userService.SaveChanges(User.Identity.GetUserId<int>());
 
                 var curUser = _userService.GetUserBy(user.Username);
 
-                AccountController ac = new AccountController(_userService);
-                ac.SendActivationEmail(curUser.UserId);
+                //AccountController ac = new AccountController(_userService);
+                //ac.SendActivationEmail(curUser.UserId);
 
-                Success("Successfully created user " + model.Username + ".");
+                Success("Successfully created user " + model.Username + ", user will be prompted to verify his email upon login for the first time.");
             }
             catch (Exception ex)
             {
@@ -202,7 +212,8 @@ namespace FIX.Web.Controllers
                 PostCode = userInfo.UserProfile.PostCode,
                 Country = userInfo.UserProfile.Country,
                 PhoneNo = userInfo.UserProfile.PhoneNo,
-                ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username
+                ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId)?.Username,
+                CreditBalance = userInfo.UserWallet.FirstOrDefault()?.Balance.ToString()
             };
 
             if (userInfo.UserBankAccount.Count > 0)
@@ -274,6 +285,21 @@ namespace FIX.Web.Controllers
                     }
                 }
 
+                //create wallet if empty
+                if(userInfo.UserWallet.Count < 1)
+                {
+                    userInfo.UserWallet = new List<UserWallet>
+                    {
+                        new UserWallet()
+                        {
+                            WalletId = Guid.NewGuid(),
+                            Balance = decimal.Zero,
+                            Currency = Currency.USD,
+                            UserId = userInfo.UserId
+                        }
+                    };
+                }
+
                 _userService.UpdateUser(userInfo);
 
                 _userService.SaveChanges(User.Identity.GetUserId<int>());
@@ -284,7 +310,7 @@ namespace FIX.Web.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message, ex);
-                Danger("Failed to modify user " + userInfo.Username + ", you can check logs files regarding the error detail.");
+                Danger("Failed to modify user " + userInfo.Username + ", you can check audit log regarding the error detail.");
             }
 
             return RedirectToAction("Index");
@@ -309,7 +335,8 @@ namespace FIX.Web.Controllers
                 State = userInfo.UserProfile.State,
                 PostCode = userInfo.UserProfile.PostCode,
                 Country = userInfo.UserProfile.Country,
-                ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId).Username
+                CreditBalance = userInfo.UserWallet.FirstOrDefault()?.Balance.ToString(),
+                ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId)?.Username
             };
 
             if (userInfo.UserBankAccount.Count > 0)

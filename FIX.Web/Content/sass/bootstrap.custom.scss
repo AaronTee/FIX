@@ -343,6 +343,22 @@ select{
     
 }
 
+/*Third party library css temporary placement*/
+.datepicker{
+    /*z-index: 99 !important;*/
+}
+
+.pikaday__invisible + .form-control[readonly]{
+    background-color: initial;
+}
+
+.pikaday__invisible:focus + .form-control[readonly],
+.pikaday__invisible:active + .form-control[readonly]{
+    background-color: rgb(255, 229, 189);
+}
+
+
+
 @include keyframes(slide-down) {
 
     from {transform: translateY(-100px);}

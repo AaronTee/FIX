@@ -1,7 +1,7 @@
 ﻿@{
     var alerts = TempData.ContainsKey(AlertModel.TempDataKey)
-                ? (List<AlertModel>)TempData[AlertModel.TempDataKey]
-                : new List<AlertModel>();
+        ? (List<AlertModel>)TempData[AlertModel.TempDataKey]
+        : new List<AlertModel>();
 }
 
 <div class="ui-message-wrapper">

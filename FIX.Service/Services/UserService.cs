@@ -42,6 +42,12 @@ namespace FIX.Service
            return _uow.Repository<User>().GetAsQueryable().Where(x => x.Username == username).FirstOrDefault();
         }
 
+        public User GetReferralBy(int? id)
+        {
+            var referralId = _uow.Repository<UserProfile>().GetByKey(id).ReferralId;
+            return GetUserBy(referralId);
+        }
+
         public User GetUserBy(int? id)
         {
             return _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == id).FirstOrDefault();

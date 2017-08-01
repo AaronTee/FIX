@@ -18,10 +18,12 @@ namespace FIX.Web.Controllers
     public class InvestmentController : BaseController
     {
         IInvestmentService _investmentService;
+        IUserService _userService;
 
-        public InvestmentController(IInvestmentService investmentService)
+        public InvestmentController(IInvestmentService investmentService, IUserService userService)
         {
             _investmentService = investmentService;
+            _userService = userService;
         }
 
         public ActionResult Index()
@@ -56,18 +58,46 @@ namespace FIX.Web.Controllers
                     {
                         list.Add(new UserPackageDetail
                         {
-                            Date = DateTime.UtcNow.AddMonths(i + 1),
+                            Date = DateTime.UtcNow.AddMonths(i + 1).AddDays(1),
                             Amount = model.Amount * package.Rate,
-                            StatusId = (int)EStatus.Pending,
+                            StatusId = (int)EStatus.Pending
                         });
                     }
 
                     return list;
-                }).Value
+                }).Value,
+                MatchingBonus = new Lazy<List<MatchingBonus>>(() =>
+                {
+                    List<MatchingBonus> list = new List<MatchingBonus>();
+                    User referralUser = _userService.GetReferralBy(User.Identity.GetUserId<int>());
+                    var Rate = MatchingBonusSetting.StartingRate;
+                    for (int i = 1; i <= DBConstant.MatchingBonusSetting.Level; i++)
+                    {
+                        //Find upper level user
+                        //If 
+                        if (referralUser == null || referralUser.UserProfile.Role.Description == DBConstant.DBCRole.Admin || referralUser.UserProfile.Role.Description == DBConstant.DBCRole.SuperAdmin) break;
+                        for (int y = 0; y < DBCPackageLifetime.Month; y++)
+                        {
+                            list.Add(new MatchingBonus
+                            {
+                                ReferralId = referralUser.UserId,
+                                UserId = User.Identity.GetUserId<int>(),
+                                Generation = i,
+                                Rate = Rate,
+                                ReturnDate = DateTime.UtcNow.AddMonths(y + 1).AddDays(1),
+                                BonusAmount = model.Amount * package.Rate * Rate,
+                                StatusId = (int)EStatus.Pending
+                            });
+                        }
+                        referralUser = _userService.GetReferralBy(referralUser.UserId);
+                        Rate -= MatchingBonusSetting.DecreaseRate;
+                    }
+
+                    return list;
+                }).Value,
             };
 
             _investmentService.InsertUserPackage(up);
-
             _investmentService.SaveChange(User.Identity.GetUserId<int>());
 
             Success("Added new package " + package.Description + ".", true, true);

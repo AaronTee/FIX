@@ -43,7 +43,7 @@ namespace FIX.Web.Controllers
 
         public JsonResult MatchingBonusList(int offset, int limit, string sort, string order, string date)
         {
-            var queryableList = _investmentService.GetMatchingBonusResult(User.Identity.GetUserId<int>());
+            List<MatchingBonus> queryableList = _investmentService.GetMatchingBonusList(User.Identity.GetUserId<int>()).ToList();
 
             if (!date.IsNullOrEmpty())
             {
@@ -51,11 +51,11 @@ namespace FIX.Web.Controllers
                 DateTime.TryParseExact(date, DBCDateFormat.MMMyyyy, CultureInfo.CurrentCulture, DateTimeStyles.None, out _date);
                 if (date != null)
                 {
-                    queryableList = queryableList.Where(x => x.Date >= _date && x.Date < _date.AddMonths(1));
+                    queryableList = queryableList.Where(x => x.ReturnDate >= _date && x.ReturnDate < _date.AddMonths(1)).ToList();
                 }
             }
 
-            double? totalAmount = 0;
+            decimal totalAmount = 0;
             totalAmount = queryableList.Sum(x => x.BonusAmount);
 
             //sorting
@@ -71,12 +71,12 @@ namespace FIX.Web.Controllers
                 var matchingBonus = new MatchingBonusListViewModels()
                 {
                     Pos = pos++.ToString(),
-                    Date = item.Date.ConvertToDateString(),
-                    Username = item.MemberUsername,
-                    Package = item.description,
+                    MatchingBonusId = item.MatchingBonusId,
+                    Date = item.ReturnDate.ConvertToDateString(),
+                    Username = item.Referral.Username,
+                    Package = item.UserPackage.Package.Description,
                     Generation = item.Generation.ToString(),
-                    BonusAmount = item.BonusAmount.ToString(),
-                    UserId = item.UserId
+                    BonusAmount = item.BonusAmount.ToString()
                 };
                 rowsResult.Add(matchingBonus);
             }
