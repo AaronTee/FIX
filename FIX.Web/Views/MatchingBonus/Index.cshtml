@@ -4,6 +4,8 @@
 }
 @using FIX.Service
 
+<div id="modal"></div>
+
 <div class="form-section form-horizontal spacing">
     <div class="form-header">Matching Bonus</div>
     <div class="form-body">
@@ -20,20 +22,24 @@
        data-side-pagination="server"
        data-pagination="true"
        data-classes="table table-hover"
+       data-
        data-row-style="hasFooterRowStyle"
        data-query-params="queryParams"
        data-page-list="[10, 25, 50, 100]"
+       data-undefined-text = ""
        data-url="@(Url.Content("~/"))MatchingBonus/MatchingBonusList"
        data-unique-id="MatchingBonusId">
     <thead>
         <tr>
             <th data-align="center" data-field="Pos">#</th>
+            <th data-field="MatchingBonusId">Id</th>
             <th data-class="minw125" data-field="Date">Date</th>
             <th data-field="Username">Username</th>
             <th data-field="Package">Package</th>
-            <th data-field="Generation">Generation</th>
+            <th data-field="Generation">Gen</th>
             <th data-field="BonusAmount" data-align="right" data-halign="left" data-formatter="currencyFormatter">Bonus Amount</th>
-            <th data-field="Action" @*data-formatter="actionFormatter"*@>Action</th>
+            <th data-field="Status" data-align="center" data-halign="left" data-class="minw100">Status</th>
+            <th data-field="ActionTags" data-formatter="actionFormatter" data-events="statusEvents" data-class="minw150">Action</th>
         </tr>
     </thead>
 </table>
@@ -62,6 +68,82 @@
         $('.trigger-search').change(function () {
             $('#table_matching_bonus').bootstrapTable('refresh');
         });
+
+        var m = $('#modal').modalCreator();
+        var $table = $('#table_matching_bonus');
+
+        window.statusEvents = {
+            'click .action': function (e, value, row, index) {
+
+                var $toggleElem = $(e.target);
+                var $action = $toggleElem.data('action');
+
+                if ($action == 'approve') {
+
+                    m.make({
+                        title: 'Approving',
+                        body: function () {
+                            return html = 'Make sure the Id you wanted to APPROVE is correct. ( Id : ' + row.MatchingBonusId + ' )';
+                        }(),
+                        confirmText: "Approve",
+                        confirmButtonStyle: 'btn-success',
+                        onConfirm: function () {
+                            $.ajax({
+                                url: GetPath('MatchingBonus/ApproveMatchingBonus'),
+                                type: 'POST',
+                                data: { MatchingBonusId: row.MatchingBonusId },
+                                success: function (result) {
+                                    if (result) {
+
+                                    }
+                                },
+                                complete: function () {
+                                    //m.hide(); Testing
+                                    $table.bootstrapTable('updateByUniqueId', {
+                                        id: row.MatchingBonusId,
+                                        row: {
+                                            Status: "Approved",
+                                            ActionTags: "-"
+                                        }
+                                    });
+                                    m.hide();
+                                }
+                            })
+                        }
+                    });
+
+                    m.show();
+                }
+
+                if ($action == 'void') {
+
+                    m.make({
+                        title: 'Voiding',
+                        body: function () {
+                            return html = 'Are you sure you want to VOID this return? ( Id : ' + row.MatchingBonusId + ' )';
+                        }(),
+                        confirmText: "Void",
+                        confirmButtonStyle: 'btn-danger',
+                        onConfirm: function () {
+                            $.ajax({
+                                url: GetPath('MatchingBonus/VoidMatchingBonus'),
+                                type: 'POST',
+                                data: { UPDId: row.UPDId },
+                                success: function (result) {
+                                    if (result) {
+                                    }
+                                },
+                                complete: function () {
+                                    m.hide();
+                                }
+                            })
+                        }
+                    });
+
+                    m.show();
+                }
+            }
+        }
 
     </script>
 }

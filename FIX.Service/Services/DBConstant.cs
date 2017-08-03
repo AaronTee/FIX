@@ -43,14 +43,14 @@ namespace FIX.Service
             public const string ddMMMyyyyHHmmsstt = "dd-MMM-yyyy hh:mm:ss tt";
         }
 
-        public struct EventType
+        public struct DBCEventType
         {
             public const string Added = "Added";
             public const string Modified = "Modified";
             public const string Deleted = "Deleted";
         }
 
-        public struct Currency
+        public struct DBCCurrency
         {
             public const string USD = "USD";
         }
@@ -60,6 +60,20 @@ namespace FIX.Service
             public const int Level = 3;
             public const decimal StartingRate = 0.3M;
             public const decimal DecreaseRate = 0.1M;
+        }
+
+        public enum EOperator
+        {
+            ADD, DEDUCT, MULTIPLY, DIVIDE
+        }
+
+        public struct DBCDocSequence
+        {
+            public enum EDocSequenceId
+            {
+                Matching_Bonus = 1,
+                Interest_Return = 2
+            }
         }
 
         //without going to db retrieve status.
@@ -73,6 +87,11 @@ namespace FIX.Service
             Activated = 6,
         }
 
+        public enum ETransactionType
+        {
+            Interest_Return, Matching_Bonus
+        }
+
         public static string GetDescription(this EStatus s){
             return Enum.GetName(typeof(EStatus), s);
         }
@@ -81,5 +100,8 @@ namespace FIX.Service
         public const int MAX_REFERRAL_TREE_LEVEL = 5;
         public const int MAX_REFERRAL_TREE_SEARCH_LEVEL = 25;
         public const string DEFAULT_TIMEZONEID = "Singapore Standard Time";
+
+        public const int MAX_CONCURRENCY_ITERATION = 5;
+
     }
 }

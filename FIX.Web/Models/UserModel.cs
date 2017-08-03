@@ -137,7 +137,7 @@ namespace FIX.Web.Models
         public SelectList ReferralDDL { get; set; }
     }
 
-    public class UserListViewModel : ListViewModel{
+    public class UserListViewModel : ActionsLink{
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }

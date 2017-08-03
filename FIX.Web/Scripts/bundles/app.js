@@ -432,6 +432,7 @@ function LinkFormatter(value, row, index) {
 /* Note: Dependent on ActionTag class @ ListViewModel.cs */
 function actionFormatter(value, row, index) {
 
+    if (!(value instanceof Array) || !value || value.length < 1) return;
     var html = '';
 
     value.forEach(function (data) {

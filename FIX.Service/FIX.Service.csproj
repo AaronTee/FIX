@@ -97,6 +97,9 @@
     <Compile Include="Entities\database_firewall_rules.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\DocSequence.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\FIXDBContext.cs" />
     <Compile Include="Entities\FIXEntities.Context.cs">
       <AutoGen>True</AutoGen>
@@ -175,6 +178,8 @@
     <Compile Include="Interfaces\IInvestmentService.cs" />
     <Compile Include="Interfaces\IFinancialService.cs" />
     <Compile Include="Interfaces\IBaseService.cs" />
+    <Compile Include="Services\DocService.cs" />
+    <Compile Include="Interfaces\IDocService.cs" />
     <Compile Include="Services\InvestmentService.cs" />
     <Compile Include="Interfaces\IRoleService.cs" />
     <Compile Include="Interfaces\IReportService.cs" />
@@ -198,6 +203,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Entities\ConcurrencyModeToFixedWriter.exe" />
     <Content Include="Entities\FIXEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>FIXEntities.edmx</DependentUpon>

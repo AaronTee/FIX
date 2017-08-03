@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
@@ -43,6 +43,17 @@
           <Property Name="Profit" Type="decimal" Precision="15" Scale="5" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DocSequence">
+          <Key>
+            <PropertyRef Name="DocId" />
+          </Key>
+          <Property Name="DocId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Prefix" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="Length" Type="int" Nullable="false" />
+          <Property Name="Current" Type="int" Nullable="false" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="MatchingBonus">
           <Key>
@@ -182,8 +193,9 @@
           </Key>
           <Property Name="WalletTransactionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="WalletId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TransactionDate" Type="datetime" Nullable="false" />
-          <Property Name="TransactionType" Type="nvarchar" MaxLength="50" />
+          <Property Name="TransactionType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Debit" Type="decimal" Precision="15" Scale="5" />
           <Property Name="Credit" Type="decimal" Precision="15" Scale="5" />
         </EntityType>
@@ -494,6 +506,7 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyTrading" EntityType="Self.DailyTrading" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocSequence" EntityType="Self.DocSequence" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MatchingBonus" EntityType="Self.MatchingBonus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Package" EntityType="Self.Package" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
@@ -631,7 +644,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <EntitySet Name="UserPackageDetail" EntityType="FIXModel.UserPackageDetail" />
           <EntitySet Name="UserProfile" EntityType="FIXModel.UserProfile" />
           <EntitySet Name="UserWallet" EntityType="FIXModel.UserWallet" />
-          <EntitySet Name="WalletTransaction" EntityType="FIXModel.WalletTransaction" />
           <EntitySet Name="vwPendingReturnInvestor" EntityType="FIXModel.vwPendingReturnInvestor" />
           <EntitySet Name="vwPendingReturnInvestor_Test" EntityType="FIXModel.vwPendingReturnInvestor_Test" />
           <EntitySet Name="database_firewall_rules" EntityType="FIXModel.database_firewall_rules" />
@@ -687,10 +699,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="UserPackage" EntitySet="UserPackage" />
             <End Role="UserPackageDetail" EntitySet="UserPackageDetail" />
           </AssociationSet>
-          <AssociationSet Name="FK__WalletTra__Walle__40F9A68C" Association="FIXModel.FK__WalletTra__Walle__40F9A68C">
-            <End Role="UserWallet" EntitySet="UserWallet" />
-            <End Role="WalletTransaction" EntitySet="WalletTransaction" />
-          </AssociationSet>
           <FunctionImport Name="spMatchingBonus" ReturnType="Collection(FIXModel.spMatchingBonus_Result)">
             <Parameter Name="level" Mode="In" Type="Int32" />
             <Parameter Name="userId" Mode="In" Type="String" />
@@ -728,6 +736,12 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <AssociationSet Name="FK__MatchingB__UserP__69FBBC1F" Association="FIXModel.FK__MatchingB__UserP__69FBBC1F">
             <End Role="UserPackage" EntitySet="UserPackage" />
             <End Role="MatchingBonus" EntitySet="MatchingBonus" />
+          </AssociationSet>
+          <EntitySet Name="DocSequence" EntityType="FIXModel.DocSequence" />
+          <EntitySet Name="WalletTransaction" EntityType="FIXModel.WalletTransaction" />
+          <AssociationSet Name="FK__WalletTra__Walle__40F9A68C" Association="FIXModel.FK__WalletTra__Walle__40F9A68C">
+            <End Role="UserWallet" EntitySet="UserWallet" />
+            <End Role="WalletTransaction" EntitySet="WalletTransaction" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AuditLog">
@@ -916,18 +930,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="Balance" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__UserWalle__UserI__46B27FE2" FromRole="UserWallet" ToRole="User" />
           <NavigationProperty Name="WalletTransaction" Relationship="FIXModel.FK__WalletTra__Walle__40F9A68C" FromRole="UserWallet" ToRole="WalletTransaction" />
-        </EntityType>
-        <EntityType Name="WalletTransaction">
-          <Key>
-            <PropertyRef Name="WalletTransactionId" />
-          </Key>
-          <Property Name="WalletTransactionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="WalletId" Type="Guid" Nullable="false" />
-          <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TransactionType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Debit" Type="Decimal" Precision="15" Scale="5" />
-          <Property Name="Credit" Type="Decimal" Precision="15" Scale="5" />
-          <NavigationProperty Name="UserWallet" Relationship="FIXModel.FK__WalletTra__Walle__40F9A68C" FromRole="WalletTransaction" ToRole="UserWallet" />
         </EntityType>
         <EntityType Name="vwPendingReturnInvestor">
           <Key>
@@ -1145,18 +1147,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WalletTra__Walle__40F9A68C">
-          <End Type="FIXModel.UserWallet" Role="UserWallet" Multiplicity="1" />
-          <End Type="FIXModel.WalletTransaction" Role="WalletTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserWallet">
-              <PropertyRef Name="WalletId" />
-            </Principal>
-            <Dependent Role="WalletTransaction">
-              <PropertyRef Name="WalletId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <ComplexType Name="spMatchingBonus_Result">
           <Property Type="DateTime" Name="ReturnDate" Nullable="true" />
           <Property Type="Int32" Name="UserPackageId" Nullable="false" />
@@ -1249,6 +1239,42 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             </Principal>
             <Dependent Role="MatchingBonus">
               <PropertyRef Name="UserPackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DocSequence">
+          <Key>
+            <PropertyRef Name="DocId" />
+          </Key>
+          <Property Name="DocId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Prefix" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Length" Type="Int32" Nullable="false" />
+          <Property Name="Current" Type="Int32" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" ConcurrencyMode="Fixed" />
+        </EntityType>
+        <EntityType Name="WalletTransaction">
+          <Key>
+            <PropertyRef Name="WalletTransactionId" />
+          </Key>
+          <Property Name="WalletTransactionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WalletId" Type="Guid" Nullable="false" />
+          <Property Name="ReferenceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TransactionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Debit" Type="Decimal" Precision="15" Scale="5" />
+          <Property Name="Credit" Type="Decimal" Precision="15" Scale="5" />
+          <NavigationProperty Name="UserWallet" Relationship="FIXModel.FK__WalletTra__Walle__40F9A68C" FromRole="WalletTransaction" ToRole="UserWallet" />
+        </EntityType>
+        <Association Name="FK__WalletTra__Walle__40F9A68C">
+          <End Type="FIXModel.UserWallet" Role="UserWallet" Multiplicity="1" />
+          <End Type="FIXModel.WalletTransaction" Role="WalletTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserWallet">
+              <PropertyRef Name="WalletId" />
+            </Principal>
+            <Dependent Role="WalletTransaction">
+              <PropertyRef Name="WalletId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1425,18 +1451,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WalletTransaction">
-            <EntityTypeMapping TypeName="FIXModel.WalletTransaction">
-              <MappingFragment StoreEntitySet="WalletTransaction">
-                <ScalarProperty Name="Credit" ColumnName="Credit" />
-                <ScalarProperty Name="Debit" ColumnName="Debit" />
-                <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
-                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
-                <ScalarProperty Name="WalletId" ColumnName="WalletId" />
-                <ScalarProperty Name="WalletTransactionId" ColumnName="WalletTransactionId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="vwPendingReturnInvestor">
             <EntityTypeMapping TypeName="FIXModel.vwPendingReturnInvestor">
               <MappingFragment StoreEntitySet="vwPendingReturnInvestor">
@@ -1526,6 +1540,31 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
                 <ScalarProperty Name="MatchingBonusId" ColumnName="MatchingBonusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocSequence">
+            <EntityTypeMapping TypeName="FIXModel.DocSequence">
+              <MappingFragment StoreEntitySet="DocSequence">
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+                <ScalarProperty Name="Current" ColumnName="Current" />
+                <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="Prefix" ColumnName="Prefix" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DocId" ColumnName="DocId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WalletTransaction">
+            <EntityTypeMapping TypeName="FIXModel.WalletTransaction">
+              <MappingFragment StoreEntitySet="WalletTransaction">
+                <ScalarProperty Name="Credit" ColumnName="Credit" />
+                <ScalarProperty Name="Debit" ColumnName="Debit" />
+                <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
+                <ScalarProperty Name="WalletId" ColumnName="WalletId" />
+                <ScalarProperty Name="WalletTransactionId" ColumnName="WalletTransactionId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

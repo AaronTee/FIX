@@ -10,7 +10,7 @@ namespace FIX.Web.Models
         public string Date { get; set; }
     }
 
-    public class MatchingBonusListViewModels{
+    public class MatchingBonusListViewModels : ActionsLink{
         public string Pos { get; set; }
         public int MatchingBonusId { get; set; }
         public string Date { get; set; }
@@ -19,6 +19,7 @@ namespace FIX.Web.Models
         public string Package { get; set; }
         public string Generation { get; set; }
         public string BonusAmount { get; set; }
+        public string Status { get; set; }
     }
 
 }

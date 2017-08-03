@@ -7,6 +7,8 @@ using System.Web;
 using System.Data.Entity;
 using System.Web.Mvc;
 using System.Threading.Tasks;
+using System.Data.Entity.Core;
+using System.Data.Entity.Infrastructure;
 
 namespace FIX.Service.Models.Repositories
 {
@@ -63,42 +65,74 @@ namespace FIX.Service.Models.Repositories
 
         public bool Save(int userId, bool goAsync = false)
         {
-            try
+            for (int i = 0; i < DBConstant.MAX_CONCURRENCY_ITERATION; i++)
             {
-                _context.SaveChanges(userId, goAsync);
-                return true;
-            }
-            catch (DbEntityValidationException ve)
-            {
-                var error = ve.EntityValidationErrors.First().ValidationErrors.First();
-                Log.Error(error.ErrorMessage);
-                var msg = String.Format("Validation Error :: {0} - {1}", error.PropertyName, error.ErrorMessage);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message, ex);
+                try
+                {
+                    _context.SaveChanges(userId, goAsync);
+                    return true;
+                }
+                catch (DbEntityValidationException ve)
+                {
+                    var error = ve.EntityValidationErrors.First().ValidationErrors.First();
+                    Log.Error(error.ErrorMessage);
+                    var msg = String.Format("Validation Error :: {0} - {1}", error.PropertyName, error.ErrorMessage);
+                    throw;
+                }
+                catch (OptimisticConcurrencyException ex)
+                {
+                    Log.Warn("Concurrency detected conflict, refreshing rowversion", ex);
+                    foreach (var entity in _context.ChangeTracker.Entries())
+                    {
+                        entity.Reload();
+                    }
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    foreach (var entity in ex.Entries)
+                    {
+                        entity.Reload(); //client wins
+                    }
+                    Log.Warn("Concurrency detected conflict, refreshing rowversion", ex);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message, ex);
+                    return false;
+                }
             }
             return false;
         }
 
         public bool Save()
         {
-            try
+            for (int i = 0; i < DBConstant.MAX_CONCURRENCY_ITERATION; i++)
             {
-                _context.SaveChanges();
-                return true;
-            }
-            catch (DbEntityValidationException ve)
-            {
-                var error = ve.EntityValidationErrors.First().ValidationErrors.First();
-                Log.Error(error.ErrorMessage);
-                var msg = String.Format("Validation Error :: {0} - {1}", error.PropertyName, error.ErrorMessage);
-                throw;
-            }
-            catch(Exception ex)
-            {
-                Log.Error(ex.Message, ex);
+                try
+                {
+                    _context.SaveChanges();
+                    return true;
+                }
+                catch (OptimisticConcurrencyException ex)
+                {
+                    Log.Warn("Concurrency detected conflict, refreshing rowversion...", ex);
+                    foreach (var entity in _context.ChangeTracker.Entries())
+                    {
+                        entity.Reload();
+                    }
+                }
+                catch (DbEntityValidationException ve)
+                {
+                    var error = ve.EntityValidationErrors.First().ValidationErrors.First();
+                    Log.Error(error.ErrorMessage);
+                    var msg = String.Format("Validation Error :: {0} - {1}", error.PropertyName, error.ErrorMessage);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message, ex);
+                    return false;
+                }
             }
             return false;
         }

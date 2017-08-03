@@ -167,7 +167,7 @@ namespace FIX.Web.Controllers
                         new UserWallet()
                         {
                             WalletId = Guid.NewGuid(),
-                            Currency = Currency.USD,
+                            Currency = DBCCurrency.USD,
                             Balance = decimal.Zero,
                         }
                     }
@@ -294,7 +294,7 @@ namespace FIX.Web.Controllers
                         {
                             WalletId = Guid.NewGuid(),
                             Balance = decimal.Zero,
-                            Currency = Currency.USD,
+                            Currency = DBCCurrency.USD,
                             UserId = userInfo.UserId
                         }
                     };

@@ -40,11 +40,12 @@ namespace FIX.Service.Entities
         public virtual DbSet<UserPackageDetail> UserPackageDetail { get; set; }
         public virtual DbSet<UserProfile> UserProfile { get; set; }
         public virtual DbSet<UserWallet> UserWallet { get; set; }
-        public virtual DbSet<WalletTransaction> WalletTransaction { get; set; }
         public virtual DbSet<vwPendingReturnInvestor> vwPendingReturnInvestor { get; set; }
         public virtual DbSet<vwPendingReturnInvestor_Test> vwPendingReturnInvestor_Test { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
         public virtual DbSet<MatchingBonus> MatchingBonus { get; set; }
+        public virtual DbSet<DocSequence> DocSequence { get; set; }
+        public virtual DbSet<WalletTransaction> WalletTransaction { get; set; }
     
         public virtual ObjectResult<spMatchingBonus_Result> spMatchingBonus(Nullable<int> level, string userId, string updId, Nullable<int> offsetMonth, Nullable<int> offsetDay, Nullable<double> tier1BonusPerc, Nullable<double> tier2BonusPerc, Nullable<double> tier3BonusPerc)
         {

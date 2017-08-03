@@ -99,23 +99,19 @@ namespace FIX.Service
             return _uow.Repository<UserPackage>().GetByKey(UPId);
         }
 
-        public double GetMatchingBonusAmount(int? userId, int? UPDId)
+        public decimal GetMatchingBonusAmount(int? userId, int? MatchingBonusId)
         {
-            if (userId != null && UPDId != null)
+            if (userId != null && MatchingBonusId != null)
             {
-                var param1 = new System.Data.SqlClient.SqlParameter("level", 3);
-                var param2 = new System.Data.SqlClient.SqlParameter("userId", userId);
-                var param3 = new System.Data.SqlClient.SqlParameter("updId", UPDId);
-
-                var result = _uow.Repository<spMatchingBonus_Result>().ExecWithStoreProcedure("spMatchingBonus @level, @userId, @updId", new[]
-                {
-                    param1, param2, param3
-                });
-
-                return result.First()?.BonusAmount ?? 0;
+                return _uow.Repository<MatchingBonus>().GetByKey(MatchingBonusId).BonusAmount;
             }
 
-            throw new Exception("userId cannot be null");
+            throw new Exception("userId and MatchingBonusId cannot be null");
+        }
+
+        public MatchingBonus GetMatchingBonus(int? matchingBonusId)
+        {
+            return _uow.Repository<MatchingBonus>().GetByKey(matchingBonusId);
         }
     }
 }

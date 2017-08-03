@@ -17,10 +17,13 @@ namespace FIX.Web.Controllers
     {
         private IInvestmentService _investmentService;
         private IFinancialService _financialService;
+        private IDocService _docService;
 
-        public ReturnManagerController(IInvestmentService investmentService, IFinancialService financialService) : base()
+        public ReturnManagerController(IInvestmentService investmentService, IFinancialService financialService, IDocService docService) : base()
         {
             _investmentService = investmentService;
+            _financialService = financialService;
+            _docService = docService;
         }
 
         // GET: Investor
@@ -82,23 +85,20 @@ namespace FIX.Web.Controllers
                 var upd = _investmentService.GetUserPackageDetail(UPDId);
                 upd.StatusId = (int)EStatus.Approved;
 
-                //Add to wallet
-                //Formulae : Interest (upd.Amount) + Matching Bonus (spMatchingBonus.BonusAmount)
-                var bonusAmount = _investmentService.GetMatchingBonusAmount(upd.UserPackage.UserId, UPDId);
+                //Get DocCode
+                var docCode = _docService.GetNextDocumentNumber(DBCDocSequence.EDocSequenceId.Interest_Return);
 
-                var userWallet = _financialService.GetUserWallet(upd.UserPackage.UserId);
-                var totalEarning = upd.Amount + Convert.ToDecimal(bonusAmount);
-                userWallet.Balance += totalEarning;
+                //Add to wallet
+                _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Interest_Return, upd.Amount, docCode, upd.UserPackage.User.UserWallet.First().WalletId);
 
                 //Check if package subscription ended, update status.
                 var packagesDetail = _investmentService.GetAllUserPackageDetail(upd.UserPackageId);
-                if (!packagesDetail.Any(x => x.StatusId == (int)EStatus.Active))
+                if (packagesDetail.Where(x => x.UserPackageDetailId != UPDId).Any(x => x.StatusId != (int)EStatus.Pending))
                 {
                     var package = _investmentService.GetUserPackage(upd.UserPackageId);
                     package.StatusId = (int)EStatus.Deactivated;
                 }
 
-                _investmentService.SaveChange(User.Identity.GetUserId<int>());
                 _financialService.SaveChange(User.Identity.GetUserId<int>());
 
                 return Json(true, JsonRequestBehavior.AllowGet);

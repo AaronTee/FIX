@@ -10,10 +10,12 @@ namespace FIX.Service
     public class FinancialService : IFinancialService
     {
         private IUnitOfWork _uow;
+        private IDocService _docService;
 
-        public FinancialService(IUnitOfWork uow)
+        public FinancialService(IUnitOfWork uow, IDocService docService)
         {
             _uow = uow;
+            _docService = docService;
         }
 
         public UserWallet GetUserWallet(int userId)
@@ -34,6 +36,48 @@ namespace FIX.Service
         public void SaveChange(int userId)
         {
             _uow.Save(userId);
+        }
+
+        public void TransactWalletCredit(DBConstant.EOperator optor, DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId)
+        {
+            var sType = Enum.GetName(type.GetType(), type);
+            var userWallet = _uow.Repository<UserWallet>().GetByKey(walletId);
+            var newWalletTransaction = new WalletTransaction();
+
+            switch (optor)
+            {
+                case DBConstant.EOperator.ADD:
+                    userWallet.Balance += amount;
+
+                    newWalletTransaction = new WalletTransaction
+                    {
+                        WalletId = walletId,
+                        ReferenceNo = docCode,
+                        TransactionDate = DateTime.UtcNow,
+                        Credit = amount,
+                        TransactionType = sType
+                    };
+                    break;
+
+                case DBConstant.EOperator.DEDUCT:
+                    userWallet.Balance -= amount;
+
+                    newWalletTransaction = new WalletTransaction
+                    {
+                        WalletId = walletId,
+                        ReferenceNo = docCode,
+                        TransactionDate = DateTime.UtcNow,
+                        Credit = amount,
+                        TransactionType = sType
+                    };
+                    break;
+
+                default:
+                    break;
+            }
+
+            _uow.Repository<WalletTransaction>().Insert(newWalletTransaction);
+            _uow.Repository<UserWallet>().Update(userWallet);
         }
     }
 }

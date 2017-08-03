@@ -5,8 +5,9 @@ using System.Web;
 
 namespace FIX.Web.Models
 {
-    public class ListViewModel
+    public class ActionsLink
     {
+        public List<ActionTag> ActionTags { get; set; }
         public List<ActionLink> ActionLinks { get; set; }
     }
 

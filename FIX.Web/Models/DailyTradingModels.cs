@@ -54,7 +54,7 @@ namespace FIX.Web.Models
         public virtual decimal? Profit { get; set; }
     }
 
-    public class DailyTradingListViewModels : ListViewModel
+    public class DailyTradingListViewModels : ActionsLink
     {
         public string Date { get; set; }
 

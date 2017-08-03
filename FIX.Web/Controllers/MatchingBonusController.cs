@@ -17,12 +17,16 @@ namespace FIX.Web.Controllers
     {
         private IUserService _userService;
         private IInvestmentService _investmentService;
+        private IFinancialService _financialService;
+        private IDocService _docService;
 
         // GET: MatchingBonus
-        public MatchingBonusController(IUserService userService, IInvestmentService investmentService)
+        public MatchingBonusController(IUserService userService, IInvestmentService investmentService, IFinancialService financialService, IDocService docService)
         {
             _userService = userService;
             _investmentService = investmentService;
+            _financialService = financialService;
+            _docService = docService;
         }
 
         public ActionResult Index()
@@ -76,7 +80,21 @@ namespace FIX.Web.Controllers
                     Username = item.Referral.Username,
                     Package = item.UserPackage.Package.Description,
                     Generation = item.Generation.ToString(),
-                    BonusAmount = item.BonusAmount.ToString()
+                    BonusAmount = item.BonusAmount.ToString(),
+                    Status = item.Status.Description,
+                    ActionTags = new List<ActionTag>
+                    {
+                        new ActionTag
+                        {
+                            Action = "approve",
+                            Name = "Approve"
+                        },
+                        new ActionTag
+                        {
+                            Action = "void",
+                            Name = "Void"
+                        }
+                    }
                 };
                 rowsResult.Add(matchingBonus);
             }
@@ -100,6 +118,44 @@ namespace FIX.Web.Controllers
             };
 
             return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ApproveMatchingBonus(int MatchingBonusId)
+        {
+            try
+            {
+                var matchingBonus = _investmentService.GetMatchingBonus(MatchingBonusId);
+                matchingBonus.StatusId = (int)EStatus.Approved;
+
+                var docNo = _docService.GetNextDocumentNumber(DBCDocSequence.EDocSequenceId.Matching_Bonus);
+
+                //Add to wallet
+                _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Matching_Bonus, matchingBonus.BonusAmount, docNo, matchingBonus.UserEntity.UserWallet.First().WalletId);
+
+                _financialService.SaveChange(User.Identity.GetUserId<int>());
+
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult VoidMatchingBonus(int MatchingBonusId)
+        {
+            try
+            {
+                var matchingBonus = _investmentService.GetMatchingBonus(MatchingBonusId);
+                matchingBonus.StatusId = (int)EStatus.Void;
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
