@@ -32,6 +32,11 @@ namespace FIX.Service
             return _uow.Repository<User>().GetAsQueryable();
         }
 
+        public IQueryable<User> GetAllUsersWithoutAdmin()
+        {
+            return _uow.Repository<User>().GetAsQueryable(filter: x=> x.UserProfile.Role.Description != DBCRole.Admin);
+        }
+
         public IQueryable<UserBankAccount> GetAllUserBankAccount(User user)
         {
             return _uow.Repository<UserBankAccount>().GetAsQueryable().Where(x => x.UserId == user.UserId);

@@ -16,6 +16,7 @@ using FIX.Service;
 using System.Net.Mail;
 using FIX.Service.Entities;
 using FIX.Web.Extensions;
+using System.Web.Security;
 
 namespace FIX.Web.Controllers
 {
@@ -47,8 +48,9 @@ namespace FIX.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool rememberMe)
         {
+
             try
             {
 #if !DEBUG
@@ -91,10 +93,17 @@ namespace FIX.Web.Controllers
 
                     HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties
                     {
-                        IsPersistent = false
+                        IsPersistent = model.RememberMe
                     }, ident);
 
-                    return RedirectToAction("Index", "Home");
+                    if (!returnUrl.IsNullOrEmpty())
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
 
                 // invalid username or password

@@ -226,7 +226,9 @@
     <Compile Include="Controllers\ReferralController.cs" />
     <Compile Include="Controllers\ReturnManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\WalletController.cs" />
     <Compile Include="Extensions\IdentityExtension.cs" />
+    <Compile Include="Extensions\IntegerExtension.cs" />
     <Compile Include="Extensions\MapperExtension.cs" />
     <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
@@ -240,6 +242,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DailyTradingModels.cs" />
     <Compile Include="Models\MatchingBonusModels.cs" />
+    <Compile Include="Models\WalletModels.cs" />
     <Compile Include="Models\ReferralModels.cs" />
     <Compile Include="Models\ReturnManagerModels.cs" />
     <Compile Include="Models\InvestmentModels.cs" />
@@ -260,9 +263,14 @@
     <Content Include="Content\css\bootstrap-datepicker.css" />
     <Content Include="Content\css\bootswatch.css" />
     <Content Include="Content\css\font-awesome.css" />
+    <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\loginpage.css" />
+    <Content Include="Content\css\metisMenu.min.css" />
+    <Content Include="Content\css\morris.css" />
     <Content Include="Content\css\pikaday-responsive.min.css" />
     <Content Include="Content\css\portal.css" />
+    <Content Include="Content\css\startmin.css" />
+    <Content Include="Content\css\timeline.css" />
     <Content Include="Content\image\FIXLogo.png" />
     <Content Include="Content\image\loginbg.jpg" />
     <Content Include="Content\styles.min.css" />
@@ -322,7 +330,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\app\lib\pikaday-responsive.min.js" />
     <Content Include="Scripts\require.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -394,10 +401,13 @@
     <Content Include="Views\Shared\EditorTemplates\Number.cshtml" />
     <Content Include="Views\DailyTrading\Edit.cshtml" />
     <Content Include="Views\MatchingBonus\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateMonth.cshtml" />
+    <Content Include="Views\Wallet\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\svg\" />
+    <Folder Include="Scripts\app\lib\" />
     <Folder Include="Views\HtmlLoader\" />
   </ItemGroup>
   <ItemGroup>

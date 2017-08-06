@@ -107,7 +107,7 @@ namespace FIX.Web.Controllers
                 Value = x.BankId.ToString()
             }), "Value", "Text");
 
-            model.ReferralDDL = new SelectList(_userService.GetAllUsers().ToList().Where(x => x.UserProfile.Role.Description != DBCRole.Admin)
+            model.ReferralDDL = new SelectList(_userService.GetAllUsersWithoutAdmin().ToList()
                 .Select(x => new SelectListItem()
                 {
                     Text = x.UserId + " - " + x.Username,

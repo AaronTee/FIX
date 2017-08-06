@@ -40,7 +40,7 @@ body{
     background-color: #505050;
     overflow-y: scroll;
     /*font-size: 1em;*/
-    font-family: 'Arimo', serif;
+    font-family: 'Arimo', sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%
 }
 
 [aria-hidden="true"]  { display: none; }
@@ -72,6 +72,7 @@ i.fa-icon { position: absolute; top: 10px; left: 50px; }
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
+select2,
 textarea {
 
     max-width: 300px;
@@ -85,8 +86,14 @@ select{
     padding: 16px;
 }
 
+.select2{
+    min-width: 150px;
+    width: 100% !important;
+    max-width: 300px;
+}
+
 .select2-container .select2-selection--single{
-    height: 38px;
+    height: 36px;
     border-radius: 0;
 }
 
@@ -459,7 +466,11 @@ ul{
 .panel{
     width: 100%;
     border: none;
-    padding: 15px 10px;
+    /*padding: 15px 10px;*/
+
+    & .panel-heading{
+        border-radius: 3px;
+    }
 
     &.dark-background{
         background-color: #222;
@@ -482,7 +493,6 @@ ul{
 
     & .panel-board{
         border: 1px solid #555;
-        border-radius: 2px;
         height: 200px;
         background: #ccc;
         margin-bottom: 32px;

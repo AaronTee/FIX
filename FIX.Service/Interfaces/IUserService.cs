@@ -10,6 +10,7 @@ namespace FIX.Service
         IQueryable<Role> GetAllRoles();
         Role GetUserRoleBy(UserProfile userProfile);
         IQueryable<User> GetAllUsers();
+        IQueryable<User> GetAllUsersWithoutAdmin();
         IQueryable<UserBankAccount> GetAllUserBankAccount(User user);
         User GetUserBy(string username);
         User GetUserBy(int? id);

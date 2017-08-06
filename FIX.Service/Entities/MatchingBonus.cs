@@ -24,6 +24,7 @@ namespace FIX.Service.Entities
         public decimal BonusAmount { get; set; }
         public int StatusId { get; set; }
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
+        public string ApprovedReferenceNo { get; set; }
     
         public virtual User User { get; set; }
         public virtual Status Status { get; set; }

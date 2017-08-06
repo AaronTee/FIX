@@ -55,6 +55,11 @@ namespace FIX.Web.Extensions
             else return null;
         }
 
+        public static string toCurrencyFormat(this decimal val)
+        {
+            return string.Format("{0:F2}", val);
+        }
+
         public static bool IsValidStringDate(this String dateString)
         {
             return ConvertToDate(dateString) != null;

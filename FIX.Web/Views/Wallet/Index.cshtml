@@ -1,0 +1,99 @@
+﻿@model WalletViewModel
+
+@{
+    ViewBag.Title = "My E-Wallet";
+}
+
+<h1>My E-Wallet</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-usd fa-3x before-huge"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.CreditBalance</div>
+                        <div>E-Wallet Balance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-usd fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.WithdrawalAmount</div>
+                        <span>Withdrawal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-usd fa-3x before-huge"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.MonthlyReturnAmount</div>
+                        <div>Monthly Return Amount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-usd fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">@Model.MatchingBonusAmount</div>
+                        <span>Matching Bonus Amount</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2>Wallet Transactions</h2>
+<table id="table_wallet_transaction"
+        data-toggle="table"
+        data-side-pagination="server"
+        data-pagination="true"
+        data-classes="table table-hover"
+        data-page-list="[10, 25, 50, 100]"
+        data-undefined-text = ""
+        data-row-style="hasFooterRowStyle"
+        data-url="@(Url.Content("~/"))Wallet/Transaction"
+        data-unique-id="WalletTransactionId">
+    <thead>
+        <tr>
+            <th data-field="TransactionDate" data-class="minw125" data-halign="center" data-valign="middle">Date</th>
+            <th data-field="ReferenceNo" data-class="minw300" data-halign="center" class="fw">ReferenceNo</th>
+            <th data-field="Debit" data-halign="center" class="minw100" data-align="right">Debit</th>
+            <th data-field="Credit" data-halign="center" class="minw100" data-align="right">Credit</th>
+            <th data-field="Balance" data-halign="center" data-class="minw100 maxw100" data-align="right" data-halign="left">Balance</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+}

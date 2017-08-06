@@ -46,15 +46,19 @@ $(function () {
     }
 
     //Datepicker
-    var d = $('.datepicker');
-    if (!isMobile()) {
-        if ($.fn.datepicker) {
-            $.fn.datepicker.defaults.format = "dd-M-yyyy";
-            $.fn.datepicker.defaults.autoclose = true;
-            $.fn.datepicker.defaults.startDate = "-5y";
-            $.fn.datepicker.defaults.endDate = "+5y";
-            $.fn.datepicker.defaults.maxViewMode = 2;
-            $.fn.datepicker.defaults.orientation = 'bottom';
+    if ($.fn.datepicker) {
+        var d = $('.datepicker');
+        var dm = $('.datemonthpicker');
+        $.fn.datepicker.defaults.format = "dd-M-yyyy";
+        $.fn.datepicker.defaults.autoclose = true;
+        $.fn.datepicker.defaults.startDate = "-5y";
+        $.fn.datepicker.defaults.endDate = "+5y";
+        $.fn.datepicker.defaults.maxViewMode = 2;
+        $.fn.datepicker.defaults.orientation = 'bottom';
+
+        /* Desktop */
+        if (!isMobile()) {
+            //dmy
             d.datepicker();
             var t;
             $(document).on(
@@ -69,31 +73,34 @@ $(function () {
                 }
             );
         }
-    } else {
-
-        if (Pikaday && pikadayResponsive) {
+        /* Mobile */
+        else
+        {
+            //dmy
             d.each(function (index, element) {
-                pikadayResponsive(this, {
-                    format: "DD-MMM-YYYY",
-                    outputFormat: "DD-MMM-YYYY",
-                    checkIfNativeDate: function () {
-                        return Modernizr.inputtypes.date && (Modernizr.touch && navigator.appVersion.indexOf("Win") === -1);
-                    },
-                    placeholder: "",
-                    classes: "form-control",
-                    dayOffset: 0,
-                    pikadayOptions: {
-                        onSelect: function () {
-                            console.log($(this).focus());
-                        }
-                    }
-                });
+                $(element).attr('type', 'date');
             });
+            //my
+            dm.attr('readonly', 'readonly');
         }
 
-        $('.pikaday__invisible').click(function () {
-            $(this).focus();
+        //my
+        dm.datepicker({
+            format: "M/yyyy",
+            minViewMode: 1,
+            endDate: '+1y',
         });
+        $(document).on(
+            'DOMMouseScroll mousewheel scroll touchmove',
+            'body',
+            function () {
+                window.clearTimeout(t);
+                t = window.setTimeout(function () {
+                    dm.datepicker('place')
+                }, 250);
+                dm.datepicker('place');
+            }
+        );
     }
 
     //wenzhixin
@@ -238,7 +245,22 @@ $(function () {
 
 
 
+//Show Alert on top
+function showBoostrapAlert(message, style, dismissable) {
+    $("#AlertPartial").empty();
 
+    var html = "";
+    var dismissableClass = dismissable ? "alert-dismissable" : null;
+
+    html = "<div class='alert alert-" + style + " " + dismissableClass + "' >";
+    if (dismissable) {
+        html = html + "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
+    }
+    html = html + message + "</div>";
+    $("#AlertPartial").append(html);
+    $("#AlertPartial").show();
+    $("#AlertPartial").delay(8000).fadeOut(300);
+};
 
 
 
@@ -611,5 +633,3 @@ $(function () {
         } catch (ex) { }
     }
 });
-
-!function(root,factory){"function"==typeof define?define("pikaday-responsive",["exports"],function(exports){return exports["default"]=factory()}):"object"==typeof module?module.exports=factory():root.pikadayResponsive=factory()}(this,function(){if(!moment)return void console.error("You need to load moment.js in order to use pikaday-responsive.");if(!jQuery)return void console.error("You need to load jQuery in order to use pikaday-responsive.");if(!Pikaday)return void console.error("You need to load pikaday in order to use pikaday-responsive.");var defaultOptions={format:"YYYY-MM-DD",outputFormat:"YYYY-MM-DD",checkIfNativeDate:function(){return Modernizr.inputtypes.date&&Modernizr.touchevents&&-1===navigator.appVersion.indexOf("Win")},classes:"",placeholder:"Select a date",pikadayOptions:{},dayOffset:0};return function(el,options){var $container,$input,$display,$el=$(el),settings=$.extend({},defaultOptions,options),obj={pikaday:null,value:null,date:null,element:$el[0]};if(!$el.length||"INPUT"!==$el[0].tagName)return console.error("pikadayResponsive expects an input-field as its first element.",$el[0]),!1;$el.attr("type","hidden"),$el.wrap("<span class='pikaday__container'></span>"),$container=$el.parent(".pikaday__container");var originalId=$el.attr("id");if(settings.checkIfNativeDate())$input=$("<input type='date' class='pikaday__invisible' placeholder='"+settings.placeholder+"'/>"),originalId&&$input.attr("id",originalId+"-input"),$container.append($input),$display=$("<input type='text' readonly='readonly' class='pikaday__display pikaday__display--native "+settings.classes+"' placeholder='"+settings.placeholder+"' />"),$container.append($display),$input.on("change",function(){var val=$(this).val();$display.removeClass("is-empty"),val?(obj.date=moment(val,"YYYY-MM-DD"),obj.value=obj.date.format(settings.outputFormat)):(obj.date=null,obj.value=null,$display.addClass("is-empty")),1*obj.value===parseInt(obj.value,10)&&(obj.value*=1),$el.val(obj.value),obj.date?$display.val(obj.date.format(settings.format)):$display.val(null),$el.trigger("change"),$el.trigger("change-date",[obj])});else{$input=$("<input type='text' class='pikaday__display pikaday__display--pikaday "+settings.classes+"' placeholder='"+settings.placeholder+"' />"),originalId&&$input.attr("id",originalId+"-input"),$container.append($input);var hasSelected=!1,selectTimer=null;obj.pikaday=new Pikaday($.extend({},settings.pikadayOptions,{field:$input[0],format:settings.format})),$input.on("change",function(){if(!hasSelected){hasSelected=!0,selectTimer=window.setTimeout(function(){hasSelected=!1},10);var val=$(this).val();$input.removeClass("is-empty"),val?(obj.date=moment(val,settings.format),obj.date.add(settings.dayOffset,"day"),obj.value=obj.date.format(settings.outputFormat),$(this).val(obj.date.format(settings.format))):(obj.date=null,obj.value=null,$input.addClass("is-empty")),1*obj.value===parseInt(obj.value,10)&&(obj.value*=1),$el.val(obj.value),setTimeout(function(){$el.trigger("change"),$el.trigger("change-date",[obj])},1)}})}var setDate=function(date,format){return date?("object"==typeof date&&"function"!=typeof date.format&&(date=moment(date)),"string"==typeof date&&("undefined"!=typeof format&&format||(format=settings.outputFormat),date=moment(date,format)),"number"==typeof date&&(date=moment(date)),obj.pikaday?obj.pikaday.setMoment(date):($input.val(date.format("YYYY-MM-DD")),$input.trigger("change")),date):(obj.pikaday?obj.pikaday.setDate(null):($input.val(null),$input.trigger("change")),null)};return $el.val()&&setDate($el.val()),obj.setDate=setDate,obj}});

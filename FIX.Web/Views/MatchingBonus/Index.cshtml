@@ -10,8 +10,14 @@
     <div class="form-header">Matching Bonus</div>
     <div class="form-body">
         <div class="row">
+            @if(User.IsInRole(DBConstant.DBCRole.Admin))
+            {
             <div class="col-xs-6">
-                @Html.EditorFor(x => x.Date, "Date", new { @class = "trigger-search" })
+                @Html.EditorFor(x => x.UserId, "Dropdown2", new { DDL = Model.UserDDL, @class = "trigger-search" })
+            </div>
+            }
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.Date, "DateMonth", new { @class = "trigger-search" })
             </div>
         </div>
     </div>
@@ -32,14 +38,20 @@
     <thead>
         <tr>
             <th data-align="center" data-field="Pos">#</th>
+            @if (User.IsInRole(DBConstant.DBCRole.Admin))
+            {
             <th data-field="MatchingBonusId">Id</th>
+            }
             <th data-class="minw125" data-field="Date">Date</th>
             <th data-field="Username">Username</th>
             <th data-field="Package">Package</th>
-            <th data-field="Generation">Gen</th>
+            <th data-field="Generation"  data-align="center">Gen</th>
             <th data-field="BonusAmount" data-align="right" data-halign="left" data-formatter="currencyFormatter">Bonus Amount</th>
             <th data-field="Status" data-align="center" data-halign="left" data-class="minw100">Status</th>
-            <th data-field="ActionTags" data-formatter="actionFormatter" data-events="statusEvents" data-class="minw150">Action</th>
+            @if (User.IsInRole(DBConstant.DBCRole.Admin))
+            {
+                <th data-field="ActionTags" data-formatter="actionFormatter" data-events="statusEvents" data-class="minw150">Action</th>
+            }
         </tr>
     </thead>
 </table>
@@ -47,23 +59,35 @@
 @section scripts{
     <script>
 
+        $(function () {
+            $('#UserId').select2({
+                dropdownParent: $('#UserId').parent(),
+                ajax: {
+                    url: GetPath('User/Search'),
+                    dataType: 'json',
+                    delay: 1000,
+                    data: function (params) {
+                        return {
+                            input: params.term, // search term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        }
+                    }
+                }
+            });
+        });
+
         function queryParams(p) {
             return {
                 date: $('#Date').val(),
+                userId: $('#UserId').val(),
                 limit: p.limit,
                 offset: p.offset
             }
         }
-
-        $(function(){
-            $('.datepicker').datepicker('destroy');
-            $('.datepicker').datepicker({
-                format: "M/yyyy",
-                minViewMode: 1,
-                endDate: '+1y',
-            });
-        });
-
 
         $('.trigger-search').change(function () {
             $('#table_matching_bonus').bootstrapTable('refresh');
@@ -81,7 +105,7 @@
                 if ($action == 'approve') {
 
                     m.make({
-                        title: 'Approving',
+                        header: 'Approve Confirmation',
                         body: function () {
                             return html = 'Make sure the Id you wanted to APPROVE is correct. ( Id : ' + row.MatchingBonusId + ' )';
                         }(),
@@ -93,19 +117,17 @@
                                 type: 'POST',
                                 data: { MatchingBonusId: row.MatchingBonusId },
                                 success: function (result) {
-                                    if (result) {
-
+                                    if (result == '@((int)DBConstant.EJState.Success)') {
+                                        $table.bootstrapTable('updateByUniqueId', {
+                                            id: row.MatchingBonusId,
+                                            row: {
+                                                Status: '@(DBConstant.EStatus.Approved.GetDescription())',
+                                                ActionTags: "-"
+                                            }
+                                        });
                                     }
                                 },
                                 complete: function () {
-                                    //m.hide(); Testing
-                                    $table.bootstrapTable('updateByUniqueId', {
-                                        id: row.MatchingBonusId,
-                                        row: {
-                                            Status: "Approved",
-                                            ActionTags: "-"
-                                        }
-                                    });
                                     m.hide();
                                 }
                             })
@@ -118,7 +140,7 @@
                 if ($action == 'void') {
 
                     m.make({
-                        title: 'Voiding',
+                        header: 'Void Confirmation',
                         body: function () {
                             return html = 'Are you sure you want to VOID this return? ( Id : ' + row.MatchingBonusId + ' )';
                         }(),
@@ -130,7 +152,14 @@
                                 type: 'POST',
                                 data: { UPDId: row.UPDId },
                                 success: function (result) {
-                                    if (result) {
+                                    if (result == '@((int)DBConstant.EJState.Success)') {
+                                        $table.bootstrapTable('updateByUniqueId', {
+                                            id: row.MatchingBonusId,
+                                            row: {
+                                                Status: "@(DBConstant.EStatus.Void.GetDescription())",
+                                                ActionTags: "-"
+                                            }
+                                        });
                                     }
                                 },
                                 complete: function () {
@@ -143,6 +172,7 @@
                     m.show();
                 }
             }
+
         }
 
     </script>

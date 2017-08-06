@@ -47,8 +47,10 @@
 .minw100{ min-width:100px!important; }
 .minw125{ min-width:125px!important; }
 .minw150{ min-width:150px!important; }
+.minw300{ min-width:300px!important; }
 .w100{ width:100px!important; }
 .maxw100{ max-width:100px!important; }
+.fw { width: 100% !important; }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -166,10 +168,15 @@ tr td a.btn.btn-actionlink:not(:last-child) {
     background-color: #6b2f2f !important;
 }
 
-.panel-primary > .panel-heading{
+
+.huge{
+    font-size: 2.0em;
+}
+
+/*.panel-primary > .panel-heading{
     background-color: rgb(135, 135, 135);
     border-color: transparent;
-}
+}*/
 
 .field-validation-error{
     color: rgb(255, 65, 65);
@@ -358,6 +365,31 @@ select{
     background-color: rgb(255, 229, 189);
 }
 
+.glyphicon.platinum{
+     -webkit-mask-image: -webkit-linear-gradient(top, rgba(0,0,0,1), rgba(0,0,0,.7) 50%, rgba(0,0,0,1));
+     text-shadow: 0 0 3px black;
+}
+
+/* Js tree node */
+.glyphicon.gold{
+     background: -webkit-linear-gradient(#bd7e0a, #f9c614);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Js tree node */
+.glyphicon.silver{
+     background: -webkit-linear-gradient(#888, #ccc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Js tree node */
+.glyphicon.bronze{
+     background: -webkit-linear-gradient(#dba178, #9e5a34);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 
 @include keyframes(slide-down) {

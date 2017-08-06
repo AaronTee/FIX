@@ -92,7 +92,22 @@
 
 
 
+//Show Alert on top
+function showBoostrapAlert(message, style, dismissable) {
+    $("#AlertPartial").empty();
 
+    var html = "";
+    var dismissableClass = dismissable ? "alert-dismissable" : null;
+
+    html = "<div class='alert alert-" + style + " " + dismissableClass + "' >";
+    if (dismissable) {
+        html = html + "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
+    }
+    html = html + message + "</div>";
+    $("#AlertPartial").append(html);
+    $("#AlertPartial").show();
+    $("#AlertPartial").delay(8000).fadeOut(300);
+};
 
 
 

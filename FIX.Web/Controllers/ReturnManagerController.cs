@@ -12,7 +12,7 @@ using static FIX.Service.DBConstant;
 
 namespace FIX.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = DBCRole.Admin)]
     public class ReturnManagerController : BaseController
     {
         private IInvestmentService _investmentService;
@@ -78,15 +78,21 @@ namespace FIX.Web.Controllers
         }
 
         //Return update row information to bootstrap table.
+        /* Enhancement required: Return descriptive message to end user */
         public JsonResult ApproveReturn(int UPDId)
         {
             try
             {
                 var upd = _investmentService.GetUserPackageDetail(UPDId);
-                upd.StatusId = (int)EStatus.Approved;
+
+                //Check if previously approved.
+                if(upd.StatusId == (int)EStatus.Approved) return Json(false, JsonRequestBehavior.AllowGet);
 
                 //Get DocCode
                 var docCode = _docService.GetNextDocumentNumber(DBCDocSequence.EDocSequenceId.Interest_Return);
+
+                upd.StatusId = (int)EStatus.Approved;
+                upd.ApprovedReferenceNo = docCode;
 
                 //Add to wallet
                 _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Interest_Return, upd.Amount, docCode, upd.UserPackage.User.UserWallet.First().WalletId);

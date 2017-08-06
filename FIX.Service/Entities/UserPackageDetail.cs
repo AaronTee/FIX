@@ -19,6 +19,7 @@ namespace FIX.Service.Entities
         public System.DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public int StatusId { get; set; }
+        public string ApprovedReferenceNo { get; set; }
     
         public virtual Status Status { get; set; }
         public virtual UserPackage UserPackage { get; set; }

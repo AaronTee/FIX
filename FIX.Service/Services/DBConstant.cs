@@ -71,8 +71,8 @@ namespace FIX.Service
         {
             public enum EDocSequenceId
             {
-                Matching_Bonus = 1,
-                Interest_Return = 2
+                Interest_Return = 1,
+                Matching_Bonus = 2
             }
         }
 
@@ -87,9 +87,19 @@ namespace FIX.Service
             Activated = 6,
         }
 
+        public enum EJState
+        {
+            Unknown, Success, Failed, NoWallet
+        }
+
         public enum ETransactionType
         {
-            Interest_Return, Matching_Bonus
+            Interest_Return, Matching_Bonus, Withdrawal
+        }
+
+        public static string GetDescription(this ETransactionType type)
+        {
+            return Enum.GetName(type.GetType(), type);
         }
 
         public static string GetDescription(this EStatus s){
@@ -98,6 +108,7 @@ namespace FIX.Service
 
         public const int SUPER_ADMIN_REFERRAL_ID = 0;
         public const int MAX_REFERRAL_TREE_LEVEL = 5;
+        public const int MAX_REFERRAL_TREE_SHOW_PACKAGE = 1;
         public const int MAX_REFERRAL_TREE_SEARCH_LEVEL = 25;
         public const string DEFAULT_TIMEZONEID = "Singapore Standard Time";
 

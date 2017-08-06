@@ -21,7 +21,8 @@ namespace FIX.Web
             {
                 CookieName = "AspNet.FIXApp",
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login")
+                LoginPath = new PathString("/Account/Login"),
+                ExpireTimeSpan = TimeSpan.FromDays(30)
             });            
 
             // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.

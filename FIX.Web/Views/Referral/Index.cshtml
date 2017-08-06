@@ -38,12 +38,12 @@
                         }
                     }
                 },
-                types: {
-                    "default": {
-                        "icon": "glyphicon glyphicon-user"
-                    }
-                },
-                plugins: ["search", "themes", "types"]
+                //types: {
+                //    "default": {
+                //        "icon": "glyphicon glyphicon-user"
+                //    }
+                //},
+                plugins: ["search", "types"]
             });
 
             $('#search_child').click(function () {
@@ -58,7 +58,10 @@
                         if (result.isFollower) {
                             $('#search_result').text("This member is under your tree, at level " + result.atLevel + ".")
                             $('#search_result').addClass('text-success');
-                        } else {
+                        } else if(result.isSelf) {
+                            $('#search_result').text("This username is yours.");
+                        }
+                        else {
                             $('#search_result').text("This member is not under your tree.");
                             $('#search_result').addClass('text-danger');
                         }

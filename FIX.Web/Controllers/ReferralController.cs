@@ -1,5 +1,6 @@
 ﻿using FIX.Service;
 using FIX.Service.Entities;
+using FIX.Web.Extensions;
 using FIX.Web.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using System.Web.Mvc;
 
 namespace FIX.Web.Controllers
 {
+    [Authorize]
     public class ReferralController : BaseController
     {
         private IUserService _userService;
@@ -31,7 +33,7 @@ namespace FIX.Web.Controllers
             List<User> childrenInfo = new List<User>();
             ReferralTreeNode treeNode = new ReferralTreeNode();
 
-            var curUsername = _userService.GetUserBy(uid).Username;
+            var parentUser = _userService.GetUserBy(uid);
 
             if (uid != 0 || uid != null)
             {
@@ -42,24 +44,50 @@ namespace FIX.Web.Controllers
                     {
                         var hasChildren = (curLevel < DBConstant.MAX_REFERRAL_TREE_LEVEL) ? _userService.GetReferralChildren(c.UserId).Count() > 0 : false;
 
+                        var _text = c.Username + " ";
+                        var userPackages = c.UserPackage.OrderByDescending(x => x.Package.Threshold).ToList();
+
+                        //Get first three package order by descending amount of package.
+                        for (int i = 0; (i < DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE && i < userPackages.Count()); i++)
+                        {
+                            _text += "[" + userPackages[i].Date.ToUserLocalDate(User.Identity.GetUserTimeZone()) + "|" + userPackages[i].Package.Description + "]" + ((userPackages.Count - 1 != i) ? ", " : "");
+                        }
+                        if(userPackages.Count > DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE)
+                        {
+                            _text += "and " + (userPackages.Count() - DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE) + " more.";
+                        }
+
                         value.Add(new ReferralTreeNode
                         {
                             id = c.UserId,
-                            text = c.Username,
+                            text = _text,
                             children = hasChildren,
-                            //icon = (hasChildren) ? "glyphicon glyphicon-plus" : null
+                            icon = "glyphicon glyphicon-user " + ((userPackages.Count > 0) ? userPackages.First().Package.Description.ToLower() : "")
                         });
                     }
 
                     return value;
                 })();
 
+                var _parentText = parentUser.Username + " ";
+                var _parentUserPackages = parentUser.UserPackage.OrderByDescending(x => x.Package.Threshold).ToList();
+
+                //Get first three package order by descending amount of package.
+                for (int i = 0; (i < DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE && i < _parentUserPackages.Count()); i++)
+                {
+                    _parentText += "[" + _parentUserPackages[i].Date.ToUserLocalDate() + "|" + _parentUserPackages[i].Package.Description + "]" + ((_parentUserPackages.Count-1 != i) ? ", " : "");
+                }
+                if (_parentUserPackages.Count > DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE)
+                {
+                    _parentText += "and " + (_parentUserPackages.Count() - DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE) + " more.";
+                }
+
                 treeNode = new ReferralTreeNode
                 {
                     id = uid.Value,
-                    text = curUsername,
-                    //icon = (treeChildren.Count > 0) ? "glyphicon glyphicon-plus" : null,
-                    children = treeChildren
+                    text = _parentText,
+                    children = treeChildren,
+                    icon = "glyphicon glyphicon-user " + ((_parentUserPackages.Count > 0) ? _parentUserPackages.First().Package.Description.ToLower() : "")
                 };
 
                 string output = JsonConvert.SerializeObject(treeNode);
@@ -75,11 +103,19 @@ namespace FIX.Web.Controllers
             Int32? searchUserParentId = 0;
 
             var searchUser = _userService.GetUserBy(username);
+
+            if (searchUser.UserId == User.Identity.GetUserId<int>())
+            {
+                return Json(new
+                {
+                    isSelf = true
+                }, JsonRequestBehavior.AllowGet);
+            }
             
             if (searchUser != null)
             {
                 searchUserParentId = searchUser.UserProfile.ReferralId;
-                while (iterationCount < DBConstant.MAX_REFERRAL_TREE_SEARCH_LEVEL && searchUserParentId != null)
+                while (iterationCount < DBConstant.MAX_REFERRAL_TREE_SEARCH_LEVEL && !searchUserParentId.IsNullOrEmpty())
                 {
                     if (searchUserParentId == User.Identity.GetUserId<int>())
                     {

@@ -23,14 +23,38 @@ namespace FIX.Service
             return _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.UserId == userId).First();
         }
 
-        public decimal? GetUserWalletBalance(int userId)
+        public decimal? GetUserWalletBalance(Guid walletId)
         {
-            return _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.UserId == userId).First()?.Balance;
+            return _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.WalletId == walletId).First()?.Balance;
         }
 
-        public bool hasSufficientBalance(decimal checkVal, int userId)
+        public decimal? GetMatchingBonusReceivedAmount(Guid walletId)
         {
-            return GetUserWalletBalance(userId) >= checkVal;
+            var type = DBConstant.GetDescription(DBConstant.ETransactionType.Matching_Bonus);
+            return _uow.Repository<WalletTransaction>().GetAsQueryable(filter: x => x.WalletId == walletId && x.TransactionType == type).Sum(x => x.Credit);
+        }
+
+        public decimal? GetReturnInterestReceivedAmount(Guid walletId)
+        {
+            var type = DBConstant.GetDescription(DBConstant.ETransactionType.Interest_Return);
+            return _uow.Repository<WalletTransaction>().GetAsQueryable(filter: x => x.WalletId == walletId && x.TransactionType == type).Sum(x => x.Credit);
+        }
+
+        public decimal? GetWithdrawalAmount(Guid walletId)
+        {
+            var type = DBConstant.GetDescription(DBConstant.ETransactionType.Withdrawal);
+            return _uow.Repository<WalletTransaction>().GetAsQueryable(filter: x => x.WalletId == walletId && x.TransactionType == type).Sum(x => x.Debit);
+        }
+
+        public IQueryable<WalletTransaction> GetWalletTransaction(Guid walletId)
+        {
+            var type = DBConstant.ETransactionType.Withdrawal;
+            return _uow.Repository<WalletTransaction>().GetAsQueryable(filter: x => x.WalletId == walletId);
+        }
+
+        public bool hasSufficientBalance(decimal checkVal, Guid walletId)
+        {
+            return GetUserWalletBalance(walletId) >= checkVal;
         }
 
         public void SaveChange(int userId)

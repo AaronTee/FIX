@@ -19,9 +19,9 @@ namespace FIX.Service.Entities
         {
             this.User = new HashSet<User>();
             this.UserActivation = new HashSet<UserActivation>();
-            this.UserPackageDetail = new HashSet<UserPackageDetail>();
             this.UserPackage = new HashSet<UserPackage>();
             this.MatchingBonus = new HashSet<MatchingBonus>();
+            this.UserPackageDetail = new HashSet<UserPackageDetail>();
         }
     
         public int StatusId { get; set; }
@@ -32,10 +32,10 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserActivation> UserActivation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
     }
 }

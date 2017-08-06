@@ -5,32 +5,101 @@
     var userJoinDate = Model.userModel.CreatedTimestamp.ConvertToDateString();
 }
 
-<div class="panel dark-background">
-    <h2 class="headline red">Profile</h2>
 
-    <div class="row">
-        <div class="col-md-6">
-            <table class="table-display-list">
-                <tr>
-                    <td>Member ID / Name</td>
-                    <td>@Html.DisplayFor(x => x.userModel.Username) / @Html.DisplayFor(x => x.userModel.Name)</td>
-                </tr>
-                <tr>
-                    <td>Date Joined</td>
-                    <td>@Html.DisplayFor(x => userJoinDate)</td>
-                </tr>
-                <tr>
-                    <td>Subscribed Package(s)</td>
-                    <td>Platinum</td>
-                </tr>
-                <tr>
-                    <td>Member Tree Count</td>
-                    <td>2332</td>
-                </tr>
-            </table>
+
+<div class="panel dark-background">
+    <div class="panel-heading">
+        <h2 class="headline red">Profile</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table-display-list">
+                    <tr>
+                        <td>Member ID / Name</td>
+                        <td>@Html.DisplayFor(x => x.userModel.Username) / @Html.DisplayFor(x => x.userModel.Name)</td>
+                    </tr>
+                    <tr>
+                        <td>Date Joined</td>
+                        <td>@Html.DisplayFor(x => userJoinDate)</td>
+                    </tr>
+                    <tr>
+                        <td>Subscribed Package(s)</td>
+                        <td>Platinum</td>
+                    </tr>
+                    <tr>
+                        <td>Member Tree Count</td>
+                        <td>2332</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-usd fa-3x before-huge"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">26</div>
+                        <div>E-Wallet Balance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-area-chart fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">26</div>
+                        <span>Bonus Amount</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-th-large fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">26</div>
+                        <div>Total Packages</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="row">
+    <div class="col-lg-4">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-users fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">26</div>
+                        <div>Members Invited</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
 
 
 <div class="row">
@@ -42,6 +111,23 @@
     <div class="col-md-6">
         <div class="panel">
             <h2 class="headline blue">Stats</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                asd
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                asd
+            </div>
         </div>
     </div>
 </div>

@@ -17,8 +17,8 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UserPackage()
         {
-            this.UserPackageDetail = new HashSet<UserPackageDetail>();
             this.MatchingBonus = new HashSet<MatchingBonus>();
+            this.UserPackageDetail = new HashSet<UserPackageDetail>();
         }
     
         public int UserPackageId { get; set; }
@@ -34,8 +34,8 @@ namespace FIX.Service.Entities
         public virtual Status Status { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
     }
 }

@@ -13,6 +13,7 @@ using static FIX.Service.DBConstant;
 
 namespace FIX.Web.Controllers
 {
+    [Authorize]
     public class MatchingBonusController : BaseController
     {
         private IUserService _userService;
@@ -34,8 +35,15 @@ namespace FIX.Web.Controllers
             //Show matching bonus of this month by default.
             MatchingBonusSearchViewModels model = new MatchingBonusSearchViewModels
             {
-                Date = DateTime.UtcNow.ConvertToDateYearMonthString()
+                Date = DateTime.UtcNow.ConvertToDateYearMonthString(),
+                UserDDL = new SelectList(_userService.GetAllUsers().ToList().Where(x => x.UserProfile.Role.Description != DBCRole.Admin)
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.UserId + " - " + x.Username,
+                    Value = x.UserId.ToString()
+                }), "Value", "Text")
             };
+
             return View(model);
         }
 
@@ -45,9 +53,14 @@ namespace FIX.Web.Controllers
             return View();
         }
 
-        public JsonResult MatchingBonusList(int offset, int limit, string sort, string order, string date)
+        
+        public JsonResult MatchingBonusList(int offset, int limit, string sort, string order, string date, int? userId)
         {
-            List<MatchingBonus> queryableList = _investmentService.GetMatchingBonusList(User.Identity.GetUserId<int>()).ToList();
+            var _userId = (User.IsInRole(DBCRole.Admin)) ? userId : User.Identity.GetUserId<int>();
+
+            if (_userId.IsNullOrEmpty()) return Json(new { }, JsonRequestBehavior.AllowGet);
+
+            List<MatchingBonus> queryableList = _investmentService.GetMatchingBonusList(_userId).ToList();
 
             if (!date.IsNullOrEmpty())
             {
@@ -55,6 +68,7 @@ namespace FIX.Web.Controllers
                 DateTime.TryParseExact(date, DBCDateFormat.MMMyyyy, CultureInfo.CurrentCulture, DateTimeStyles.None, out _date);
                 if (date != null)
                 {
+                    //get return date within its month
                     queryableList = queryableList.Where(x => x.ReturnDate >= _date && x.ReturnDate < _date.AddMonths(1)).ToList();
                 }
             }
@@ -64,37 +78,43 @@ namespace FIX.Web.Controllers
 
             //sorting
             var allRowCount = queryableList.Count();
-            var sortedQueryableList = queryableList.PaginateList(sort, order, offset, limit, x=>x.Generation);
+            var sortedQueryableList = queryableList.PaginateList(sort, order, offset, limit, x => x.Generation);
 
             var rowsResult = new List<MatchingBonusListViewModels>();
 
             var pos = offset + 1;
-            
+
             foreach (var item in sortedQueryableList.ToList())
             {
                 var matchingBonus = new MatchingBonusListViewModels()
                 {
                     Pos = pos++.ToString(),
-                    MatchingBonusId = item.MatchingBonusId,
+                    MatchingBonusId = item.MatchingBonusId.ToString(),
                     Date = item.ReturnDate.ConvertToDateString(),
-                    Username = item.Referral.Username,
+                    Username = item.UserEntity.Username,
+                    UserId = item.UserId,
                     Package = item.UserPackage.Package.Description,
                     Generation = item.Generation.ToString(),
                     BonusAmount = item.BonusAmount.ToString(),
                     Status = item.Status.Description,
-                    ActionTags = new List<ActionTag>
+                    ActionTags = new Func<List<ActionTag>>(() =>
                     {
-                        new ActionTag
+                        List<ActionTag> actions = new List<ActionTag>();
+                        if (item.StatusId == (int)EStatus.Pending)
                         {
-                            Action = "approve",
-                            Name = "Approve"
-                        },
-                        new ActionTag
-                        {
-                            Action = "void",
-                            Name = "Void"
+                            actions.Add(new ActionTag
+                            {
+                                Action = "approve",
+                                Name = "Approve"
+                            });
+                            actions.Add(new ActionTag
+                            {
+                                Action = "void",
+                                Name = "Void"
+                            });
                         }
-                    }
+                        return actions;
+                    })()
                 };
                 rowsResult.Add(matchingBonus);
             }
@@ -122,25 +142,42 @@ namespace FIX.Web.Controllers
 
         public JsonResult ApproveMatchingBonus(int MatchingBonusId)
         {
+            EJState result = EJState.Unknown;
+
             try
             {
                 var matchingBonus = _investmentService.GetMatchingBonus(MatchingBonusId);
-                matchingBonus.StatusId = (int)EStatus.Approved;
+
+                //Check if already approved
+                if(matchingBonus.StatusId == (int)EStatus.Approved) return Json(new { }, JsonRequestBehavior.AllowGet);
 
                 var docNo = _docService.GetNextDocumentNumber(DBCDocSequence.EDocSequenceId.Matching_Bonus);
 
-                //Add to wallet
-                _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Matching_Bonus, matchingBonus.BonusAmount, docNo, matchingBonus.UserEntity.UserWallet.First().WalletId);
+                matchingBonus.StatusId = (int)EStatus.Approved;
+                matchingBonus.ApprovedReferenceNo = docNo;
 
-                _financialService.SaveChange(User.Identity.GetUserId<int>());
+                var userWallet = matchingBonus.Referral.UserWallet.First();
+                if (userWallet != null)
+                {
+                    //Add to wallet
+                    _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Matching_Bonus, matchingBonus.BonusAmount, docNo, userWallet.WalletId);
 
-                return Json(true, JsonRequestBehavior.AllowGet);
+                    _financialService.SaveChange(User.Identity.GetUserId<int>());
+
+                    result = EJState.Success;
+                }
+                else
+                {
+                    result = EJState.NoWallet;
+                }
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message, ex);
-                return Json(false, JsonRequestBehavior.AllowGet);
+                result = EJState.Failed;
             }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult VoidMatchingBonus(int MatchingBonusId)

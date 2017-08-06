@@ -18,15 +18,19 @@ $(function () {
     }
 
     //Datepicker
-    var d = $('.datepicker');
-    if (!isMobile()) {
-        if ($.fn.datepicker) {
-            $.fn.datepicker.defaults.format = "dd-M-yyyy";
-            $.fn.datepicker.defaults.autoclose = true;
-            $.fn.datepicker.defaults.startDate = "-5y";
-            $.fn.datepicker.defaults.endDate = "+5y";
-            $.fn.datepicker.defaults.maxViewMode = 2;
-            $.fn.datepicker.defaults.orientation = 'bottom';
+    if ($.fn.datepicker) {
+        var d = $('.datepicker');
+        var dm = $('.datemonthpicker');
+        $.fn.datepicker.defaults.format = "dd-M-yyyy";
+        $.fn.datepicker.defaults.autoclose = true;
+        $.fn.datepicker.defaults.startDate = "-5y";
+        $.fn.datepicker.defaults.endDate = "+5y";
+        $.fn.datepicker.defaults.maxViewMode = 2;
+        $.fn.datepicker.defaults.orientation = 'bottom';
+
+        /* Desktop */
+        if (!isMobile()) {
+            //dmy
             d.datepicker();
             var t;
             $(document).on(
@@ -41,31 +45,34 @@ $(function () {
                 }
             );
         }
-    } else {
-
-        if (Pikaday && pikadayResponsive) {
+        /* Mobile */
+        else
+        {
+            //dmy
             d.each(function (index, element) {
-                pikadayResponsive(this, {
-                    format: "DD-MMM-YYYY",
-                    outputFormat: "DD-MMM-YYYY",
-                    checkIfNativeDate: function () {
-                        return Modernizr.inputtypes.date && (Modernizr.touch && navigator.appVersion.indexOf("Win") === -1);
-                    },
-                    placeholder: "",
-                    classes: "form-control",
-                    dayOffset: 0,
-                    pikadayOptions: {
-                        onSelect: function () {
-                            console.log($(this).focus());
-                        }
-                    }
-                });
+                $(element).attr('type', 'date');
             });
+            //my
+            dm.attr('readonly', 'readonly');
         }
 
-        $('.pikaday__invisible').click(function () {
-            $(this).focus();
+        //my
+        dm.datepicker({
+            format: "M/yyyy",
+            minViewMode: 1,
+            endDate: '+1y',
         });
+        $(document).on(
+            'DOMMouseScroll mousewheel scroll touchmove',
+            'body',
+            function () {
+                window.clearTimeout(t);
+                t = window.setTimeout(function () {
+                    dm.datepicker('place')
+                }, 250);
+                dm.datepicker('place');
+            }
+        );
     }
 
     //wenzhixin
