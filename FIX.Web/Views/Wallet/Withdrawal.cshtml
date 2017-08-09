@@ -1,0 +1,53 @@
+﻿@model WithdrawalViewModels
+
+@{
+    ViewBag.Title = "Local Deposit";
+}
+
+<div class="form-section">
+    @using (Html.BeginForm("Withdrawal", "Wallet", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-header">Withdrawal</div>
+                <div class="form-body">
+                    @Html.EditorFor(x => x.CreditBalance, "Display")
+                    @Html.EditorFor(x => x.NotifyEmail, "Email")
+                    @Html.EditorFor(x => x.WithdrawAmount, "Number", new { @class = "dec md" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-header">Fill in your banking detail</div>
+                <div class="form-body">
+                    @Html.EditorFor(x => x.UsePrimary, "Checkbox", new { Label = "Use Primary" })
+                    @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL, @class = "t-cb", @readonly = true })
+                    @Html.EditorFor(x => x.BankAccountHolder, "Text", new { @class = "t-cb", @readonly = true })
+                    @Html.EditorFor(x => x.BankAccountNo, "Text", new { @class = "t-cb", @readonly = true })
+                    @Html.EditorFor(x => x.BankBranch, "Text", new { @class = "t-cb", @readonly = true })
+                </div>
+            </div>
+        </div>
+
+        <div class="action-panel">
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+            <button class="btn btn-submit" type="submit">Submit</button>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $('#UsePrimary').click(function () {
+                $('.t-cb').removeAttr('readonly');
+                if($(this).is(":checked")) $('.t-cb').attr("readonly", "readonly");
+            });
+        });
+        
+    </script>
+
+}

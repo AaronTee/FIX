@@ -18,15 +18,22 @@ namespace FIX.Service.Entities
         public UserWallet()
         {
             this.WalletTransaction = new HashSet<WalletTransaction>();
+            this.Withdrawal = new HashSet<Withdrawal>();
+            this.Preauth = new HashSet<Preauth>();
         }
     
         public System.Guid WalletId { get; set; }
         public int UserId { get; set; }
         public string Currency { get; set; }
         public decimal Balance { get; set; }
+        public decimal AuthorizedBalance { get; set; }
     
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WalletTransaction> WalletTransaction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Withdrawal> Withdrawal { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Preauth> Preauth { get; set; }
     }
 }

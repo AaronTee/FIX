@@ -11,7 +11,7 @@ namespace FIX.Service
         Role GetUserRoleBy(UserProfile userProfile);
         IQueryable<User> GetAllUsers();
         IQueryable<User> GetAllUsersWithoutAdmin();
-        IQueryable<UserBankAccount> GetAllUserBankAccount(User user);
+        IQueryable<UserBankAccount> GetAllUserBankAccount(int? userId);
         User GetUserBy(string username);
         User GetUserBy(int? id);
         Task<bool> IsValid(string username, string password);

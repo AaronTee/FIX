@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static FIX.Service.DBConstant;
 
 namespace FIX.Service
 {
@@ -23,9 +24,16 @@ namespace FIX.Service
             return _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.UserId == userId).First();
         }
 
-        public decimal? GetUserWalletBalance(Guid walletId)
+        public decimal? GetUserWalletAuthorizedBalance(Guid walletId)
         {
-            return _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.WalletId == walletId).First()?.Balance;
+            var wallet = _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.WalletId == walletId).First();
+            return wallet?.AuthorizedBalance;
+        }
+
+        public decimal? GetUserWalletAvailableBalance(Guid walletId)
+        {
+            var wallet = _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.WalletId == walletId).First();
+            return wallet?.Balance - wallet?.AuthorizedBalance;
         }
 
         public decimal? GetMatchingBonusReceivedAmount(Guid walletId)
@@ -54,12 +62,38 @@ namespace FIX.Service
 
         public bool hasSufficientBalance(decimal checkVal, Guid walletId)
         {
-            return GetUserWalletBalance(walletId) >= checkVal;
+            return GetUserWalletAvailableBalance(walletId) >= checkVal;
         }
 
         public void SaveChange(int userId)
         {
             _uow.Save(userId);
+        }
+
+        public void InsertWithdrawal(Withdrawal entity)
+        {
+            _uow.Repository<Withdrawal>().Insert(entity);
+        }
+
+        public void PreauthorizeWalletCredit(DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId)
+        {
+            var sType = Enum.GetName(type.GetType(), type);
+            var userWallet = _uow.Repository<UserWallet>().GetByKey(walletId);
+
+            userWallet.AuthorizedBalance += amount;
+
+            Preauth newAuth = new Preauth
+            {
+                WalletId = userWallet.WalletId,
+                ReferenceNo = docCode,
+                TransactionDate = DateTime.UtcNow,
+                TransactionType = sType,
+                Amount = amount,
+                StatusId = (int)EStatus.Pending
+            };
+
+            _uow.Repository<Preauth>().Insert(newAuth);
+            _uow.Repository<UserWallet>().Update(userWallet);
         }
 
         public void TransactWalletCredit(DBConstant.EOperator optor, DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId)

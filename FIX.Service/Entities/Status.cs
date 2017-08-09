@@ -22,6 +22,8 @@ namespace FIX.Service.Entities
             this.UserPackage = new HashSet<UserPackage>();
             this.MatchingBonus = new HashSet<MatchingBonus>();
             this.UserPackageDetail = new HashSet<UserPackageDetail>();
+            this.Withdrawal = new HashSet<Withdrawal>();
+            this.Preauth = new HashSet<Preauth>();
         }
     
         public int StatusId { get; set; }
@@ -37,5 +39,9 @@ namespace FIX.Service.Entities
         public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Withdrawal> Withdrawal { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Preauth> Preauth { get; set; }
     }
 }

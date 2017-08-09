@@ -403,6 +403,8 @@
     <Content Include="Views\MatchingBonus\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateMonth.cshtml" />
     <Content Include="Views\Wallet\Index.cshtml" />
+    <Content Include="Views\Wallet\Withdrawal.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Checkbox.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

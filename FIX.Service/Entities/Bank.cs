@@ -18,6 +18,7 @@ namespace FIX.Service.Entities
         public Bank()
         {
             this.UserBankAccount = new HashSet<UserBankAccount>();
+            this.Withdrawal = new HashSet<Withdrawal>();
         }
     
         public int BankId { get; set; }
@@ -27,5 +28,7 @@ namespace FIX.Service.Entities
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserBankAccount> UserBankAccount { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Withdrawal> Withdrawal { get; set; }
     }
 }

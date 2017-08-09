@@ -1,0 +1,16 @@
+﻿@model Boolean
+
+<div class="form-group">
+    @Html.Label(ViewData["Label"].ToString(), new { @class = "control-label col-lg-4 col-md-5" })
+    <div class="col-lg-8 col-md-7">
+        @if (ViewData["readonly"] != null && (bool)ViewData["readonly"])
+        {
+            @Html.CheckBoxFor(x => x, new { @class = "ios8-switch ios8-switch-lg readonly " + ((ViewData["class"] != null) ? ViewData["class"] : ""), id = ViewData.ModelMetadata.GetDisplayName(), onclick = "return false" }) <label for='@ViewData.ModelMetadata.GetDisplayName()'></label>
+        }
+        else
+        {
+            @Html.CheckBoxFor(x => x, new { @class = "ios8-switch ios8-switch-lg " + ((ViewData["class"] != null) ? ViewData["class"] : ""), id = ViewData.ModelMetadata.GetDisplayName() }) <label for='@ViewData.ModelMetadata.GetDisplayName()'></label>
+        }
+    </div>
+</div>
+

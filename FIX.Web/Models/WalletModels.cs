@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace FIX.Web.Models
 {
@@ -24,5 +25,45 @@ namespace FIX.Web.Models
         public string Debit { get; set; }
         public string Credit { get; set; }
         public string Balance { get; set; }
+    }
+
+    public class WithdrawalViewModels
+    {
+        public WithdrawalViewModels()
+        {
+            UsePrimary = true;
+        }
+
+        [Display(Name = "E-Wallet Balance")]
+        public string CreditBalance { get; set; }
+
+        [Required]
+        [Display(Name = "Email")]
+        public string NotifyEmail { get; set; }
+
+        [Required]
+        [Display(Name = "Withdraw Amount")]
+        public decimal WithdrawAmount { get; set; }
+
+        [Required]
+        [Display(Name = "Bank Account No.")]
+        public string BankAccountNo { get; set; }
+
+        [Required]
+        [Display(Name = "Bank")]
+        public int BankId { get; set; }
+
+        [Required]
+        [Display(Name = "Bank Account Holder")]
+        public string BankAccountHolder { get; set; }
+
+        [Required]
+        [Display(Name = "Bank Branch")]
+        public string BankBranch { get; set; }
+
+        public bool UsePrimary { get; set; }
+
+        public SelectList BankDDL { get; internal set; }
+
     }
 }

@@ -196,6 +196,10 @@ input{
         width: 75px !important;
     }
 
+    &.md{
+        width: 125px !important;
+    }
+
     &.num,
     &.dec,
     &.int{
@@ -210,6 +214,11 @@ input[type=checkbox]
   -moz-transform: scale(1.5); /* FF */
   -webkit-transform: scale(1.5); /* Safari and Chrome */
   -o-transform: scale(1.5); /* Opera */
+}
+
+select[readonly]{
+    pointer-events: none;
+    filter: contrast(1.2);
 }
 
 .g-recaptcha {
@@ -317,6 +326,18 @@ ul{
         color: #ddd;
 
         & .nav-menu{
+
+            & .nav-menu-icon{
+                width: 40px;
+                height: 40px;
+                padding: 13px;
+                float: left;
+            }
+
+            &.expanding{
+                background-color: #111;
+            }
+
             & > a{
                 line-height: 42px;
                 padding-left: 25px;

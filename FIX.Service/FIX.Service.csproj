@@ -122,6 +122,9 @@
     <Compile Include="Entities\Package.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Preauth.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\spMatchingBonusFormula_experimental_Result.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -132,6 +135,9 @@
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Entities\WalletTransaction.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Withdrawal.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IUnitOfWork.cs" />

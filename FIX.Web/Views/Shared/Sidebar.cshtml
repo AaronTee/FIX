@@ -42,24 +42,35 @@
                 @if (User.IsInRole(DBConstant.DBCRole.User))
                 {
                     <li class="nav-menu">
+                        <i class="fa fa-home fa-1x nav-menu-icon"></i>
                         <a href="@Url.Action("Index", "Home")">Home</a>
                     </li>
                     <li class="nav-menu">
+                        <i class="fa fa-line-chart fa-1x nav-menu-icon"></i>
                         <a href="@Url.Action("Index", "Investment")">My Investment</a>
                     </li>
                     <li class="nav-menu">
+                        <i class="fa fa-sitemap fa-1x nav-menu-icon"></i>
                         <a href="@Url.Action("Index", "Referral")">Sponsor Tree</a>
                     </li>
                     <li class="nav-menu">
+                        <i class="fa fa-puzzle-piece fa-1x nav-menu-icon"></i>
                         <a href="@Url.Action("Index", "MatchingBonus")">Matching Bonus</a>
                     </li>
-                    <li class="nav-menu">
-                        <a href="@Url.Action("Index", "Withdrawal")">Withdrawal</a>
-                    </li>
-                    <li class="nav-menu">
-                        <a href="@Url.Action("Index", "Wallet")">My E-Wallet</a>
+                    <li class="nav-menu has-child">
+                        <i class="fa fa-money fa-1x nav-menu-icon"></i>
+                        <a href="#">My E-Wallet</a>
+                        <ul class="sidebar-subnav">
+                            <li class="nav-menu">
+                                <a href="@Url.Action("Index", "Wallet")">Wallet Detail</a>
+                            </li>
+                            <li class="nav-menu">
+                                <a href="@Url.Action("Withdrawal", "Wallet")">Withdrawal</a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-menu has-child">
+                        <i class="fa fa-file-text-o fa-1x nav-menu-icon"></i>
                         <a href="#">Reports</a>
                         <ul class="sidebar-subnav">
                             <li class="nav-menu">

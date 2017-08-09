@@ -60,7 +60,7 @@
         var $this = $(this);
 
         $this.toggleClass('expanding');
-        childMenu.toggleClass('show');
+        $this.find(".sidebar-subnav").toggleClass('show');
     });
 
     //--------------disable overlay scroll body------------
@@ -103,7 +103,7 @@
         return _overlay.scrollHeight - _overlay.scrollTop <= _overlay.clientHeight;
     }
 
-    $('input[data-val="true"], select[data-val="true"]')
+    $('input:not([type="checkbox"])[data-val="true"], select[data-val="true"]')
         .closest(".form-group")
         .children("label")
         .addClass("required-field");

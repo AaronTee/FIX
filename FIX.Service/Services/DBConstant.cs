@@ -72,7 +72,8 @@ namespace FIX.Service
             public enum EDocSequenceId
             {
                 Interest_Return = 1,
-                Matching_Bonus = 2
+                Matching_Bonus = 2,
+                Withdrawal = 3
             }
         }
 

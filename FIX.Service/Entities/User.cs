@@ -19,9 +19,9 @@ namespace FIX.Service.Entities
         {
             this.UserBankAccount = new HashSet<UserBankAccount>();
             this.UserPackage = new HashSet<UserPackage>();
-            this.UserWallet = new HashSet<UserWallet>();
             this.MatchingBonus = new HashSet<MatchingBonus>();
             this.MatchingBonus1 = new HashSet<MatchingBonus>();
+            this.UserWallet = new HashSet<UserWallet>();
         }
     
         public int UserId { get; set; }
@@ -46,10 +46,10 @@ namespace FIX.Service.Entities
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         public virtual UserProfile UserProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserWallet> UserWallet { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserWallet> UserWallet { get; set; }
     }
 }

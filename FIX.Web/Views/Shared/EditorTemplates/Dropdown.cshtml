@@ -1,9 +1,16 @@
 ﻿@model object
 
 <div class="form-group">
-    @Html.LabelFor(model => model, new { @class = "control-label col-lg-3" })
-    <div class="col-lg-9">
-        @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"], "--- Choose one ---", new { @class = "form-control" })
+    @Html.LabelFor(model => model, new { @class = "control-label col-lg-4 col-md-5" })
+    <div class="col-lg-8 col-md-7">
+        @if (ViewData["readonly"] != null && (bool)ViewData["readonly"])
+        {
+            @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"], "--- Choose one ---", new { @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : ""), @readonly =  "readonly" })
+        }
+        else
+        {
+            @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"], "--- Choose one ---", new { @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : "") })
+        }
         @Html.ValidationMessageFor(model => model)
     </div>
 </div>

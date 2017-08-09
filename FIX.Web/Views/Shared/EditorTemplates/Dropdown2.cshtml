@@ -1,8 +1,8 @@
 ﻿@model object
 
 <div class="form-group">
-    @Html.LabelFor(model => model, new { @class = "control-label col-lg-3" })
-    <div class="col-lg-9">
+    @Html.LabelFor(model => model, new { @class = "control-label col-lg-4 col-md-5" })
+    <div class="col-lg-8 col-md-7">
         @Html.DropDownListFor(model => model, ViewData["DDL"] as IEnumerable<SelectListItem>, "--- Choose one ---", new { @class = "form-control searchable-dropdown trigger-search" })
         <br/>
         @Html.ValidationMessageFor(model => model)

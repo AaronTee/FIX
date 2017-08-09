@@ -102,7 +102,7 @@ namespace FIX.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return (userRole.Description == DBConstant.DBCRole.Admin) ? RedirectToAction("Index", "User") : RedirectToAction("Index", "Home");
                     }
                 }
 
