@@ -14,9 +14,7 @@ namespace FIX.Web.Extensions
         public static string ToUserLocalDate(this DateTime d, string TimeZoneId = null)
         {
             if (d == null) return string.Empty;
-            if (TimeZoneId == null) TimeZoneId = "UTC";
-            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
-            var tzTime = TimeZoneInfo.ConvertTimeFromUtc(d, tz);
+            var tzTime = d.ToUserLocalDateTimeAsDateTime(TimeZoneId);
 
             return tzTime.ConvertToDateString();
         }
@@ -24,26 +22,31 @@ namespace FIX.Web.Extensions
         public static string ToUserLocalDateTime(this DateTime d, string TimeZoneId = null)
         {
             if (d == null) return string.Empty;
-            if (TimeZoneId == null) TimeZoneId = "UTC";
-            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
-            var tzTime = TimeZoneInfo.ConvertTimeFromUtc(d, tz);
+            var tzTime = d.ToUserLocalDateTimeAsDateTime(TimeZoneId);
 
             return tzTime.ConvertToDateTimeString();
         }
 
-        public static string ConvertToDateYearMonthString(this DateTime d)
+        public static DateTime ToUserLocalDateTimeAsDateTime(this DateTime d, string TimeZoneId = null)
         {
-            return d.ToString(DBCDateFormat.MMMyyyy);
+            if (TimeZoneId == null) TimeZoneId = "UTC";
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
+            return TimeZoneInfo.ConvertTimeFromUtc(d, tz);
         }
 
-        public static string ConvertToDateString(this DateTime d)
+        public static string ConvertToDateYearMonthString(this DateTime d, string TimeZoneId = null)
         {
-            return d.ToString(DBCDateFormat.ddMMMyyyy);
+            return d.ToUserLocalDateTimeAsDateTime(TimeZoneId).ToString(DBCDateFormat.MMMyyyy);
         }
 
-        public static string ConvertToDateTimeString(this DateTime d)
+        public static string ConvertToDateString(this DateTime d, string TimeZoneId = null)
         {
-            return d.ToString(DBCDateFormat.ddMMMyyyyHHmmsstt);
+            return d.ToUserLocalDateTimeAsDateTime(TimeZoneId).ToString(DBCDateFormat.ddMMMyyyy);
+        }
+
+        public static string ConvertToDateTimeString(this DateTime d, string TimeZoneId = null)
+        {
+            return d.ToUserLocalDateTimeAsDateTime(TimeZoneId).ToString(DBCDateFormat.ddMMMyyyyHHmmsstt);
         }
     }
 }

@@ -223,10 +223,12 @@
     <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchingBonusController.cs" />
+    <Compile Include="Controllers\MonthlyReportController.cs" />
     <Compile Include="Controllers\ReferralController.cs" />
     <Compile Include="Controllers\ReturnManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WalletController.cs" />
+    <Compile Include="Extensions\FileExtension.cs" />
     <Compile Include="Extensions\IdentityExtension.cs" />
     <Compile Include="Extensions\IntegerExtension.cs" />
     <Compile Include="Extensions\MapperExtension.cs" />
@@ -242,6 +244,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DailyTradingModels.cs" />
     <Compile Include="Models\MatchingBonusModels.cs" />
+    <Compile Include="Models\ReportModels.cs" />
     <Compile Include="Models\WalletModels.cs" />
     <Compile Include="Models\ReferralModels.cs" />
     <Compile Include="Models\ReturnManagerModels.cs" />
@@ -257,13 +260,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utils\CultureConstraint.cs" />
+    <Compile Include="Utils\FileManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\sass\bootstrap.custom.scss" />
     <Content Include="Content\css\bootstrap-datepicker.css" />
     <Content Include="Content\css\bootswatch.css" />
+    <Content Include="Content\css\fileinput.min.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\ios-checkbox.css" />
     <Content Include="Content\css\loginpage.css" />
     <Content Include="Content\css\metisMenu.min.css" />
     <Content Include="Content\css\morris.css" />
@@ -283,9 +289,31 @@
     <Content Include="gulpfile.min.js">
       <DependentUpon>gulpfile.js</DependentUpon>
     </Content>
+    <Content Include="Reports\ViewerJS\compatibility.js" />
+    <Content Include="Reports\ViewerJS\example.local.css" />
+    <Content Include="Reports\ViewerJS\images\kogmbh.png" />
+    <Content Include="Reports\ViewerJS\images\nlnet.png" />
+    <Content Include="Reports\ViewerJS\images\texture.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-download.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-fullscreen.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-menuArrows.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-pageDown.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-pageUp.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-presentation.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-zoomIn.png" />
+    <Content Include="Reports\ViewerJS\images\toolbarButton-zoomOut.png" />
+    <Content Include="Reports\ViewerJS\index.html" />
+    <Content Include="Reports\ViewerJS\pdf.js" />
+    <Content Include="Reports\ViewerJS\pdf.worker.js" />
+    <Content Include="Reports\ViewerJS\pdfjsversion.js" />
+    <Content Include="Reports\ViewerJS\text_layer_builder.js" />
+    <Content Include="Reports\ViewerJS\ui_utils.js" />
+    <Content Include="Reports\ViewerJS\webodf.js" />
     <Content Include="Scripts\app\bootstrap-table.custom.js" />
     <Content Include="Scripts\app\bootstrap-modal.custom.js" />
     <Content Include="Scripts\app\extension.js" />
+    <Content Include="Scripts\app\lib\fileinput.min.js" />
+    <Content Include="Scripts\app\utils.js" />
     <Content Include="Scripts\app\user.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -314,6 +342,7 @@
     <None Include="Properties\PublishProfiles\aws-webhost-win.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\localhost.pubxml" />
+    <Content Include="Reports\MonthlyReport\demodoc.pdf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bundles\app.js" />
     <Content Include="Scripts\bundles\bootstrap.js" />
@@ -405,11 +434,14 @@
     <Content Include="Views\Wallet\Index.cshtml" />
     <Content Include="Views\Wallet\Withdrawal.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Checkbox.cshtml" />
+    <Content Include="Views\MonthlyReport\Index.cshtml" />
+    <Content Include="Views\MonthlyReport\Manage.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\File.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Submit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\svg\" />
-    <Folder Include="Scripts\app\lib\" />
     <Folder Include="Views\HtmlLoader\" />
   </ItemGroup>
   <ItemGroup>

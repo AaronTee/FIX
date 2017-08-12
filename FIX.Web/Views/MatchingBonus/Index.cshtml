@@ -59,6 +59,9 @@
 @section scripts{
     <script>
 
+        var m,
+            $table = $('#table_matching_bonus');
+
         $(function () {
             $('#UserId').select2({
                 dropdownParent: $('#UserId').parent(),
@@ -78,6 +81,8 @@
                     }
                 }
             });
+
+            m = $('#modal').modalCreator();
         });
 
         function queryParams(p) {
@@ -93,8 +98,7 @@
             $('#table_matching_bonus').bootstrapTable('refresh');
         });
 
-        var m = $('#modal').modalCreator();
-        var $table = $('#table_matching_bonus');
+        
 
         window.statusEvents = {
             'click .action': function (e, value, row, index) {

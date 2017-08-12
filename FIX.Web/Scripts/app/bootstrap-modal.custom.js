@@ -1,5 +1,5 @@
 ﻿//template
-(function ($) {
+$(function($) {
 
     var $_this;
     var _options;
@@ -87,7 +87,7 @@
         onConfirm: function () { }
     }
 
-})(jQuery);
+});
 
 
 

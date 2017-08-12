@@ -1,0 +1,67 @@
+﻿@model MonthlyReportModels
+
+@if (User.IsInRole(DBConstant.DBCRole.Admin))
+{
+<a href="@Url.Action("Manage")"
+   class="btn btn-action">
+     Manage Reports
+</a>
+}
+
+<div class="form-section form-horizontal spacing">
+    <div class="form-header">Monthly Report</div>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.Date, "DateMonth", new { @class = "trigger-search" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d_wh-iframe">
+    <h1 class="no-report">No Reports found on this month.</h1> 
+    <iframe id="monthly_report_iframe" src="~/Reports/ViewerJS/#../MonthlyReport/@(Model.PDFName + "?ts=" + (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds)" frameborder="0" allowfullscreen webkitallowfullscreen></iframe>
+</div>
+
+@section scripts{  
+    
+    <script>
+        //Init
+        $('.no-report').hide();
+        $('#monthly_report_iframe').show();
+
+        @if (Model.PDFName.IsNullOrEmpty())
+        {
+            @:$('.no-report').show();
+            @:$('#monthly_report_iframe').hide();
+        }
+
+        $('.trigger-search').change(function () {
+
+            $('.no-report').hide();
+            $('#monthly_report_iframe').show();
+
+            //Get formatted date month year string
+            var pdfName = $(this).val().replace("/", "") + '.pdf';
+            var newSrcName = "/Reports/ViewerJS/#../MonthlyReport/" + pdfName;
+            var relativePath = "/Reports/MonthlyReport/" + pdfName + '?ts=' + Math.floor(Date.now() / 1000);
+
+            $.ajax({
+                url: relativePath,
+                type: 'HEAD',
+                error: function () {
+                    //file not exists
+                    $('.no-report').show();
+                    $('#monthly_report_iframe').hide();
+                },
+                success: function () {
+                    //file exists
+                    $('#monthly_report_iframe').attr('src', newSrcName);
+                    $('#monthly_report_iframe')[0].contentWindow.location.reload(true);
+                }
+            });
+        });
+    </script>
+    }

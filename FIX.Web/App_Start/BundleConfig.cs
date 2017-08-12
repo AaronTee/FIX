@@ -9,7 +9,7 @@ namespace FIX.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
 
-#if !DEBUG
+#if DEBUG
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/bundles/jquery.js"));
 
@@ -44,9 +44,9 @@ namespace FIX.Web
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/app").Include(
-                        "~/Scripts/app/lib/pikaday-responsive.min.js").IncludeDirectory(
-                        "~/Scripts/app", "*.js", true));
+            bundles.Add(new ScriptBundle("~/bundles/app").IncludeDirectory(
+                        "~/Scripts/app", "*.js", true).IncludeDirectory(
+                        "~/Scripts/app/lib", "*.js", true));
 #endif
 
             bundles.Add(new StyleBundle("~/Content/style").Include(

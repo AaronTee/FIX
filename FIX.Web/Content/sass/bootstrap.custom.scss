@@ -47,9 +47,11 @@
 .minw100{ min-width:100px!important; }
 .minw125{ min-width:125px!important; }
 .minw150{ min-width:150px!important; }
+.minw200{ min-width:200px!important; }
 .minw300{ min-width:300px!important; }
 .w100{ width:100px!important; }
 .maxw100{ max-width:100px!important; }
+.maxw200{ max-width:200px!important; }
 .fw { width: 100% !important; }
 
 input:-webkit-autofill,
@@ -138,34 +140,30 @@ ul.breadcrumb li a:active {
     margin-left: 8px;
 }
 
-.btn.btn-actionlink{
-    background-color: #bbb;
-    color: unset;
-    border: 0;
-    padding: 3px 6px;
-    min-width: 60px;
-    transition: all linear .1s;
+.navbar .div-right{
+    padding: 9px;
+    float:right;
+    font-size: 0.8em;
+    color: #ddd;
+
+    & table tr td{
+        padding-left: 10px;
+    }
+
+    & table tr td:first-child{
+        text-align: right;
+        font-weight: 600;
+    }
+
+
 }
 
 tr td a.btn.btn-actionlink:not(:last-child) {
     border-right: 1px solid grey;
 }
 
-.btn.btn-actionlink:hover{
-    box-shadow:inset 0 0 5px 0px #999;
-    filter: contrast(2);
-}
-
-.btn.btn-sidebar-primary{
-    width: 100%;
-    background-color: #333;
-}
-
-.btn-logout:active{
-    background-color: #6b2f2f !important;
-}
-.btn-logout:hover{
-    background-color: #6b2f2f !important;
+.file-caption{
+    padding:20px !important;
 }
 
 
@@ -251,6 +249,20 @@ select{
     width: 66%;
 }
 
+
+.btn.btn-sidebar-primary{
+    width: 100%;
+    background-color: #333;
+}
+
+.btn-logout:active{
+    background-color: #6b2f2f !important;
+}
+.btn-logout:hover{
+    background-color: #6b2f2f !important;
+}
+
+
 .btn{
 
     transition: all linear .2s;
@@ -259,6 +271,15 @@ select{
     font-weight: 500;
     border:1px solid #ccc;
     border-radius: 5px;
+
+    &:hover{
+        box-shadow: 0 0 5px 0px #999;
+        filter: contrast(1.1);
+    }
+
+    &:active{
+        filter: brightness(0.8);
+    }
 
     &.btn-submit{
         color: #444;
@@ -292,6 +313,20 @@ select{
     &.btn-action:hover{
         background-color: rgb(255, 206, 124);
         border-color: rgba(255, 159, 0, 0.59);
+    }
+
+    &.btn-actionlink{
+        background-color: #bbb;
+        color: unset;
+        border: 0;
+        padding: 3px 6px;
+        min-width: 60px;
+        transition: all linear .1s;
+    }
+
+    &.btn-default2{
+        background-color: #eee;
+        color: #333;
     }
 }
 
@@ -389,6 +424,18 @@ select{
      background: -webkit-linear-gradient(#dba178, #9e5a34);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* full width height iframe */
+.d_wh-iframe iframe {
+    width:100%;
+    height:50%;
+    min-width: 640px;
+    min-height: 480px;
+}
+.d_wh-iframe {
+    /*height: 100%;
+    width:100%;*/
 }
 
 

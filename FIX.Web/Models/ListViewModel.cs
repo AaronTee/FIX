@@ -7,6 +7,7 @@ namespace FIX.Web.Models
 {
     public class ActionsLink
     {
+        public bool checkBoxKey { get; set; }
         public List<ActionTag> ActionTags { get; set; }
         public List<ActionLink> ActionLinks { get; set; }
     }

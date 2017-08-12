@@ -52,10 +52,18 @@
                     </li>
                     <li>@Html.ActionLink("FIX", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</li>
                 </ul>
-                <div style="right: 25px; color: #ddd; font-size:12px; position:absolute; bottom: 0">
-                    Date: @DateTime.UtcNow.ToUserLocalDateTime(User.Identity.GetUserTimeZone())
+                <div class="div-right">
+                    <table>
+                        <tr>
+                            <td>Date:</td>
+                            <td>@DateTime.UtcNow.ToUserLocalDateTime(User.Identity.GetUserTimeZone())</td>
+                        </tr>
+                        <tr>
+                            <td>Member ID:</td>
+                            <td>@User.Identity.Name</td>
+                        </tr>
+                    </table>
                 </div>
-
                 @Html.Partial("_LoginPartial")
             </div>
         </div>

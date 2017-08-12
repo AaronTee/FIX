@@ -27,6 +27,10 @@
       <mvcSiteMapNode title="Withdrawal" controller="Wallet" action="Withdrawal" preservedRouteParameters="lang, id"></mvcSiteMapNode>
     </mvcSiteMapNode>
 
+    <mvcSiteMapNode title="Monthly Report" controller="MonthlyReport" action="Index" preservedRouteParameters="lang, id">
+      <mvcSiteMapNode title="Manage" controller="MonthlyReport" action="Manage" preservedRouteParameters="lang, id"></mvcSiteMapNode>
+    </mvcSiteMapNode>
+
     <mvcSiteMapNode title="Daily Trading Report" controller="DailyTrading" action="Index" preservedRouteParameters="lang, id">
       <mvcSiteMapNode title="Create" controller="DailyTrading" action="Create" preservedRouteParameters="lang, id"></mvcSiteMapNode>
     </mvcSiteMapNode>

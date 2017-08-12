@@ -1,0 +1,41 @@
+﻿@model MonthlyReportManageModels
+
+@{ 
+    ViewBag.Title = "Manage Monthly Report";
+}
+
+@using (Html.BeginForm("New", "MonthlyReport", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+<div class="form-section form-horizontal spacing">
+    <div class="form-header">Add New Monthly Report</div>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-xs-8">
+                @Html.EditorFor(x => x.Date, "DateMonth", new { @class = "trigger-search" })
+                @Html.EditorFor(x => x.PDFFile, "File")
+                @Html.Editor("", "Submit", new { PreviousAction = "Index" })
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<table id="table_monthly_report"
+       data-toggle="table"
+       data-side-pagination="server"
+       data-pagination="true"
+       data-classes="table table-hover"
+       data-page-list="[10, 25, 50, 100]"
+       data-url="@(Url.Content("~/"))MonthlyReport/MonthlyReportList"
+       data-unique-id="TradeId">
+    <thead>
+        <tr>
+            <th data-field="Date" data-class="fw">Report Date</th>
+            <th data-field="ActionLinks" data-class="minw200" data-align="center" data-formatter="LinkFormatter" data-valign="middle">Action</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+
+}

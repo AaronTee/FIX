@@ -155,10 +155,10 @@ namespace FIX.Web.Controllers
         {
             var dailyTrading = _reportService.GetDailyTrading(id);
 
-            AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<DailyTrading, DailyTradingEditViewModels>().ForMember(x => x.Date,
-                opt => opt.MapFrom(src => src.Date.ConvertToDateString())));
+            AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<DailyTrading, DailyTradingEditViewModels>());
 
             var model = AutoMapper.Mapper.Map<DailyTrading, DailyTradingEditViewModels>(dailyTrading);
+            model.Date = dailyTrading.Date.ConvertToDateString(User.Identity.GetUserTimeZone());
 
             return View(model);
         }
