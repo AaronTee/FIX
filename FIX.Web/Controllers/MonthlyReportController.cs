@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static FIX.Service.DBConstant;
 
 namespace FIX.Web.Controllers
 {
@@ -26,6 +27,7 @@ namespace FIX.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         public ActionResult Manage()
         {
             MonthlyReportManageModels model = new MonthlyReportManageModels
@@ -36,6 +38,7 @@ namespace FIX.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         [HttpPost]
         public ActionResult New(MonthlyReportManageModels model, HttpPostedFileBase PDFFile)
         {
@@ -76,6 +79,7 @@ namespace FIX.Web.Controllers
             return RedirectToAction("Manage");
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         public JsonResult MonthlyReportList(int offset, int limit, string search, string sort, string order)
         {
             var pdfs = FileManager.GetMonthlyReportsPDFInfo();
@@ -117,6 +121,7 @@ namespace FIX.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         public ActionResult Download(string PDFFilename)
         {
             string fullPDFFilePath = ConfigurationManager.AppSettings["PDF_MonthlyReportPath"] + PDFFilename;
@@ -125,6 +130,7 @@ namespace FIX.Web.Controllers
             return File(documentData, "application/pdf");
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         public ActionResult Delete(string PDFFilename)
         {
             try

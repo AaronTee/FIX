@@ -5,11 +5,11 @@
     <div class="col-lg-8 col-md-7">
         @if (ViewData["readonly"] != null && (bool)ViewData["readonly"])
         {
-            @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"], "--- Choose one ---", new { @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : ""), @readonly =  "readonly" })
+            @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"] ?? Enumerable.Empty<SelectListItem>(), "--- Choose one ---", new { @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : ""), @readonly =  "readonly" })
         }
         else
         {
-            @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"], "--- Choose one ---", new { @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : "") })
+            @Html.DropDownListFor(model => model, (SelectList)ViewData["DDL"] ?? Enumerable.Empty<SelectListItem>(), "--- Choose one ---", new { @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : "") })
         }
         @Html.ValidationMessageFor(model => model)
     </div>

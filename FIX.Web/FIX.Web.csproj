@@ -217,6 +217,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AuthorizeTransactionController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HtmlLoaderController.cs" />
     <Compile Include="Controllers\DailyTradingController.cs" />
@@ -244,6 +245,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DailyTradingModels.cs" />
     <Compile Include="Models\MatchingBonusModels.cs" />
+    <Compile Include="Models\AuthorizeTransactionModels.cs" />
     <Compile Include="Models\ReportModels.cs" />
     <Compile Include="Models\WalletModels.cs" />
     <Compile Include="Models\ReferralModels.cs" />
@@ -342,7 +344,6 @@
     <None Include="Properties\PublishProfiles\aws-webhost-win.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\localhost.pubxml" />
-    <Content Include="Reports\MonthlyReport\demodoc.pdf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bundles\app.js" />
     <Content Include="Scripts\bundles\bootstrap.js" />
@@ -438,10 +439,12 @@
     <Content Include="Views\MonthlyReport\Manage.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\File.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Submit.cshtml" />
+    <Content Include="Views\AuthorizeTransaction\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\svg\" />
+    <Folder Include="Reports\MonthlyReport\" />
     <Folder Include="Views\HtmlLoader\" />
   </ItemGroup>
   <ItemGroup>

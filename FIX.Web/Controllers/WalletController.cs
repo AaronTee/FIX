@@ -103,6 +103,69 @@ namespace FIX.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
+        public JsonResult Transaction(int offset, int limit, string sort, string order, int? UserId)
+        {
+            if (UserId.IsNullOrEmpty()) return Json(new { }, JsonRequestBehavior.AllowGet);
+
+            var walletId = _financialService.GetUserWallet(UserId.Value).WalletId;
+            var tz = User.Identity.GetUserTimeZone();
+            var rawQueryableList = _financialService.GetWalletTransaction(walletId).Select(x => new
+            {
+                WalletTransactionId = x.WalletTransactionId,
+                TransactionDate = x.TransactionDate,
+                ReferenceNo = x.ReferenceNo,
+                TransactionType = x.TransactionType,
+                Debit = x.Debit,
+                Credit = x.Credit
+            });
+
+            rawQueryableList = rawQueryableList.PaginateList(x => x.TransactionDate, "TransactionDate", "desc", offset, limit);
+
+            var rowsResult = new List<WalletListViewModels>();
+            decimal totalDebit = decimal.Zero;
+            decimal totalCredit = decimal.Zero;
+
+            foreach (var item in rawQueryableList)
+            {
+                totalDebit += item.Debit ?? decimal.Zero;
+                totalCredit += item.Credit ?? decimal.Zero;
+
+                var walletTransaction = new WalletListViewModels()
+                {
+                    WalletTransactionId = item.WalletTransactionId,
+                    TransactionDate = item.TransactionDate.ToUserLocalDate(tz),
+                    ReferenceNo = item.ReferenceNo + " - " + item.TransactionType,
+                    Debit = (item.Debit.HasValue) ? item.Debit.Value.toCurrencyFormat() : null,
+                    Credit = (item.Credit.HasValue) ? item.Credit.Value.toCurrencyFormat() : null,
+                    Balance = (totalCredit - totalDebit).toCurrencyFormat()
+                };
+
+                rowsResult.Add(walletTransaction);
+            }
+
+            //If last page
+            var isLastPage = ((offset + rowsResult.Count + 1) > rawQueryableList.Count());
+            if (isLastPage)
+            {
+                //Footer
+                rowsResult.Add(new WalletListViewModels()
+                {
+                    Debit = totalDebit.toCurrencyFormat(),
+                    Credit = totalCredit.toCurrencyFormat(),
+                    Balance = rowsResult.Last().Balance
+                });
+            }
+
+            var model = new
+            {
+                total = rawQueryableList.Count(),
+                rows = rowsResult
+            };
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Withdrawal()
         {
             //Read user primary bank

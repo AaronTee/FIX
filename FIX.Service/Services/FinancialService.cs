@@ -75,6 +75,26 @@ namespace FIX.Service
             _uow.Repository<Withdrawal>().Insert(entity);
         }
 
+        public Preauth GetPreauthTransaction(int? PreauthId)
+        {
+            return _uow.Repository<Preauth>().GetByKey(PreauthId);
+        }
+
+        public IQueryable<Preauth> GetPendingPreauthorizeTransactionList(Guid walletId)
+        {
+            return _uow.Repository<Preauth>().GetAsQueryable(x => x.WalletId == walletId && x.StatusId == (int)EStatus.Pending);
+        }
+
+        /// <summary>
+        /// Return all wallet transaction list (If multiple wallet is supported please do not use call this, use GetPendingPreauthorizeTransactionList instead).
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IQueryable<Preauth> GetAllWalletPendingPreauthorizeTransactionList(int? userId)
+        {
+            return _uow.Repository<Preauth>().GetAsQueryable(x => x.UserWallet.UserId == userId && x.StatusId == (int)EStatus.Pending);
+        }
+
         public void PreauthorizeWalletCredit(DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId)
         {
             var sType = Enum.GetName(type.GetType(), type);
@@ -88,7 +108,7 @@ namespace FIX.Service
                 ReferenceNo = docCode,
                 TransactionDate = DateTime.UtcNow,
                 TransactionType = sType,
-                Amount = amount,
+                Credit = amount,
                 StatusId = (int)EStatus.Pending
             };
 

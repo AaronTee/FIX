@@ -89,7 +89,8 @@
           <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TransactionDate" Type="datetime" Nullable="false" />
           <Property Name="TransactionType" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Amount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
+          <Property Name="Debit" Type="decimal" Precision="15" Scale="5" />
+          <Property Name="Credit" Type="decimal" Precision="15" Scale="5" />
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="AuthorizedTimestamp" Type="datetime" />
           <Property Name="AuthorizedBy" Type="nvarchar" MaxLength="50" />
@@ -1489,7 +1490,8 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="ReferenceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="TransactionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Debit" Type="Decimal" Precision="15" Scale="5" />
+          <Property Name="Credit" Type="Decimal" Precision="15" Scale="5" />
           <Property Name="StatusId" Type="Int32" Nullable="false" />
           <Property Name="AuthorizedTimestamp" Type="DateTime" Precision="3" />
           <Property Name="AuthorizedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1837,7 +1839,8 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="AuthorizedBy" ColumnName="AuthorizedBy" />
                 <ScalarProperty Name="AuthorizedTimestamp" ColumnName="AuthorizedTimestamp" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Credit" ColumnName="Credit" />
+                <ScalarProperty Name="Debit" ColumnName="Debit" />
                 <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
                 <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
                 <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />

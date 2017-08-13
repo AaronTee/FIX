@@ -1,65 +1,67 @@
-﻿@model MatchingBonusSearchViewModels
-@{
-    ViewBag.Title = "Matching Bonus";
-}
-@using FIX.Service
+﻿@model AuthorizeTransactionViewModels
 
 <div id="modal"></div>
 
 <div class="form-section form-horizontal spacing">
-    <div class="form-header">Matching Bonus</div>
+    <div class="form-header">Preauthorize Transaction</div>
     <div class="form-body">
         <div class="row">
-            @if(User.IsInRole(DBConstant.DBCRole.Admin))
-            {
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.ReferenceNo, "Text", new { @class = "trigger-search" })
+            </div>
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.TransactionType, "Dropdown", new { @class = "trigger-search" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.DateFrom, "Date", new { @class = "trigger-search" })
+            </div>
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.DateTo, "Date", new { @class = "trigger-search" })
+            </div>
+        </div>
+        <div class="row">
             <div class="col-xs-6">
                 @Html.EditorFor(x => x.UserId, "Dropdown2", new { DDL = Model.UserDDL, @class = "trigger-search" })
             </div>
-            }
             <div class="col-xs-6">
-                @Html.EditorFor(x => x.Date, "DateMonth", new { @class = "trigger-search" })
+                @Html.EditorFor(x => x.StatusId, "Dropdown", new { DDL = Model.StatusDDL, @class = "trigger-search not-required" })
             </div>
         </div>
     </div>
 </div>
 
-<table id="table_matching_bonus"
+<table id="table_preauth"
        data-toggle="table"
        data-side-pagination="server"
        data-pagination="true"
        data-classes="table table-hover"
-       data-row-style="hasFooterRowStyle"
        data-query-params="queryParams"
        data-page-list="[10, 25, 50, 100]"
-       data-undefined-text = ""
-       data-url="@(Url.Content("~/"))MatchingBonus/MatchingBonusList"
-       data-unique-id="MatchingBonusId">
+       data-undefined-text=""
+       data-url="@(Url.Content("~/"))AuthorizeTransaction/PendingList"
+       data-unique-id="PreauthId">
     <thead>
         <tr>
-            <th data-align="center" data-field="Pos">#</th>
-            @if (User.IsInRole(DBConstant.DBCRole.Admin))
-            {
-            <th data-field="MatchingBonusId">Id</th>
-            }
-            <th data-class="minw125" data-field="Date">Date</th>
-            <th data-field="Username">Username</th>
-            <th data-field="Package">Package</th>
-            <th data-field="Generation"  data-align="center">Gen</th>
-            <th data-field="BonusAmount" data-align="right" data-halign="left" data-formatter="currencyFormatter">Bonus Amount</th>
+            <th data-field="PreauthId" data-align="center">Id</th>
+            <th data-class="minw125" data-field="TransactionDate" data-align="center">Transaction Date</th>
+            <th data-field="ReferenceNo" data-align="center">Reference No</th>
+            <th data-field="TransactionType" data-align="center">Transaction Type</th>>
+            <th data-field="Debit" data-align="right" data-halign="left" data-formatter="currencyFormatter">Debit</th>
+            <th data-field="Credit" data-align="right" data-halign="left" data-formatter="currencyFormatter">Credit</th>
             <th data-field="Status" data-align="center" data-halign="left" data-class="minw100">Status</th>
-            @if (User.IsInRole(DBConstant.DBCRole.Admin))
-            {
-                <th data-field="ActionTags" data-formatter="actionFormatter" data-events="statusEvents" data-class="minw150">Action</th>
-            }
+            <th data-field="ActionTags" data-formatter="actionFormatter" data-events="statusEvents" data-class="minw150">Action</th>
         </tr>
     </thead>
 </table>
 
 @section scripts{
+
     <script>
 
         var m,
-            $table = $('#table_matching_bonus');
+            $table = $('#table_preauth');
 
         $(function () {
             $('#UserId').select2({
@@ -85,19 +87,25 @@
         });
 
         function queryParams(p) {
-            return {
-                date: $('#Date').val(),
-                userId: $('#UserId').val(),
+
+            var ret = {
                 limit: p.limit,
-                offset: p.offset
+                offset: p.offset,
+                
+                    UserId: $('#UserId').val(),
+                    ReferenceNo: $('#ReferenceNo').val(),
+                    DateFrom: $('#DateFrom').val(),
+                    DateTo: $('#DateTo').val(),
+                    StatusId: $('#StatusId').val()
+                
             }
+
+            return ret;
         }
 
         $('.trigger-search').change(function () {
-            $('#table_matching_bonus').bootstrapTable('refresh');
+            $('#table_preauth').bootstrapTable('refresh');
         });
-
-        
 
         window.statusEvents = {
             'click .action': function (e, value, row, index) {
@@ -105,24 +113,24 @@
                 var $toggleElem = $(e.target);
                 var $action = $toggleElem.data('action');
 
-                if ($action == 'approve') {
+                if ($action == 'authorize') {
 
                     m.make({
-                        header: 'Approve Confirmation',
+                        title: 'Authorize Confirmation',
                         body: function () {
-                            return html = 'Make sure the Id you wanted to APPROVE is correct. ( Id : ' + row.MatchingBonusId + ' )';
+                            return html = 'Are you sure you want to AUTHORIZE this transaction? ( Preauthorization Id : ' + row.PreauthId + ' )';
                         }(),
                         confirmText: "Approve",
                         confirmButtonStyle: 'btn-success',
                         onConfirm: function () {
                             $.ajax({
-                                url: GetPath('MatchingBonus/ApproveMatchingBonus'),
+                                url: GetPath('AuthorizeTransaction/Authorize'),
                                 type: 'POST',
-                                data: { MatchingBonusId: row.MatchingBonusId },
+                                data: { PreauthId: row.PreauthId },
                                 success: function (result) {
                                     if (result == '@((int)DBConstant.EJState.Success)') {
                                         $table.bootstrapTable('updateByUniqueId', {
-                                            id: row.MatchingBonusId,
+                                            id: row.PreauthId,
                                             row: {
                                                 Status: '@(DBConstant.EStatus.Approved.GetDescription())',
                                                 ActionTags: "-"
@@ -143,23 +151,23 @@
                 if ($action == 'void') {
 
                     m.make({
-                        header: 'Void Confirmation',
+                        title: 'Voiding',
                         body: function () {
-                            return html = 'Are you sure you want to VOID this return? ( Id : ' + row.MatchingBonusId + ' )';
+                            return html = 'Are you sure you want to VOID this transaction? ( Id : ' + row.PreauthId + ' )';
                         }(),
                         confirmText: "Void",
                         confirmButtonStyle: 'btn-danger',
                         onConfirm: function () {
                             $.ajax({
-                                url: GetPath('MatchingBonus/VoidMatchingBonus'),
+                                url: GetPath('AuthorizeTransaction/Void'),
                                 type: 'POST',
-                                data: { UPDId: row.UPDId },
+                                data: { PreauthId: row.PreauthId },
                                 success: function (result) {
                                     if (result == '@((int)DBConstant.EJState.Success)') {
                                         $table.bootstrapTable('updateByUniqueId', {
-                                            id: row.MatchingBonusId,
+                                            id: row.PreauthId,
                                             row: {
-                                                Status: "@(DBConstant.EStatus.Void.GetDescription())",
+                                                Status: '@(DBConstant.EStatus.Approved.GetDescription())',
                                                 ActionTags: "-"
                                             }
                                         });
@@ -175,8 +183,7 @@
                     m.show();
                 }
             }
-
         }
-
     </script>
+    
 }

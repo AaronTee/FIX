@@ -103,7 +103,7 @@
         return _overlay.scrollHeight - _overlay.scrollTop <= _overlay.clientHeight;
     }
 
-    $('input:not([type="checkbox"])[data-val="true"], select[data-val="true"]')
+    $('input:not([type="checkbox"]):not(.not-required)[data-val="true"], select:not(.not-required)[data-val="true"]')
         .closest(".form-group")
         .children("label")
         .addClass("required-field");

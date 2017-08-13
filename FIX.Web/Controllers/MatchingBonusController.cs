@@ -35,24 +35,11 @@ namespace FIX.Web.Controllers
             //Show matching bonus of this month by default.
             MatchingBonusSearchViewModels model = new MatchingBonusSearchViewModels
             {
-                Date = DateTime.UtcNow.ConvertToDateYearMonthString(),
-                UserDDL = new SelectList(_userService.GetAllUsers().ToList().Where(x => x.UserProfile.Role.Description != DBCRole.Admin)
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.UserId + " - " + x.Username,
-                    Value = x.UserId.ToString()
-                }), "Value", "Text")
+                Date = DateTime.UtcNow.ConvertToDateYearMonthString()
             };
 
             return View(model);
         }
-
-        [HttpPost]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
         
         public JsonResult MatchingBonusList(int offset, int limit, string sort, string order, string date, int? userId)
         {
@@ -140,6 +127,7 @@ namespace FIX.Web.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         public JsonResult ApproveMatchingBonus(int MatchingBonusId)
         {
             EJState result = EJState.Unknown;
@@ -180,6 +168,7 @@ namespace FIX.Web.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = DBCRole.Admin)]
         public JsonResult VoidMatchingBonus(int MatchingBonusId)
         {
             try

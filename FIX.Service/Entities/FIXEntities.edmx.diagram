@@ -46,10 +46,10 @@
         <AssociationConnector Association="FIXModel.FK__UserWalle__UserI__46B27FE2" />
         <AssociationConnector Association="FIXModel.FK__WalletTra__Walle__40F9A68C" />
         <AssociationConnector Association="FIXModel.FK__Withdrawa__Walle__10216507" />
-        <EntityTypeShape EntityType="FIXModel.Preauth" Width="1.5" PointX="10.5" PointY="8.875" />
+        <EntityTypeShape EntityType="FIXModel.Preauth" Width="1.5" PointX="10.5" PointY="8.75" />
         <AssociationConnector Association="FIXModel.FK__Preauth__StatusI__2057CCD0" />
         <AssociationConnector Association="FIXModel.FK__Preauth__WalletI__1F63A897" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

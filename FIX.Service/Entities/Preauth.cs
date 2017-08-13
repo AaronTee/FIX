@@ -19,7 +19,8 @@ namespace FIX.Service.Entities
         public string ReferenceNo { get; set; }
         public System.DateTime TransactionDate { get; set; }
         public string TransactionType { get; set; }
-        public decimal Amount { get; set; }
+        public Nullable<decimal> Debit { get; set; }
+        public Nullable<decimal> Credit { get; set; }
         public int StatusId { get; set; }
         public Nullable<System.DateTime> AuthorizedTimestamp { get; set; }
         public string AuthorizedBy { get; set; }
