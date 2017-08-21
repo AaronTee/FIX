@@ -8,10 +8,12 @@ using FIX.Service;
 using FIX.Web.Extensions;
 using static FIX.Service.DBConstant;
 using Microsoft.AspNet.Identity;
+using SyntrinoWeb.Attributes;
 
 namespace FIX.Web.Controllers
 {
     [Authorize(Roles = DBCRole.Admin)]
+    [IdentityAuthorize]
     public class UserController : BaseController
     {
 
@@ -131,10 +133,10 @@ namespace FIX.Web.Controllers
                     IP = Request.UserHostAddress,
                     HasAcceptedTerms = false,
                     HasEmailVerified = false,
-                    IsFirstTimeLogIn = false,
+                    IsFirstTimeLogIn = true,
                     CreatedTimestamp = DateTime.UtcNow,
                     TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
-                    StatusId = (int)DBConstant.EStatus.Active,
+                    StatusId = (int)DBConstant.EStatus.Pending,
                     UserProfile = new UserProfile
                     {
                         ReferralId = model.ReferralId,
@@ -147,7 +149,7 @@ namespace FIX.Web.Controllers
                         Country = model.Country,
                         Gender = model.Gender,
                         PhoneNo = model.PhoneNo,
-                        RoleId = model.RoleId,
+                        RoleId = (User.IsInRole(DBCRole.Admin)) ? model.RoleId : (int)DBCRole.Id.User,
                         CreatedTimestamp = DateTime.UtcNow,
                     },
                     UserBankAccount = new List<UserBankAccount>
@@ -178,8 +180,8 @@ namespace FIX.Web.Controllers
 
                 var curUser = _userService.GetUserBy(user.Username);
 
-                //AccountController ac = new AccountController(_userService);
-                //ac.SendActivationEmail(curUser.UserId);
+                AccountController ac = new AccountController(_userService, _bankService);
+                ac.SendActivationEmail(curUser.UserId);
 
                 Success("Successfully created user " + model.Username + ", user will be prompted to verify his email upon login for the first time.");
             }
@@ -351,18 +353,21 @@ namespace FIX.Web.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult ValidateUsername(string username)
         {
             return Json(_userService.GetUserBy(username) == null, JsonRequestBehavior.AllowGet);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult ValidateEmail(string email)
         {
             return Json(_userService.IsValidEmailAddress(email), JsonRequestBehavior.AllowGet);
         }
 
+        [AllowAnonymous]
         public JsonResult Search(string input)
         {
             object data = new { };

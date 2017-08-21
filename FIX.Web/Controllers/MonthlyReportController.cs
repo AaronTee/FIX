@@ -1,6 +1,7 @@
 ﻿using FIX.Web.Extensions;
 using FIX.Web.Models;
 using FIX.Web.Utils;
+using SyntrinoWeb.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,6 +14,7 @@ using static FIX.Service.DBConstant;
 namespace FIX.Web.Controllers
 {
     [Authorize]
+    [IdentityAuthorize]
     public class MonthlyReportController : BaseController
     {
         // GET: MonthlyReport
@@ -52,7 +54,7 @@ namespace FIX.Web.Controllers
                     try
                     {
                         //PDF Format : [MM-yyyy_pdfname.pdf]
-                        string targetFolder = ConfigurationManager.AppSettings["PDF_MonthlyReportPath"];
+                        string targetFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigurationManager.AppSettings["PDF_MonthlyReportPath"]);
                         string fileName = model.Date.Replace("/", "") + ".pdf";
                         string targetPath = Path.Combine(targetFolder, fileName);
                         PDFFile.SaveAs(targetPath);
@@ -124,7 +126,7 @@ namespace FIX.Web.Controllers
         [Authorize(Roles = DBCRole.Admin)]
         public ActionResult Download(string PDFFilename)
         {
-            string fullPDFFilePath = ConfigurationManager.AppSettings["PDF_MonthlyReportPath"] + PDFFilename;
+            string fullPDFFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigurationManager.AppSettings["PDF_MonthlyReportPath"]) + PDFFilename;
             var documentData = System.IO.File.ReadAllBytes(fullPDFFilePath);
 
             return File(documentData, "application/pdf");
@@ -135,7 +137,7 @@ namespace FIX.Web.Controllers
         {
             try
             {
-                string fullPDFFilePath = ConfigurationManager.AppSettings["PDF_MonthlyReportPath"] + PDFFilename;
+                string fullPDFFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigurationManager.AppSettings["PDF_MonthlyReportPath"]) + PDFFilename;
                 if ((System.IO.File.Exists(fullPDFFilePath)))
                 {
                     System.IO.File.Delete(fullPDFFilePath);

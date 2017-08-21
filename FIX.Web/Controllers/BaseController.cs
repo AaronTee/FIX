@@ -3,6 +3,7 @@ using FIX.Service.Entities;
 using FIX.Service.Models.Repositories;
 using FIX.Web.Helpers;
 using FIX.Web.Models;
+using SyntrinoWeb.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

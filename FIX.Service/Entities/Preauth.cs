@@ -25,7 +25,7 @@ namespace FIX.Service.Entities
         public Nullable<System.DateTime> AuthorizedTimestamp { get; set; }
         public string AuthorizedBy { get; set; }
     
-        public virtual Status Status { get; set; }
         public virtual UserWallet UserWallet { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

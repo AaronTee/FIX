@@ -14,7 +14,10 @@
                 <div class="col-lg-6">
                     <div class="form-header">User Profile</div>
                     <div class="form-body">
+                        @if (User.IsInRole(DBConstant.DBCRole.Admin))
+                        {
                         @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
+                        }
                         @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL})
                         @Html.EditorFor(x => x.Username, "Text")
                         @Html.EditorFor(x => x.Password, "Password")
@@ -79,5 +82,20 @@
         $("#ReferralId").on("select2:open", function () {
             $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Enter username to search...");
         });
+
+        $('#SecurityPassword').tooltip({
+            title: "Access certain sensitive information requires security password. Please enter 6 numeric digit (e.g. 123456).",
+            placement: "top",
+            trigger: "focus"
+        });
+
+        $('#SecurityPassword').attr("maxlength", 6);
+
+        $('#Password').tooltip({
+            title: "Password must be a minimum of 8 characters and contain at least letter, one capital letter and a number.",
+            placement: "top",
+            trigger: "focus"
+        });
+
     </script>
 }

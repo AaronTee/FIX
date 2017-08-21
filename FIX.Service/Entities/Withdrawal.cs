@@ -28,7 +28,7 @@ namespace FIX.Service.Entities
         public Nullable<System.DateTime> ApprovedTimestamp { get; set; }
     
         public virtual Bank Bank { get; set; }
-        public virtual Status Status { get; set; }
         public virtual UserWallet UserWallet { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

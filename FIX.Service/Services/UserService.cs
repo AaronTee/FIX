@@ -4,6 +4,8 @@ using System;
 using FIX.Service.Entities;
 using System.Threading.Tasks;
 using static FIX.Service.DBConstant;
+using FIX.Service.Utils;
+using System.Configuration;
 
 namespace FIX.Service
 {
@@ -58,9 +60,25 @@ namespace FIX.Service
             return _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == id).FirstOrDefault();
         }
 
-        public async Task<bool> IsValid(string username, string password)
+        public async Task<bool> IsValid(string username, string password, string keyPhrase)
         {
-            var task = Task.Run(() => _uow.Repository<User>().GetAsQueryable().Where(x => x.Username == username && x.Password == password).FirstOrDefault() != null);
+            var task = Task.Run(() =>
+            {
+                var user = _uow.Repository<User>().GetAsQueryable().Where(x => x.Username == username && x.StatusId != (int)EStatus.Deactivated).FirstOrDefault();
+                if (user != null)
+                {
+                    try
+                    {
+                        return SecurePasswordHasher.Verify(password, user.Password);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex.Message, ex);
+                        return false;
+                    }
+                }
+                return false;
+            });
             return await task;
         }
 
@@ -79,14 +97,32 @@ namespace FIX.Service
             {
                 UserId = user.UserId,
                 ActivationCode = activationCode,
-                StatusId = (int)EStatus.Active
+                StatusId = (int)EStatus.Active,
+                ExpiredTimestamp = DateTime.UtcNow
             };
             _uow.Repository<UserActivation>().Insert(newActivation);
 
             return activationCode;
         }
 
-        public bool ValidateActivationCode(Guid activationCode)
+        public bool IsValidActivationCode(Guid activationCode)
+        {
+            var userActivation = _uow.Repository<UserActivation>().GetAsQueryable().Where(x => x.ActivationCode == activationCode && x.StatusId == (int)EStatus.Active).FirstOrDefault();
+
+            if (userActivation != null)
+            {
+                var user = _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == userActivation.UserId).FirstOrDefault();
+
+                if (user != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public User ValidateActivationCode(Guid activationCode)
         {
             var userActivation = _uow.Repository<UserActivation>().GetAsQueryable().Where(x => x.ActivationCode == activationCode && x.StatusId == (int)EStatus.Active).FirstOrDefault();
 
@@ -99,11 +135,11 @@ namespace FIX.Service
                     user.HasEmailVerified = true;
                     _uow.Repository<UserActivation>().Delete(userActivation);
                     SaveChanges();
-                    return true;
+                    return user;
                 }
             }
 
-            return false;
+            return null;
         }
 
         public IQueryable<User> GetReferralChildren(int? id)
@@ -118,6 +154,7 @@ namespace FIX.Service
 
         public void InsertUser(User user)
         {
+            user.Password = SecurePasswordHasher.Hash(user.Password);
             _uow.Repository<User>().Insert(user);
         }
 
@@ -126,9 +163,14 @@ namespace FIX.Service
             _uow.Repository<User>().Update(user);
         }
 
-        public void SaveChanges(int userId)
+        public void ResetPassword(int? userId, string rawPassword, string keyPhrase)
         {
-            _uow.Save(userId);
+            _uow.Repository<User>().GetByKey(userId).Password = StringCipher.Encrypt(rawPassword, keyPhrase);
+        }
+
+        public bool SaveChanges(int userId)
+        {
+            return _uow.Save(userId);
         }
 
         public void SaveChanges()

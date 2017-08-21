@@ -17,11 +17,11 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.UserBankAccount = new HashSet<UserBankAccount>();
-            this.UserPackage = new HashSet<UserPackage>();
             this.MatchingBonus = new HashSet<MatchingBonus>();
             this.MatchingBonus1 = new HashSet<MatchingBonus>();
+            this.UserBankAccount = new HashSet<UserBankAccount>();
             this.UserWallet = new HashSet<UserWallet>();
+            this.UserPackage = new HashSet<UserPackage>();
         }
     
         public int UserId { get; set; }
@@ -38,18 +38,18 @@ namespace FIX.Service.Entities
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
         public int StatusId { get; set; }
     
-        public virtual Status Status { get; set; }
-        public virtual UserActivation UserActivation { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserBankAccount> UserBankAccount { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPackage> UserPackage { get; set; }
-        public virtual UserProfile UserProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus1 { get; set; }
+        public virtual UserActivation UserActivation { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserBankAccount> UserBankAccount { get; set; }
+        public virtual UserProfile UserProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserWallet> UserWallet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPackage> UserPackage { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

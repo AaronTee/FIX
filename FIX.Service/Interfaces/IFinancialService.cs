@@ -20,7 +20,7 @@ namespace FIX.Service
         Preauth GetPreauthTransaction(int? PreauthId);
         IQueryable<Preauth> GetPendingPreauthorizeTransactionList(Guid walletId);
         IQueryable<Preauth> GetAllWalletPendingPreauthorizeTransactionList(int? userId);
-        void PreauthorizeWalletCredit(DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId);
+        void PreauthorizeWalletCredit(DBConstant.EOperator optor, DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId);
         void TransactWalletCredit(DBConstant.EOperator optor, DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId);
     }
 }

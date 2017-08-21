@@ -25,12 +25,12 @@ namespace FIX.Service
 
         public IQueryable<UserPackage> GetAllUserPackage(int userId)
         {
-            return _uow.Repository<UserPackage>().GetAsQueryable(filter: x => x.UserId == userId);
+            return _uow.Repository<UserPackage>().GetAsQueryable(filter: x => x.UserId == userId && x.StatusId == (int)EStatus.Active);
         }
 
-        public IQueryable<UserPackageDetail> GetAllUserPackageDetail(int userPackageId)
+        public IQueryable<ReturnInterest> GetAllReturnInterest(int userPackageId)
         {
-            return _uow.Repository<UserPackageDetail>().GetAsQueryable(filter: x => x.UserPackageId == userPackageId);
+            return _uow.Repository<ReturnInterest>().GetAsQueryable(filter: x => x.UserPackageId == userPackageId);
         }
 
         public decimal GetPackageRate(int PackageId)
@@ -69,19 +69,34 @@ namespace FIX.Service
             throw new Exception("userId cannot be null");
         }
 
-        public UserPackageDetail GetUserPackageDetail(int UPDId)
+        public ReturnInterest GetReturnInterest(int UPDId)
         {
-            return _uow.Repository<UserPackageDetail>().GetByKey(UPDId);
+            return _uow.Repository<ReturnInterest>().GetByKey(UPDId);
         }
 
-        public void UpdateUserPackageDetail(UserPackageDetail upd)
+        public void UpdateReturnInterest(ReturnInterest upd)
         {
-            _uow.Repository<UserPackageDetail>().Update(upd);
+            _uow.Repository<ReturnInterest>().Update(upd);
+        }
+
+        public void UpdateUserPackage(UserPackage up)
+        {
+            _uow.Repository<UserPackage>().Update(up);
         }
 
         public void InsertUserPackage(UserPackage userPackage)
         {
             _uow.Repository<UserPackage>().Insert(userPackage);
+        }
+
+        public void InsertReturnInvestment(ReturnInterest returnInterest)
+        {
+            _uow.Repository<ReturnInterest>().Insert(returnInterest);
+        }
+
+        public void InsertMatchingBonus(MatchingBonus matchingBonus)
+        {
+            _uow.Repository<MatchingBonus>().Insert(matchingBonus);
         }
 
         public void SaveChange()

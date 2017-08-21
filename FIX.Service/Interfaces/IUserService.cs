@@ -14,16 +14,18 @@ namespace FIX.Service
         IQueryable<UserBankAccount> GetAllUserBankAccount(int? userId);
         User GetUserBy(string username);
         User GetUserBy(int? id);
-        Task<bool> IsValid(string username, string password);
+        Task<bool> IsValid(string username, string password, string keyPhrase);
+        void ResetPassword(int? userId, string rawPassword, string keyPhrase);
         bool IsValidEmailAddress(string email);
         Guid AssignNewValidationCode(User user);
-        bool ValidateActivationCode(Guid activationCode);
+        bool IsValidActivationCode(Guid activationCode);
+        User ValidateActivationCode(Guid activationCode);
         IQueryable<User> GetReferralChildren(int? id);
         User GetReferralBy(int? id);
         IQueryable<User> GetUsersWithoutAdmin();
         void InsertUser(User user);
         void UpdateUser(User user);
         void SaveChanges();
-        void SaveChanges(int userId);
+        bool SaveChanges(int userId);
     }
 }

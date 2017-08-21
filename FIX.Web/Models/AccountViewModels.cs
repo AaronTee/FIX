@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 
 namespace FIX.Web.Models
 {
@@ -113,4 +114,6 @@ namespace FIX.Web.Models
         public string Email { get; set; }
         public string EmailDomain { get; set; }
     }
+
+    
 }

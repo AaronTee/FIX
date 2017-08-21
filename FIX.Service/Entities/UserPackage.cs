@@ -18,24 +18,29 @@ namespace FIX.Service.Entities
         public UserPackage()
         {
             this.MatchingBonus = new HashSet<MatchingBonus>();
-            this.UserPackageDetail = new HashSet<UserPackageDetail>();
+            this.ReturnInterest = new HashSet<ReturnInterest>();
         }
     
         public int UserPackageId { get; set; }
         public int UserId { get; set; }
         public int PackageId { get; set; }
         public decimal TotalAmount { get; set; }
-        public System.DateTime Date { get; set; }
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public string ReceiptImagePath { get; set; }
+        public string ReceiptBank { get; set; }
+        public string ReceiptNo { get; set; }
         public int StatusId { get; set; }
         public System.DateTime CreatedTimestamp { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedTimestamp { get; set; }
+        public string ApprovedBy { get; set; }
     
-        public virtual Package Package { get; set; }
-        public virtual Status Status { get; set; }
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MatchingBonus> MatchingBonus { get; set; }
+        public virtual Package Package { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPackageDetail> UserPackageDetail { get; set; }
+        public virtual ICollection<ReturnInterest> ReturnInterest { get; set; }
+        public virtual User User { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

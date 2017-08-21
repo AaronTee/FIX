@@ -9886,6 +9886,38 @@ input[type="checkbox"].ios8-switch-lg:checked ~ label:after {
 .morris-hover.morris-default-style .morris-hover-point{white-space:nowrap;margin:0.1em 0}
 
 .pikaday__container{display:inline-block;position:relative}.pikaday__display,.pikaday__invisible{width:100%}.pikaday__display--native{pointer-events:none;cursor:pointer}.pikaday__display.is-invalid{background:rgba(255,0,0,.05)}.pikaday__invisible{opacity:0;color:transparent;background:0 0;border:none;box-shadow:none;position:absolute;display:block;left:0;top:0;height:100%;width:100%}
+.select2{
+    min-width: 150px;
+    width: 100% !important;
+    max-width: 300px;
+}
+
+.select2-container .select2-selection--single{
+    height: 38px !important;
+    border-radius: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+    line-height: 38px !important;
+    padding: 0px 11px;
+    font-size: 16px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 38px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b{
+    border-color: #000 transparent transparent transparent;
+    margin-left: -3px;
+    border-width: 5px 3px 0 3px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .select2{
+        max-width: unset;
+    }
+}
 /*!
  * Start Bootstrap - SB Admin 2 Bootstrap Admin Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -10643,40 +10675,16 @@ i.fa-icon {
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
-select2,
 textarea {
   max-width: 300px; }
   @media only screen and (max-width: 767px) {
     input,
     select,
-    select2,
     textarea {
       max-width: unset; } }
 
 select {
   padding: 16px; }
-
-.select2 {
-  min-width: 150px;
-  width: 100% !important;
-  max-width: 300px; }
-
-.select2-container .select2-selection--single {
-  height: 36px;
-  border-radius: 0; }
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-  line-height: 38px;
-  padding: 0px 11px;
-  font-size: 16px; }
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-  height: 38px; }
-
-.select2-container--default .select2-selection--single .select2-selection__arrow b {
-  border-color: #000 transparent transparent transparent;
-  margin-left: -3px;
-  border-width: 5px 3px 0 3px; }
 
 a {
   color: #333; }

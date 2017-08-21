@@ -3,6 +3,7 @@ using FIX.Service.Entities;
 using FIX.Web.Extensions;
 using FIX.Web.Models;
 using Microsoft.AspNet.Identity;
+using SyntrinoWeb.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,6 +15,7 @@ using static FIX.Service.DBConstant;
 namespace FIX.Web.Controllers
 {
     [Authorize]
+    [IdentityAuthorize]
     public class MatchingBonusController : BaseController
     {
         private IUserService _userService;
@@ -77,7 +79,7 @@ namespace FIX.Web.Controllers
                 {
                     Pos = pos++.ToString(),
                     MatchingBonusId = item.MatchingBonusId.ToString(),
-                    Date = item.ReturnDate.ConvertToDateString(),
+                    Date = item.ReturnDate.ToUserLocalDate(User.Identity.GetUserTimeZone()),
                     Username = item.UserEntity.Username,
                     UserId = item.UserId,
                     Package = item.UserPackage.Package.Description,
@@ -87,7 +89,7 @@ namespace FIX.Web.Controllers
                     ActionTags = new Func<List<ActionTag>>(() =>
                     {
                         List<ActionTag> actions = new List<ActionTag>();
-                        if (item.StatusId == (int)EStatus.Pending)
+                        if (item.StatusId == (int)EStatus.Pending && item.ReturnDate <= DateTime.UtcNow)
                         {
                             actions.Add(new ActionTag
                             {

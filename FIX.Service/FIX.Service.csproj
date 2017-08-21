@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -125,6 +126,9 @@
     <Compile Include="Entities\Preauth.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\ReturnInterest.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\spMatchingBonusFormula_experimental_Result.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -159,9 +163,6 @@
     <Compile Include="Entities\UserPackage.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\UserPackageDetail.cs">
-      <DependentUpon>FIXEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entities\UserProfile.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -193,6 +194,7 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\FinancialService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Utils\Cryptograph.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

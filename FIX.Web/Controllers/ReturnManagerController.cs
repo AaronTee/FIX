@@ -2,6 +2,7 @@
 using FIX.Web.Extensions;
 using FIX.Web.Models;
 using Microsoft.AspNet.Identity;
+using SyntrinoWeb.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ using static FIX.Service.DBConstant;
 namespace FIX.Web.Controllers
 {
     [Authorize(Roles = DBCRole.Admin)]
+    [IdentityAuthorize]
     public class ReturnManagerController : BaseController
     {
         private IInvestmentService _investmentService;
@@ -81,12 +83,13 @@ namespace FIX.Web.Controllers
         /* Enhancement required: Return descriptive message to end user */
         public JsonResult ApproveReturn(int UPDId)
         {
+            EJState result = EJState.Unknown;
             try
             {
-                var upd = _investmentService.GetUserPackageDetail(UPDId);
+                var upd = _investmentService.GetReturnInterest(UPDId);
 
                 //Check if previously approved.
-                if(upd.StatusId == (int)EStatus.Approved) return Json(false, JsonRequestBehavior.AllowGet);
+                if(upd.StatusId == (int)EStatus.Approved) return Json(result, JsonRequestBehavior.AllowGet);
 
                 //Get DocCode
                 var docCode = _docService.GetNextDocumentNumber(DBCDocSequence.EDocSequenceId.Interest_Return);
@@ -98,8 +101,8 @@ namespace FIX.Web.Controllers
                 _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Interest_Return, upd.Amount, docCode, upd.UserPackage.User.UserWallet.First().WalletId);
 
                 //Check if package subscription ended, update status.
-                var packagesDetail = _investmentService.GetAllUserPackageDetail(upd.UserPackageId);
-                if (packagesDetail.Where(x => x.UserPackageDetailId != UPDId).Any(x => x.StatusId != (int)EStatus.Pending))
+                var packagesDetail = _investmentService.GetAllReturnInterest(upd.UserPackageId);
+                if (packagesDetail.Where(x => x.ReturnInterestId != UPDId).Any(x => x.StatusId != (int)EStatus.Pending))
                 {
                     var package = _investmentService.GetUserPackage(upd.UserPackageId);
                     package.StatusId = (int)EStatus.Deactivated;
@@ -107,23 +110,39 @@ namespace FIX.Web.Controllers
 
                 _financialService.SaveChange(User.Identity.GetUserId<int>());
 
-                return Json(true, JsonRequestBehavior.AllowGet);
+                result = EJState.Success;
+
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch(Exception ex)
             {
+                result = EJState.Failed;
+
                 Log.Error(ex.Message, ex);
-                return Json(false, JsonRequestBehavior.AllowGet);
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
 
         //Return update row information to bootstrap table.
         public JsonResult VoidReturn(int UPDId)
         {
-            var upd = _investmentService.GetUserPackageDetail(UPDId);
-            upd.StatusId = (int)EStatus.Void;
+            EJState result = EJState.Unknown;
+            try
+            {
+                var upd = _investmentService.GetReturnInterest(UPDId);
+                upd.StatusId = (int)EStatus.Void;
 
-            _investmentService.SaveChange(User.Identity.GetUserId<int>());
-            return Json(true, JsonRequestBehavior.AllowGet);
+                _investmentService.SaveChange(User.Identity.GetUserId<int>());
+
+                result = EJState.Success;
+            }
+            catch (Exception ex)
+            {
+                result = EJState.Failed;
+                Log.Error(ex.Message, ex);
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

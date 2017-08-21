@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace FIX.Web.Models
 {
+
     public class UserViewModel
     {
         public UserViewModel()
@@ -34,11 +35,13 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Member ID")]
-        [System.Web.Mvc.Remote("ValidateUsername", "User", HttpMethod = "POST", ErrorMessage = "Username already exists")]
+        [RegularExpression("^[a-zA-Z0-9]{5,16}$", ErrorMessage = "Please enter 5-16 alphanumeric character without any separator (no dashes, space and etc).")]
+        [System.Web.Mvc.Remote("ValidateUsername", "User", HttpMethod = "POST", ErrorMessage = "Username has been taken.")]
         public string Username { get; set; }
 
         [Required]
         [Display(Name = "Password")]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,32}$", ErrorMessage = "Password must be a minimum of 8 characters and contain at least letter, one capital letter and a number.")]
         public string Password { get; set; }
 
         [Required]
@@ -48,12 +51,17 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Security Password")]
+        [RegularExpression("^[0-9]{6,6}$", ErrorMessage = "Please enter exact 6 numeric digit.")]
         public string SecurityPassword { get; set; }
 
+        [Required]
         [Display(Name = "Name")]
+        [RegularExpression("^[a-zA-Z\\s]*$", ErrorMessage = "Please enter only letters.")]
         public string Name { get; set; }
-
+        
+        [Required]
         [Display(Name = "I/C Number")]
+        [RegularExpression("^[a-zA-Z0-9]{1,}$", ErrorMessage = "Please enter alphanumeric character without any separator (no dashes, space and etc).")]
         public string ICNumber { get; set; }
 
         [Display(Name = "Address")]
@@ -103,10 +111,12 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Phone No.")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Please enter numeric character only (No dashes [-]).")]
         public string PhoneNo { get; set; }
 
         [Required]
         [Display(Name = "Bank Account No.")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Please enter numeric character only (No dashes [-]).")]
         public string BankAccountNo { get; set; }
 
         [Required]

@@ -10,7 +10,7 @@
                 @Html.EditorFor(x => x.ReferenceNo, "Text", new { @class = "trigger-search" })
             </div>
             <div class="col-xs-6">
-                @Html.EditorFor(x => x.TransactionType, "Dropdown", new { @class = "trigger-search" })
+                @Html.EditorFor(x => x.TransactionType, "Dropdown", new { DDL = Model.TransactionTypeDDL, @class = "trigger-search" })
             </div>
         </div>
         <div class="row">
@@ -94,6 +94,7 @@
                 
                     UserId: $('#UserId').val(),
                     ReferenceNo: $('#ReferenceNo').val(),
+                    TransactionType: $('#TransactionType').val(),
                     DateFrom: $('#DateFrom').val(),
                     DateTo: $('#DateTo').val(),
                     StatusId: $('#StatusId').val()
@@ -167,7 +168,7 @@
                                         $table.bootstrapTable('updateByUniqueId', {
                                             id: row.PreauthId,
                                             row: {
-                                                Status: '@(DBConstant.EStatus.Approved.GetDescription())',
+                                                Status: '@(DBConstant.EStatus.Void.GetDescription())',
                                                 ActionTags: "-"
                                             }
                                         });

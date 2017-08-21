@@ -568,33 +568,34 @@ $(function () {
     var _overlay = document.getElementsByClassName('scrollable')[0];
     var _clientY = null; // remember Y position on touch start
 
-    if (!_overlay) return;
+    if (_overlay) {
 
-    _overlay.addEventListener('touchstart', function (event) {
-        if (event.targetTouches.length === 1) {
-            // detect single touch
-            _clientY = event.targetTouches[0].clientY;
-        }
-    }, false);
+        _overlay.addEventListener('touchstart', function (event) {
+            if (event.targetTouches.length === 1) {
+                // detect single touch
+                _clientY = event.targetTouches[0].clientY;
+            }
+        }, false);
 
-    _overlay.addEventListener('touchmove', function (event) {
-        if (event.targetTouches.length === 1) {
-            // detect single touch
-            disableRubberBand(event);
-        }
-    }, false);
+        _overlay.addEventListener('touchmove', function (event) {
+            if (event.targetTouches.length === 1) {
+                // detect single touch
+                disableRubberBand(event);
+            }
+        }, false);
 
-    function disableRubberBand(event) {
-        var clientY = event.targetTouches[0].clientY - _clientY;
+        function disableRubberBand(event) {
+            var clientY = event.targetTouches[0].clientY - _clientY;
 
-        if (_overlay.scrollTop === 0 && clientY > 0) {
-            // element is at the top of its scroll
-            event.preventDefault();
-        }
+            if (_overlay.scrollTop === 0 && clientY > 0) {
+                // element is at the top of its scroll
+                event.preventDefault();
+            }
 
-        if (isOverlayTotallyScrolled() && clientY < 0) {
-            //element is at the top of its scroll
-            event.preventDefault();
+            if (isOverlayTotallyScrolled() && clientY < 0) {
+                //element is at the top of its scroll
+                event.preventDefault();
+            }
         }
     }
 

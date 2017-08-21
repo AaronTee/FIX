@@ -1,0 +1,21 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    Layout = "~/Views/Shared/_Portal.cshtml";
+    ViewBag.Title = "Error";
+    var backUrl = TempData["BackUrl"]?.ToString();
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <h1>404 Not Found</h1>
+        <hr />
+    </div>
+    <div class="content-body">
+        You are seeing this page because you came to a place where nothing is exist here.
+        @*@if (backUrl != null)
+        {
+            <a href="@(backUrl)">Back</a>
+        }*@
+    </div>
+</div>

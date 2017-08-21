@@ -95,7 +95,7 @@ namespace FIX.Service
             return _uow.Repository<Preauth>().GetAsQueryable(x => x.UserWallet.UserId == userId && x.StatusId == (int)EStatus.Pending);
         }
 
-        public void PreauthorizeWalletCredit(DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId)
+        public void PreauthorizeWalletCredit(DBConstant.EOperator optor, DBConstant.ETransactionType type, decimal amount, string docCode, Guid walletId)
         {
             var sType = Enum.GetName(type.GetType(), type);
             var userWallet = _uow.Repository<UserWallet>().GetByKey(walletId);
@@ -108,9 +108,22 @@ namespace FIX.Service
                 ReferenceNo = docCode,
                 TransactionDate = DateTime.UtcNow,
                 TransactionType = sType,
-                Credit = amount,
                 StatusId = (int)EStatus.Pending
             };
+
+            switch (optor)
+            {
+                case DBConstant.EOperator.ADD:
+                    newAuth.Credit = amount;
+                    break;
+
+                case DBConstant.EOperator.DEDUCT:
+                    newAuth.Debit = amount;
+                    break;
+
+                default:
+                    break;
+            }
 
             _uow.Repository<Preauth>().Insert(newAuth);
             _uow.Repository<UserWallet>().Update(userWallet);
@@ -145,7 +158,7 @@ namespace FIX.Service
                         WalletId = walletId,
                         ReferenceNo = docCode,
                         TransactionDate = DateTime.UtcNow,
-                        Credit = amount,
+                        Debit = amount,
                         TransactionType = sType
                     };
                     break;

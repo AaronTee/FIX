@@ -12,16 +12,18 @@ namespace FIX.Service.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class UserPackageDetail
+    public partial class ReturnInterest
     {
-        public int UserPackageDetailId { get; set; }
+        public int ReturnInterestId { get; set; }
         public int UserPackageId { get; set; }
-        public System.DateTime Date { get; set; }
+        public System.DateTime EffectiveDate { get; set; }
         public decimal Amount { get; set; }
         public int StatusId { get; set; }
         public string ApprovedReferenceNo { get; set; }
+        public string ApprovedBy { get; set; }
+        public Nullable<System.DateTime> ApprovedTimestamp { get; set; }
     
-        public virtual Status Status { get; set; }
         public virtual UserPackage UserPackage { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

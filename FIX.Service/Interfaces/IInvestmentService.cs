@@ -8,18 +8,21 @@ namespace FIX.Service
     {
         IQueryable<Package> GetAllPackage();
         IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn();
+        IQueryable<ReturnInterest> GetAllReturnInterest(int userPackageId);
         IQueryable<UserPackage> GetAllUserPackage(int userId);
-        IQueryable<UserPackageDetail> GetAllUserPackageDetail(int userPackageId);
         Package GetEntitledPackage(decimal amount);
+        MatchingBonus GetMatchingBonus(int? matchingBonusId);
         decimal GetMatchingBonusAmount(int? userId, int? MatchingBonusId);
         IQueryable<MatchingBonus> GetMatchingBonusList(int? userId);
-        MatchingBonus GetMatchingBonus(int? matchingBonusId);
         decimal GetPackageRate(int PackageId);
+        ReturnInterest GetReturnInterest(int UPDId);
         UserPackage GetUserPackage(int UPId);
-        UserPackageDetail GetUserPackageDetail(int UPDId);
+        void InsertMatchingBonus(MatchingBonus matchingBonus);
+        void InsertReturnInvestment(ReturnInterest returnInterest);
         void InsertUserPackage(UserPackage userPackage);
         void SaveChange();
         void SaveChange(int userId);
-        void UpdateUserPackageDetail(UserPackageDetail upd);
+        void UpdateReturnInterest(ReturnInterest upd);
+        void UpdateUserPackage(UserPackage up);
     }
 }

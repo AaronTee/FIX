@@ -15,5 +15,15 @@ namespace FIX.Web.Extensions
         {
             return ((ClaimsIdentity)identity).FindFirst("TimeZone").Value;
         }
+
+        public static bool GetUserHasAcceptedTC(this IIdentity identity)
+        {
+            return ((ClaimsIdentity)identity).FindFirst("AcceptedTC").Value == (1).ToString();
+        }
+
+        public static bool GetUserIsFirstTimeLogin(this IIdentity identity)
+        {
+            return ((ClaimsIdentity)identity).FindFirst("IsFirstTimeLogin").Value == (1).ToString();
+        }
     }
 }

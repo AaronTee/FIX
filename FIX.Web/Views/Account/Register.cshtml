@@ -1,40 +1,120 @@
-﻿@model FIX.Web.Models.RegisterViewModel
+﻿@model FIX.Web.Models.UserViewModel
 @{
+    Layout = "~/Views/Shared/_Portal.cshtml";
     ViewBag.Title = "Register";
 }
-
-<h2>@ViewBag.Title.</h2>
 
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="content-wrapper">
+        <div class="content-header">
+            <h1>Signing up your new account</h1>
+            <br />
+            <br />
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
+        <div class="content-body">
+            <div class="row">
+                <div class="col-sm-12 spacing">
+                    <h4>Enter your member detail</h4>
+                    <hr />
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-body">
+                                    @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL})
+                                    @Html.EditorFor(x => x.Username, "Text")
+                                    @Html.EditorFor(x => x.Password, "Password")
+                                    @Html.EditorFor(x => x.ConfirmPassword, "Password")
+                                    @Html.EditorFor(x => x.SecurityPassword, "Text", new { @class="sm"})
+                                    @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
+                                    @Html.EditorFor(x => x.Name, "Text")
+                                    @Html.EditorFor(x => x.ICNumber, "Text")
+                                    @Html.EditorFor(x => x.Email, "Email")
+                                    @Html.EditorFor(x => x.PhoneNo, "Text")
+                                    @Html.EditorFor(x => x.Address, "Text")
+                                    @Html.EditorFor(x => x.State, "Text")
+                                    @Html.EditorFor(x => x.City, "Text")
+                                    @Html.EditorFor(x => x.PostCode, "Text")
+                                    @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-body">
+                                    @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
+                                    @Html.EditorFor(x => x.BankAccountHolder, "Text")
+                                    @Html.EditorFor(x => x.BankAccountNo, "Text")
+                                    @Html.EditorFor(x => x.BankBranch, "Text")
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 spacing">
+                    <h4>Terms and Conditions</h4>
+                    <hr />
+                    <div class="panel">
+                        Long text here. Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.
+                        Long text here. Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.
+                        Long text here. Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.
+                        Long text here. Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.
+                        Long text here. Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.Long text here.
+                    </div>
+                    <div class="center">
+                        <p><b>By clicking register you are agreeing to the Terms and Conditions.</b></p>
+                        <button class="btn btn-success" type="submit">Register</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 }
 
 @section Scripts {
+<script>
+    $(function () {
+        $('#ReferralId').select2({
+            dropdownParent: $('#ReferralId').parent(),
+            ajax: {
+                url: GetPath('User/Search'),
+                dataType: 'json',
+                delay: 500,
+                data: function (params) {
+                    return {
+                        input: params.term, // search term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    }
+                }
+            }
+        });
+
+        $("#ReferralId").on("select2:open", function () {
+            $(".select2-search--dropdown .select2-search__field").attr("placeholder", "Enter username to search...");
+        });
+
+        $('#SecurityPassword').tooltip({
+            title: "Access certain sensitive information requires security password. Please enter 6 numeric digit (e.g. 123456).",
+            placement: "top",
+            trigger: "focus"
+        });
+
+        $('#SecurityPassword').attr("maxlength", 6);
+
+        $('#Password').tooltip({
+            title: "Password must be a minimum of 8 characters and contain at least letter, one capital letter and a number.",
+            placement: "top",
+            trigger: "focus"
+        });
+    });
+
+
+</script>
 }

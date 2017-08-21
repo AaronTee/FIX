@@ -18,6 +18,12 @@ namespace FIX.Web.Models
             status.Add(new SelectListItem() { Text = "Approved", Value = ((int)DBConstant.EStatus.Approved).ToString() });
             status.Add(new SelectListItem() { Text = "Void", Value = ((int)DBConstant.EStatus.Void).ToString() });
             StatusDDL = new SelectList(status, "Value", "Text");
+
+            List<SelectListItem> tddl = new List<SelectListItem>();
+            tddl.Add(new SelectListItem() { Text = "Interest Return", Value = Enum.GetName(typeof(DBConstant.ETransactionType), DBConstant.ETransactionType.Interest_Return).Replace("_", " ") });
+            tddl.Add(new SelectListItem() { Text = "Matching Bonus", Value = Enum.GetName(typeof(DBConstant.ETransactionType), DBConstant.ETransactionType.Matching_Bonus).Replace("_", " ") });
+            tddl.Add(new SelectListItem() { Text = "Withdrawal", Value = Enum.GetName(typeof(DBConstant.ETransactionType), DBConstant.ETransactionType.Withdrawal).Replace("_", " ") });
+            TransactionTypeDDL = new SelectList(tddl, "Value", "Text");
         }
 
         [Display(Name = "Reference No")]
@@ -35,6 +41,7 @@ namespace FIX.Web.Models
 
         public SelectList UserDDL { get; set; } 
         public SelectList StatusDDL { get; set; }
+        public SelectList TransactionTypeDDL { get; set; }
     }
 
     public class PreauthListViewModels : ActionsLink

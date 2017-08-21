@@ -72,7 +72,6 @@ i.fa-icon { position: absolute; top: 10px; left: 50px; }
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
-select2,
 textarea {
 
     max-width: 300px;
@@ -84,33 +83,6 @@ textarea {
 
 select{
     padding: 16px;
-}
-
-.select2{
-    min-width: 150px;
-    width: 100% !important;
-    max-width: 300px;
-}
-
-.select2-container .select2-selection--single{
-    height: 36px;
-    border-radius: 0;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered{
-    line-height: 38px;
-    padding: 0px 11px;
-    font-size: 16px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow{
-    height: 38px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow b{
-    border-color: #000 transparent transparent transparent;
-    margin-left: -3px;
-    border-width: 5px 3px 0 3px;
 }
 
 a{

@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Portal.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <h1>Your account is ready</h1>
+    </div>
+    <div class="content-body">
+        <p>You will be redirected to login page in a moment, if it does not automatically redirect please click the link below.</p>
+    </div>
+    <a href="@(Url.Action("Login"))" class="btn btn-default">Login</a>
+</div>

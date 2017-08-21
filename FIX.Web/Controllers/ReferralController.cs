@@ -4,6 +4,7 @@ using FIX.Web.Extensions;
 using FIX.Web.Models;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using SyntrinoWeb.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,16 @@ using System.Web.Mvc;
 namespace FIX.Web.Controllers
 {
     [Authorize]
+    [IdentityAuthorize]
     public class ReferralController : BaseController
     {
         private IUserService _userService;
+        private IInvestmentService _investmentService;
 
-        public ReferralController(IUserService userService)
+        public ReferralController(IUserService userService, IInvestmentService investmentService)
         {
             _userService = userService;
+            _investmentService = investmentService;
         }
 
         // GET: Referral
@@ -45,12 +49,12 @@ namespace FIX.Web.Controllers
                         var hasChildren = (curLevel < DBConstant.MAX_REFERRAL_TREE_LEVEL) ? _userService.GetReferralChildren(c.UserId).Count() > 0 : false;
 
                         var _text = c.Username + " ";
-                        var userPackages = c.UserPackage.OrderByDescending(x => x.Package.Threshold).ToList();
+                        var userPackages = _investmentService.GetAllUserPackage(c.UserId).OrderByDescending(x => x.Package.Threshold).ToList();
 
                         //Get first three package order by descending amount of package.
                         for (int i = 0; (i < DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE && i < userPackages.Count()); i++)
                         {
-                            _text += "[" + userPackages[i].Date.ToUserLocalDate(User.Identity.GetUserTimeZone()) + "|" + userPackages[i].Package.Description + "]" + ((userPackages.Count - 1 != i) ? ", " : "");
+                            _text += "[" + userPackages[i].EffectiveDate.Value.ToUserLocalDate(User.Identity.GetUserTimeZone()) + "|" + userPackages[i].Package.Description + "]" + ((userPackages.Count - 1 != i) ? ", " : "");
                         }
                         if(userPackages.Count > DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE)
                         {
@@ -70,12 +74,12 @@ namespace FIX.Web.Controllers
                 })();
 
                 var _parentText = parentUser.Username + " ";
-                var _parentUserPackages = parentUser.UserPackage.OrderByDescending(x => x.Package.Threshold).ToList();
+                var _parentUserPackages = _investmentService.GetAllUserPackage(parentUser.UserId).OrderByDescending(x => x.Package.Threshold).ToList();
 
                 //Get first three package order by descending amount of package.
                 for (int i = 0; (i < DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE && i < _parentUserPackages.Count()); i++)
                 {
-                    _parentText += "[" + _parentUserPackages[i].Date.ToUserLocalDate() + "|" + _parentUserPackages[i].Package.Description + "]" + ((_parentUserPackages.Count-1 != i) ? ", " : "");
+                    _parentText += "[" + _parentUserPackages[i].EffectiveDate.Value.ToUserLocalDate() + "|" + _parentUserPackages[i].Package.Description + "]" + ((_parentUserPackages.Count-1 != i) ? ", " : "");
                 }
                 if (_parentUserPackages.Count > DBConstant.MAX_REFERRAL_TREE_SHOW_PACKAGE)
                 {

@@ -73,7 +73,7 @@
         <div class="body-canvas has-sidebar has-fixed-header">
             @{Html.RenderPartial("_Alerts", new { });}
             @Html.MvcSiteMap().SiteMapPath(false)
-
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="body-content">
                 @RenderBody()
             </div>

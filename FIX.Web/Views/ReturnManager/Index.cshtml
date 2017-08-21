@@ -34,7 +34,12 @@
 
 @section scripts{
     <script>
-        var m = $('#modal').modalCreator();
+        var m,
+            $table = $('#table_member_return');
+
+        $(function () {
+            m = $('#modal').modalCreator();
+        })
 
         window.statusEvents = {
             'click .action': function (e, value, row, index) {
@@ -56,9 +61,15 @@
                                 url: GetPath('ReturnManager/ApproveReturn'),
                                 type: 'POST',
                                 data: { UPDId: row.UPDId },
-                                success: function (complete) {
-                                    if (complete) {
-                                        $('#table_member_return').bootstrapTable('removeByUniqueId', row.UPDId);
+                                success: function (result) {
+                                    if (result == '@((int)DBConstant.EJState.Success)') {
+                                        $table.bootstrapTable('updateByUniqueId', {
+                                            id: row.UPDId,
+                                            row: {
+                                                Status: '@(DBConstant.EStatus.Approved.GetDescription())',
+                                                ActionText: "-"
+                                            }
+                                        });
                                     }
                                 },
                                 complete: function () {
@@ -67,7 +78,7 @@
                             })
                         }
                     });
-                    
+
                     m.show();
                 }
 
@@ -85,9 +96,15 @@
                                 url: GetPath('ReturnManager/VoidReturn'),
                                 type: 'POST',
                                 data: { UPDId: row.UPDId },
-                                success: function (complete) {
-                                    if (complete) {
-                                        $('#table_member_return').bootstrapTable('removeByUniqueId', row.UPDId);
+                                success: function (result) {
+                                    if (result == '@((int)DBConstant.EJState.Success)') {
+                                        $table.bootstrapTable('updateByUniqueId', {
+                                            id: row.UPDId,
+                                            row: {
+                                                Status: "@(DBConstant.EStatus.Void.GetDescription())",
+                                                ActionText: "-"
+                                            }
+                                        });
                                     }
                                 },
                                 complete: function () {

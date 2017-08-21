@@ -216,11 +216,14 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Attributes\IdentityAuthorize.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorizeTransactionController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HtmlLoaderController.cs" />
     <Compile Include="Controllers\DailyTradingController.cs" />
+    <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchingBonusController.cs" />
@@ -276,11 +279,12 @@
     <Content Include="Content\css\metisMenu.min.css" />
     <Content Include="Content\css\morris.css" />
     <Content Include="Content\css\pikaday-responsive.min.css" />
-    <Content Include="Content\css\portal.css" />
+    <Content Include="Content\portal_css\portal.css" />
     <Content Include="Content\css\startmin.css" />
     <Content Include="Content\css\timeline.css" />
     <Content Include="Content\image\FIXLogo.png" />
     <Content Include="Content\image\loginbg.jpg" />
+    <Content Include="Content\css\select2.custom.css" />
     <Content Include="Content\styles.min.css" />
     <Compile Include="Extensions\QueryableExtension.cs" />
     <Content Include="favicon.ico" />
@@ -440,6 +444,11 @@
     <Content Include="Views\Shared\EditorTemplates\File.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Submit.cshtml" />
     <Content Include="Views\AuthorizeTransaction\Index.cshtml" />
+    <Content Include="Views\Account\Setup.cshtml" />
+    <Content Include="Views\Error\UnauthorizedAccess.cshtml" />
+    <Content Include="Views\Account\SetupComplete.cshtml" />
+    <None Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Investment\Manage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

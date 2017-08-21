@@ -22,6 +22,7 @@ namespace FIX.Web.Controllers
         {
             public int? UserId { get; set; }
             public string ReferenceNo { get; set; }
+            public string TransactionType { get; set; }
             public string DateFrom { get; set; }
             public string DateTo { get; set; }
             public int? StatusId { get; set; }
@@ -53,6 +54,12 @@ namespace FIX.Web.Controllers
             if (searchField.ReferenceNo.IsNotNullOrEmpty())
             {
                 queryableList = queryableList.Where(x => x.ReferenceNo.Contains(searchField.ReferenceNo));
+            }
+
+            //Filter transaction type.
+            if (searchField.TransactionType.IsNotNullOrEmpty())
+            {
+                queryableList = queryableList.Where(x => x.TransactionType == searchField.TransactionType);
             }
 
             if (!searchField.DateFrom.IsNullOrEmpty())
@@ -92,19 +99,25 @@ namespace FIX.Web.Controllers
                 Debit = x.Debit.ToString(),
                 Credit = x.Credit.ToString(),
                 Status = x.Status.Description,
-                ActionTags = new List<ActionTag> //TODO: Please add if status equal approve dont show.
+                ActionTags = new Func<List<ActionTag>>(() =>
                 {
-                    new ActionTag
+                    List<ActionTag> actions = new List<ActionTag>();
+                    if (x.StatusId == (int)EStatus.Pending)
                     {
-                        Action = "authorize",
-                        Name = "Authorize"
-                    },
-                    new ActionTag
-                    {
-                        Action = "void",
-                        Name = "Void"
+                        actions.Add(new ActionTag
+                        {
+                            Action = "authorize",
+                            Name = "Authorize"
+                        });
+
+                        actions.Add(new ActionTag
+                        {
+                            Action = "void",
+                            Name = "Void"
+                        });
                     }
-                }
+                    return actions;
+                })()
             });
 
             var model = new
@@ -120,9 +133,9 @@ namespace FIX.Web.Controllers
         {
             EJState result = EJState.Unknown;
             try
-            { //TODO: Handle transaction with zero or null amount
+            {   
                 var preauthTransaction = _financialService.GetPreauthTransaction(PreauthId);
-                _financialService.TransactWalletCredit(EOperator.ADD, ETransactionType.Withdrawal, preauthTransaction.Credit.Value, preauthTransaction.ReferenceNo, preauthTransaction.WalletId);
+                _financialService.TransactWalletCredit(EOperator.DEDUCT, ETransactionType.Withdrawal, preauthTransaction.Debit ?? decimal.Zero, preauthTransaction.ReferenceNo, preauthTransaction.WalletId);
                 preauthTransaction.StatusId = (int)EStatus.Approved;
 
                 _financialService.SaveChange(User.Identity.GetUserId<int>());
@@ -144,6 +157,8 @@ namespace FIX.Web.Controllers
             {
                 var preauthTransaction = _financialService.GetPreauthTransaction(PreauthId);
                 preauthTransaction.StatusId = (int)EStatus.Void;
+
+                //TODO: Adjust back to user wallet.
 
                 _financialService.SaveChange(User.Identity.GetUserId<int>());
                 result = EJState.Success;

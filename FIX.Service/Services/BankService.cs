@@ -16,7 +16,7 @@ namespace FIX.Service
 
         public IQueryable<Bank> GetAllBank()
         {
-            return _bankService.GetAsQueryable();
+            return _bankService.GetAsQueryable().OrderBy(x => x.Name);
         }
 
         public Bank GetBank(UserBankAccount userBankAccount)

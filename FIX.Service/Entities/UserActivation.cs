@@ -17,8 +17,9 @@ namespace FIX.Service.Entities
         public int UserId { get; set; }
         public System.Guid ActivationCode { get; set; }
         public int StatusId { get; set; }
+        public System.DateTime ExpiredTimestamp { get; set; }
     
-        public virtual Status Status { get; set; }
         public virtual User User { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

@@ -12,9 +12,11 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Net;
 using System.Globalization;
+using SyntrinoWeb.Attributes;
 
 namespace FIX.Web.Controllers
 {
+    [IdentityAuthorize]
     [Authorize]
     public class DailyTradingController : BaseController
     {

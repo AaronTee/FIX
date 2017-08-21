@@ -19,9 +19,8 @@ namespace FIX.Service
         {
             public enum Id
             {
-                Admin = 3,
-                User = 4,
-                SuperAdmin = 5
+                Admin = 1,
+                User = 2,
             }
 
             public const string Admin = "Admin";
@@ -80,12 +79,12 @@ namespace FIX.Service
         //without going to db retrieve status.
         public enum EStatus
         {
-            Active = 1,
+            Void = 0,
+            Approved = 1,
             Deactivated = 2,
             Pending = 3,
-            Approved = 4,
-            Void = 5,
-            Activated = 6,
+            Active = 4,
+            Expired = 5
         }
 
         public enum EJState
