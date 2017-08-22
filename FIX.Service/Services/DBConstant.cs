@@ -40,6 +40,7 @@ namespace FIX.Service
             public const string ddMMMyyyy = "dd-MMM-yyyy";
             public const string MMMyyyy = "MMM/yyyy";
             public const string ddMMMyyyyHHmmsstt = "dd-MMM-yyyy hh:mm:ss tt";
+            public const string PS_yyyyMMddhhmmss = "yyyyMMddhhmmss";
         }
 
         public struct DBCEventType
@@ -111,6 +112,9 @@ namespace FIX.Service
         public const int MAX_REFERRAL_TREE_SHOW_PACKAGE = 1;
         public const int MAX_REFERRAL_TREE_SEARCH_LEVEL = 25;
         public const string DEFAULT_TIMEZONEID = "Singapore Standard Time";
+
+        //Images
+        public const string UploadReceiptPrefix = "RCP_";
 
         public const int MAX_CONCURRENCY_ITERATION = 5;
 

@@ -69,6 +69,32 @@ i.fa-icon { position: absolute; top: 10px; left: 50px; }
     white-space: normal;
 }
 
+:-ms-input-placeholder {
+    font-style: italic;
+    font-size: 0.8em;
+    color: #777;
+}
+
+::-moz-placeholder {
+    font-style: italic;
+    font-size: 0.8em;
+    color: #777;
+}
+
+:-moz-placeholder {
+    font-style: italic;
+    font-size: 0.8em;
+    color: #777;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-style: italic;
+    font-size: 0.8em;
+    color: #777;
+}
+
+
+
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,

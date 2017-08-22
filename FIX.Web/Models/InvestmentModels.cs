@@ -15,20 +15,22 @@ namespace FIX.Web.Models
 
     public class InvestmentManageSearchViewModels
     {
+        [Display(Name = "Status")]
         public int StatusId { get; set; }
+        [Display(Name = "User")]
         public int UserId { get; set; }
+        [Display(Name = "Request Date")]
         public string TransactionDate { get; set; }
-        public string Status { get; set; }
     }
 
-    public class UserPackageListViewModel : ActionsLink
+    public class UserPackagePendingListViewModel : ActionsLink
     {
-        public string UserId { get; set; }
-        public string DateSubscribe { get; set; }
+        public int UserPackageId { get; set; }
         public string Username { get; set; }
-        public string Amount { get; set; }
         public string Package { get; set; }
-        public string ReturnRate { get; set; }
+        public string RequestDate { get; set; }
+        public decimal InvestedAmount { get; set; }
+        public decimal ReturnRate { get; set; }
         public string Status { get; set; }
         public string IsNewUser { get; set; }
     }
@@ -48,7 +50,7 @@ namespace FIX.Web.Models
         public string ReferenceNo { get; set; }
 
         [Required]
-        [Display(Name = "Payment Date")]
+        [Display(Name = "Receipt Date")]
         public string Date { get; set; }
 
         [Display(Name = "Invest Amount")]

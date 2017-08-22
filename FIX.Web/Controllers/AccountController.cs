@@ -297,7 +297,9 @@ namespace FIX.Web.Controllers
                     //    return (userRole.Description == DBConstant.DBCRole.Admin) ? RedirectToAction("Index", "User") : RedirectToAction("Index", "Home");
                     //}
 
-                    if (currentUser.IsFirstTimeLogIn.Value)
+                    var isFirstTimeLogin = (currentUser.IsFirstTimeLogIn != null) ? currentUser.IsFirstTimeLogIn.Value : false;
+
+                    if (isFirstTimeLogin)
                     {
                         return RedirectToAction("Setup");
                     }

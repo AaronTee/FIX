@@ -59,12 +59,12 @@
         var dateFromVal = $('#DateFrom').val();
         var dateToVal = $('#DateTo').val();
 
-        function queryParams() {
+        function queryParams(p) {
             return {
                 dateFrom: $('#DateFrom').val(),
                 dateTo: $('#DateTo').val(),
-                offset: 0,
-                limit: 10,
+                offset: p.offset || 0,
+                limit: p.limit || 10,
                 sort: 'Date',
                 order: 'desc',
             }

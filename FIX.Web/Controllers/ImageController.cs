@@ -11,7 +11,7 @@ using System.IO;
 namespace FIX.Web.Controllers
 {
     [Authorize]
-    public class ImageController : Controller
+    public class ImageController : BaseController
     {
         public ActionResult Image(string ImageName)
         {
@@ -29,6 +29,23 @@ namespace FIX.Web.Controllers
                 throw new Exception("PhotoRootPath is not define in Web Config"); //
             string photofullpath = photorootpath + "\\" + ImageName.Trim();
             return base.File(photofullpath, "image/jpeg", ImageName);
+        }
+
+        internal bool Upload(string relativePath, HttpPostedFileBase file, string saveAsName)
+        {
+            try
+            {
+                string targetFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+                string fileName = saveAsName;
+                string targetPath = Path.Combine(targetFolder, fileName);
+                file.SaveAs(targetPath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return false;
+            }
         }
 
         public ActionResult ImageWithSubFolder(string imagename, string subfolder)

@@ -4,8 +4,8 @@
     @Html.LabelFor(model => model, new { @class = "control-label col-lg-4 col-md-5" })
     <div class="col-lg-8 col-md-7">
         <label class="btn btn-default2" for="@(ViewData.ModelMetadata.PropertyName)">
-            <input accept="application/pdf" id="@(ViewData.ModelMetadata.PropertyName)" name="@(ViewData.ModelMetadata.PropertyName)" type="file" onchange="$('#upload-file-info-@(ViewData.ModelMetadata.PropertyName)').html(this.files[0].name);" style="display:none;">
-            Choose a PDF file
+            <input accept="@(ViewData["accept"] ?? "application/pdf")" id="@(ViewData.ModelMetadata.PropertyName)" name="@(ViewData.ModelMetadata.PropertyName)" type="file" onchange="$('#upload-file-info-@(ViewData.ModelMetadata.PropertyName)').html(this.files[0].name);" style="display:none;">
+            Choose @(ViewData["format"] ?? "pdf") format file
         </label>
         <br/>
         <span id="upload-file-info-@(ViewData.ModelMetadata.PropertyName)"></span>

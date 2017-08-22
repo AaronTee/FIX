@@ -9,6 +9,7 @@ namespace FIX.Service
         IQueryable<Package> GetAllPackage();
         IQueryable<vwPendingReturnInvestor_Test> GetAllPendingReturn();
         IQueryable<ReturnInterest> GetAllReturnInterest(int userPackageId);
+        IQueryable<UserPackage> GetAllPendingUserPackage(int? userId);
         IQueryable<UserPackage> GetAllUserPackage(int userId);
         Package GetEntitledPackage(decimal amount);
         MatchingBonus GetMatchingBonus(int? matchingBonusId);
@@ -21,7 +22,7 @@ namespace FIX.Service
         void InsertReturnInvestment(ReturnInterest returnInterest);
         void InsertUserPackage(UserPackage userPackage);
         void SaveChange();
-        void SaveChange(int userId);
+        bool SaveChange(int userId);
         void UpdateReturnInterest(ReturnInterest upd);
         void UpdateUserPackage(UserPackage up);
     }

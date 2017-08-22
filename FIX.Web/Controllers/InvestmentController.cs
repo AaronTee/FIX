@@ -12,6 +12,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Net;
 using SyntrinoWeb.Attributes;
+using System.Globalization;
+using System.Web;
+using System.Configuration;
+using System.IO;
 
 namespace FIX.Web.Controllers
 {
@@ -86,6 +90,7 @@ namespace FIX.Web.Controllers
                 {
                     ReturnInterest ri = new ReturnInterest
                     {
+                        UserPackageId = userPackage.UserPackageId,
                         EffectiveDate = DateTime.UtcNow.AddMonths(i + 1).AddDays(1),
                         Amount = userPackage.TotalAmount * package.Rate,
                         StatusId = (int)EStatus.Pending,
@@ -106,6 +111,7 @@ namespace FIX.Web.Controllers
                     {
                         MatchingBonus mb = new MatchingBonus
                         {
+                            UserPackageId = userPackage.UserPackageId,
                             ReferralId = referralUser.UserId,
                             UserId = User.Identity.GetUserId<int>(),
                             Generation = i,
@@ -121,8 +127,12 @@ namespace FIX.Web.Controllers
                     Rate -= MatchingBonusSetting.DecreaseRate;
                 }
 
-                _investmentService.SaveChange(User.Identity.GetUserId<int>());
-                result = EJState.Success;
+                if (_investmentService.SaveChange(User.Identity.GetUserId<int>()))
+                {
+                    result = EJState.Success;
+                }
+                else result = EJState.Failed;
+
             }
             catch(Exception ex)
             {
@@ -141,29 +151,52 @@ namespace FIX.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(InvestmentCreateModel model)
+        public ActionResult Create(InvestmentCreateModel model, HttpPostedFileBase ReceiptFile)
         {
-            var package = _investmentService.GetEntitledPackage(model.Amount);
-
-            UserPackage up = new UserPackage
+            try
             {
-                PackageId = package.PackageId,
-                UserId = User.Identity.GetUserId<int>(),
-                TotalAmount = model.Amount,
-                CreatedTimestamp = DateTime.UtcNow,
-                ReceiptBank = model.Bank,
-                ReceiptNo = model.ReferenceNo,
-                StatusId = (int)EStatus.Pending,
-            };
+                //Validation
+                if (!ReceiptFile.IsImage()) ModelState.AddModelError("", "Invalid upload file format.");
 
-            _investmentService.InsertUserPackage(up);
-            _investmentService.SaveChange(User.Identity.GetUserId<int>());
+                string fileExt = Path.GetExtension(ReceiptFile.FileName);
+                string newFileName = (DBConstant.UploadReceiptPrefix + DateTime.UtcNow.ConvertToPlainDateTimeString() + Guid.NewGuid().ToString() + fileExt).ToLower();
+                new ImageController().Upload(ConfigurationManager.AppSettings["UploadReceiptPhotoPath"], ReceiptFile, newFileName);
 
-            Success("Added new package " + package.Description + " and pending for approval.");
+                if (ModelState.IsValid)
+                {
+                    var package = _investmentService.GetEntitledPackage(model.Amount);
+
+                    UserPackage up = new UserPackage
+                    {
+                        PackageId = package.PackageId,
+                        UserId = User.Identity.GetUserId<int>(),
+                        TotalAmount = model.Amount,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        ReceiptBank = model.Bank,
+                        ReceiptImagePath = newFileName,
+                        ReceiptNo = model.ReferenceNo,
+                        StatusId = (int)EStatus.Pending,
+                    };
+
+                    _investmentService.InsertUserPackage(up);
+                    _investmentService.SaveChange(User.Identity.GetUserId<int>());
+                    Success("Added new package " + package.Description + " and pending for approval.");
+                }
+                else
+                {
+                    return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+                Danger("Something wrong while we process your request, please try again later.\n If problem persist please contact our customer service.", true, true);
+                Log.Error(ex.Message, ex);
+            }
 
             return RedirectToAction("Index");
         }
 
+        
         public JsonResult UserPackageList(string order)
         {
             var tz = User.Identity.GetUserTimeZone();
@@ -171,8 +204,8 @@ namespace FIX.Web.Controllers
             {
                 UserPackageId = x.UserPackageId,
                 Package = x.Package.Description,
-                StartDate = x.EffectiveDate.Value.ToUserLocalDate(tz),
-                EndDate = x.EffectiveDate.Value.AddMonths(DBCPackageLifetime.Month).ToUserLocalDate(tz),
+                StartDate = (x.EffectiveDate.HasValue) ? x.EffectiveDate.Value.ToUserLocalDate(tz) : "-",
+                EndDate = (x.EffectiveDate.HasValue) ? x.EffectiveDate.Value.AddMonths(DBCPackageLifetime.Month).ToUserLocalDate(tz) : "-",
                 InvestedAmount = x.TotalAmount,
                 ReturnRate = x.Package.Rate,
                 Status = x.Status.Description
@@ -182,6 +215,71 @@ namespace FIX.Web.Controllers
             {
                 total = data.Count(),
                 rows = data
+            };
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Users = DBCRole.Admin)]
+        public JsonResult UserPackagePendingList(int offset, int limit, string sort, string order, int? userId, string requestDate)
+        {
+            var tz = User.Identity.GetUserTimeZone();
+            var queryableList = _investmentService.GetAllPendingUserPackage(userId);
+            if (!requestDate.IsNullOrEmpty())
+            {
+                DateTime _date;
+                DateTime.TryParseExact(requestDate, DBCDateFormat.ddMMMyyyy, CultureInfo.CurrentCulture, DateTimeStyles.None, out _date);
+                if (_date != null)
+                {
+                    DateTime _endDate = _date.AddDays(1);
+                    //get return date within its month
+                    queryableList = queryableList.Where(x => x.CreatedTimestamp >= _date && x.CreatedTimestamp < _endDate);
+                }
+            }
+
+            var allRowCount = queryableList.Count();
+            var sortedQueryableList = queryableList.PaginateList(sort, order, offset, limit, x => x.CreatedTimestamp);
+
+            var rowsResult = sortedQueryableList.ToList().Select(x => new UserPackagePendingListViewModel
+            {
+                UserPackageId = x.UserPackageId,
+                Package = x.Package.Description,
+                RequestDate = x.CreatedTimestamp.ToUserLocalDate(tz),
+                Username = x.User.Username,
+                IsNewUser = x.User.IsFirstTimeLogIn.Value ? "Yes" : "No",
+                InvestedAmount = x.TotalAmount,
+                ReturnRate = x.Package.Rate,
+                Status = x.Status.Description,
+                ActionTags = new Func<List<ActionTag>>(() =>
+                {
+                    List<ActionTag> links = new List<ActionTag>();
+
+                    links.Add(new ActionTag()
+                    {
+                        Name = "Image",
+                        Action = "image",
+                    });
+
+                    links.Add(new ActionTag()
+                    {
+                        Name = "Void",
+                        Action = "void",
+                    });
+
+                    links.Add(new ActionTag()
+                    {
+                        Name = "Approve",
+                        Action = "approve",
+                    });
+
+                    return links;
+                })()
+            });
+
+            var model = new
+            {
+                total = allRowCount,
+                rows = rowsResult
             };
 
             return Json(model, JsonRequestBehavior.AllowGet);

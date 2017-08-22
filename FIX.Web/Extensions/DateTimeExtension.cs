@@ -48,5 +48,10 @@ namespace FIX.Web.Extensions
         {
             return d.ToUserLocalDateTimeAsDateTime(TimeZoneId).ToString(DBCDateFormat.ddMMMyyyyHHmmsstt);
         }
+
+        public static string ConvertToPlainDateTimeString(this DateTime d, string TimeZoneId = null)
+        {
+            return d.ToUserLocalDateTimeAsDateTime(TimeZoneId).ToString(DBCDateFormat.PS_yyyyMMddhhmmss);
+        }
     }
 }

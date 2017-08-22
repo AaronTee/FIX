@@ -1,1 +1,166 @@
-﻿@model 
+﻿@model InvestmentManageSearchViewModels
+
+<div id="modal"></div>
+
+<div class="form-section form-horizontal spacing">
+    <div class="form-header">Manage user package requests</div>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.UserId, "Dropdown2", new { @class = "trigger-search" })
+            </div>
+            <div class="col-xs-6">
+                @Html.EditorFor(x => x.TransactionDate, "Date", new { @class = "trigger-search" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="table_userpackage_pending"
+       data-toggle="table"
+       data-side-pagination="server"
+       data-classes="table table-bordered"
+       data-query-params="queryParams"
+       data-page-list="[10, 25, 50, 100]"
+       data-url="@(Url.Content("~/"))Investment/UserPackagePendingList"
+       data-unique-id="UserPackageId">
+    <thead>
+        <tr>
+            <th data-field="UserPackageId">Id</th>
+            <th data-field="Package">Package</th>
+            <th data-class="minw125" data-field="RequestDate">Request Date</th>
+            <th data-field="Username">Username</th>
+            <th data-class="minw125" data-field="InvestedAmount" data-formatter="currencyFormatter">Amount</th>
+            <th data-field="ReturnRate" data-formatter="percentageFormatter">Return Rate</th>
+            <th data-field="IsNewUser">New Member</th>
+            <th data-field="Status">Status</th>
+            <th data-field="ActionTags" data-events="statusEvents" data-class="minw150" data-formatter="actionFormatter">Status</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts{
+    <script>
+
+        var m,
+            $table = $('#table_userpackage_pending');
+
+        $(function () {
+            $('#UserId').select2({
+                dropdownParent: $('#UserId').parent(),
+                ajax: {
+                    url: GetPath('User/Search'),
+                    dataType: 'json',
+                    delay: 1000,
+                    data: function (params) {
+                        return {
+                            input: params.term, // search term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        }
+                    }
+                }
+            });
+
+            m = $('#modal').modalCreator();
+        });
+
+        function queryParams(p) {
+            return {
+                userId: $('#UserId').val(),
+                requestDate: $("#TransactionDate").val(),
+                limit: p.limit || 10,
+                offset: p.offset || 0,
+                sort: p.sort,
+                order: p.order
+            }
+        }
+
+        $('.trigger-search').change(function () {
+            $('#table_userpackage_pending').bootstrapTable('refresh');
+        });
+
+        window.statusEvents = {
+            'click .action': function (e, value, row, index) {
+
+                var $toggleElem = $(e.target);
+                var $action = $toggleElem.data('action');
+
+                if ($action == 'approve') {
+
+                    m.make({
+                        header: 'Approve Confirmation',
+                        body: function () {
+                            return html = 'Make sure the user package id you wanted to APPROVE is correct. ( Id : ' + row.UserPackageId + ' )';
+                        }(),
+                        confirmText: "Approve",
+                        confirmButtonStyle: 'btn-success',
+                        onConfirm: function () {
+                            $.ajax({
+                                url: GetPath('Investment/Approve'),
+                                type: 'POST',
+                                data: { UserPackageId: row.UserPackageId },
+                                success: function (result) {
+                                    if (result == '@((int)DBConstant.EJState.Success)') {
+                                        $table.bootstrapTable('updateByUniqueId', {
+                                            id: row.UserPackageId,
+                                            row: {
+                                                Status: '@(DBConstant.EStatus.Approved.GetDescription())',
+                                                ActionTags: "-"
+                                            }
+                                        });
+                                    }
+                                },
+                                complete: function () {
+                                    m.hide();
+                                }
+                            })
+                        }
+                    });
+
+                    m.show();
+                }
+
+                if ($action == 'void') {
+
+                    m.make({
+                        header: 'Void Confirmation',
+                        body: function () {
+                            return html = 'Are you sure you want to VOID this subscription? ( Id : ' + row.UserPackageId + ' )';
+                        }(),
+                        confirmText: "Void",
+                        confirmButtonStyle: 'btn-danger',
+                        onConfirm: function () {
+                            $.ajax({
+                                url: GetPath('Investment/Void'),
+                                type: 'POST',
+                                data: { UserPackageId: row.UserPackageId },
+                                success: function (result) {
+                                    if (result == '@((int)DBConstant.EJState.Success)') {
+                                        $table.bootstrapTable('updateByUniqueId', {
+                                            id: row.UserPackageId,
+                                            row: {
+                                                Status: "@(DBConstant.EStatus.Void.GetDescription())",
+                                                ActionTags: "-"
+                                            }
+                                        });
+                                    }
+                                },
+                                complete: function () {
+                                    m.hide();
+                                }
+                            })
+                        }
+                    });
+
+                    m.show();
+                }
+            }
+
+        }
+
+</script>
+}

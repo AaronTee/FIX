@@ -10672,6 +10672,27 @@ i.fa-icon {
 .dl-horizontal dt {
   white-space: normal; }
 
+:-ms-input-placeholder {
+  font-style: italic;
+  font-size: 0.8em;
+  color: #777; }
+
+::-moz-placeholder {
+  font-style: italic;
+  font-size: 0.8em;
+  color: #777; }
+
+:-moz-placeholder {
+  font-style: italic;
+  font-size: 0.8em;
+  color: #777; }
+
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  font-style: italic;
+  font-size: 0.8em;
+  color: #777; }
+
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
@@ -11267,6 +11288,12 @@ tr td a.btn.btn-actionlink:not(:last-child) {
 .field-validation-error {
   color: #ff4141;
   font-weight: 400; }
+
+.validation-summary-errors {
+  padding: 6px;
+  background-color: #ffdfbe; }
+  .validation-summary-errors li {
+    list-style-type: square; }
 
 .form-horizontal .form-header {
   padding: 10px;

@@ -25,7 +25,18 @@ namespace FIX.Service
 
         public IQueryable<UserPackage> GetAllUserPackage(int userId)
         {
-            return _uow.Repository<UserPackage>().GetAsQueryable(filter: x => x.UserId == userId && x.StatusId == (int)EStatus.Active);
+            return _uow.Repository<UserPackage>().GetAsQueryable(filter: x => x.UserId == userId);
+        }
+
+        public IQueryable<UserPackage> GetAllPendingUserPackage(int? userId)
+        {
+            var pendingUserPackages = _uow.Repository<UserPackage>().GetAsQueryable(filter: x => x.StatusId == (int)EStatus.Pending);
+            if(userId != 0 && userId != null)
+            {
+                pendingUserPackages = pendingUserPackages.Where(x => x.UserId == userId);
+            }
+
+            return pendingUserPackages;
         }
 
         public IQueryable<ReturnInterest> GetAllReturnInterest(int userPackageId)
@@ -104,9 +115,9 @@ namespace FIX.Service
             _uow.Save();
         }
 
-        public void SaveChange(int userId)
+        public bool SaveChange(int userId)
         {
-            _uow.Save(userId);
+            return _uow.Save(userId);
         }
 
         public UserPackage GetUserPackage(int UPId)

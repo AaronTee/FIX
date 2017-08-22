@@ -33,7 +33,7 @@ namespace FIX.Service
         public decimal? GetUserWalletAvailableBalance(Guid walletId)
         {
             var wallet = _uow.Repository<UserWallet>().GetAsQueryable(filter: x => x.WalletId == walletId).First();
-            return wallet?.Balance - wallet?.AuthorizedBalance;
+            return wallet?.Balance;
         }
 
         public decimal? GetMatchingBonusReceivedAmount(Guid walletId)
@@ -100,8 +100,6 @@ namespace FIX.Service
             var sType = Enum.GetName(type.GetType(), type);
             var userWallet = _uow.Repository<UserWallet>().GetByKey(walletId);
 
-            userWallet.AuthorizedBalance += amount;
-
             Preauth newAuth = new Preauth
             {
                 WalletId = userWallet.WalletId,
@@ -119,6 +117,8 @@ namespace FIX.Service
 
                 case DBConstant.EOperator.DEDUCT:
                     newAuth.Debit = amount;
+                    userWallet.AuthorizedBalance += amount;
+                    userWallet.Balance -= amount;
                     break;
 
                 default:
@@ -139,7 +139,6 @@ namespace FIX.Service
             {
                 case DBConstant.EOperator.ADD:
                     userWallet.Balance += amount;
-
                     newWalletTransaction = new WalletTransaction
                     {
                         WalletId = walletId,
@@ -148,11 +147,11 @@ namespace FIX.Service
                         Credit = amount,
                         TransactionType = sType
                     };
+
                     break;
 
                 case DBConstant.EOperator.DEDUCT:
-                    userWallet.Balance -= amount;
-
+                    userWallet.AuthorizedBalance -= amount;
                     newWalletTransaction = new WalletTransaction
                     {
                         WalletId = walletId,

@@ -18,5 +18,11 @@ namespace FIX.Web.Extensions
 
             return formats.Any(item => file.FileName.EndsWith(item, StringComparison.OrdinalIgnoreCase));
         }
+
+        public static readonly string[] _validExtensions = { "jpg", "png", "jpeg" }; //  etc
+        public static bool IsImage(this HttpPostedFileBase file)
+        {
+            return file.ContentType.Contains(file.ContentType);
+        }
     }
 }

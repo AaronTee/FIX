@@ -181,6 +181,15 @@ tr td a.btn.btn-actionlink:not(:last-child) {
     font-weight: 400;
 }
 
+.validation-summary-errors{
+    padding: 6px;
+    background-color: #ffdfbe;
+
+    & li{
+        list-style-type: square;
+    }
+}
+
 .form-horizontal{
 
     & .form-header{

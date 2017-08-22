@@ -9,7 +9,7 @@
         }
         else
         {
-            @Html.TextBoxFor(model => model, new { @autocomplete = "off", @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : "")})
+            @Html.TextBoxFor(model => model, new { @placeholder = ViewData["placeholder"] ?? "", @autocomplete = "off", @class = "form-control " + ((ViewData["class"] != null) ? ViewData["class"] : "")})
             @Html.ValidationMessageFor(model => model)
         }
     </div>

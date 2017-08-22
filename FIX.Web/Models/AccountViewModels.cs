@@ -115,5 +115,10 @@ namespace FIX.Web.Models
         public string EmailDomain { get; set; }
     }
 
+    public class SetupViewModel
+    {
+
+    }
+
     
 }

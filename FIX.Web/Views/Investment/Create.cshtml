@@ -20,15 +20,16 @@
 <fieldset class="spacing">
     <legend>Add Package</legend>
     <div class="form-section">
-        @using (Html.BeginForm("Create", "Investment", FormMethod.Post))
+        @using (Html.BeginForm("Create", "Investment", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            @Html.EditorFor(x => x.Amount, "Text");
+            @Html.EditorFor(x => x.Bank, "Text", new { @placeholder = "e.g. Maybank" });
+            @Html.EditorFor(x => x.ReferenceNo, "Text");
+            @Html.EditorFor(x => x.ReceiptFile, "File", new { format = "image", accept = "image/x-png, image/jpeg" });
+            @Html.EditorFor(x => x.Date, "Date");
+            @Html.EditorFor(x => x.Amount, "Number");
             @Html.EditorFor(x => x.PackageName, "Text", new { @readonly = true });
             @Html.EditorFor(x => x.Rate, "Text", new { @readonly = true });
-            <div class="action-panel">
-                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
-                <button class="btn btn-submit" id="Button1" type="submit">Submit</button>
-            </div>
+            @Html.Editor("", "Submit", new { PreviousAction = "Index" });
         }
     </div>
 </fieldset>
