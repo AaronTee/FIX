@@ -30,10 +30,11 @@
             <th data-field="Package">Package</th>
             <th data-class="minw125" data-field="RequestDate">Request Date</th>
             <th data-field="Username">Username</th>
-            <th data-class="minw125" data-field="InvestedAmount" data-formatter="currencyFormatter">Amount</th>
+            <th data-class="minw125" data-halign="left" data-align="right" data-field="InvestedAmount" data-formatter="currencyFormatter">Amount</th>
             <th data-field="ReturnRate" data-formatter="percentageFormatter">Return Rate</th>
             <th data-field="IsNewUser">New Member</th>
             <th data-field="Status">Status</th>
+            <th data-field="ImageLink" data-formatter="LinkFormatter">Image</th>
             <th data-field="ActionTags" data-events="statusEvents" data-class="minw150" data-formatter="actionFormatter">Status</th>
         </tr>
     </thead>
@@ -66,6 +67,23 @@
             });
 
             m = $('#modal').modalCreator();
+
+        });
+
+        $table.on('all.bs.table', function () {
+            $('.image-previewable').magnificPopup({
+                type: 'image',
+                removalDelay: 500, //delay removal by X to allow out-animation
+                callbacks: {
+                    beforeOpen: function () {
+                        // just a hack that adds mfp-anim class to markup 
+                        this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+                        this.st.mainClass = 'mfp-zoom-in';
+                    }
+                },
+                closeOnContentClick: true,
+                midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+            });
         });
 
         function queryParams(p) {
@@ -80,7 +98,7 @@
         }
 
         $('.trigger-search').change(function () {
-            $('#table_userpackage_pending').bootstrapTable('refresh');
+            $table.bootstrapTable('refresh');
         });
 
         window.statusEvents = {

@@ -19,7 +19,7 @@ namespace FIX.Service.Entities
         public System.DateTime Date { get; set; }
         public string Package { get; set; }
         public decimal TotalInvest { get; set; }
-        public Nullable<decimal> Rate { get; set; }
+        public decimal InterestRate { get; set; }
         public decimal Amount { get; set; }
         public string Status { get; set; }
     }

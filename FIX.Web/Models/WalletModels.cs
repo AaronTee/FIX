@@ -43,6 +43,9 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Withdraw Amount")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.00}")]
+        [Range(typeof(Decimal), "10", "10000", ErrorMessage = "{0} must be a decimal or number between {1} and {2}.")]
+        [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount must be non-negative and two decimal places.")]
         public decimal WithdrawAmount { get; set; }
 
         [Required]

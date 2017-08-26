@@ -1,13 +1,14 @@
 ﻿@model HttpPostedFileBase
 
 <div class="form-group">
-    @Html.LabelFor(model => model, new { @class = "control-label col-lg-4 col-md-5" })
+    @Html.LabelFor(model => model, new { @class = "control-label col-lg-4 col-md-5 required-field" })
     <div class="col-lg-8 col-md-7">
         <label class="btn btn-default2" for="@(ViewData.ModelMetadata.PropertyName)">
-            <input accept="@(ViewData["accept"] ?? "application/pdf")" id="@(ViewData.ModelMetadata.PropertyName)" name="@(ViewData.ModelMetadata.PropertyName)" type="file" onchange="$('#upload-file-info-@(ViewData.ModelMetadata.PropertyName)').html(this.files[0].name);" style="display:none;">
+            <input required accept="@(ViewData["accept"] ?? "application/pdf")" id="@(ViewData.ModelMetadata.PropertyName)" name="@(ViewData.ModelMetadata.PropertyName)" type="file" onchange="$('#upload-file-info-@(ViewData.ModelMetadata.PropertyName)').html(this.files[0].name);" style="display:none;">
             Choose @(ViewData["format"] ?? "pdf") format file
         </label>
-        <br/>
+        <br />
         <span id="upload-file-info-@(ViewData.ModelMetadata.PropertyName)"></span>
+        <div>@Html.ValidationMessageFor(model => model)</div>
     </div>
 </div>

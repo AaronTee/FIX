@@ -1,4 +1,8 @@
-﻿html{
+﻿* {
+    -webkit-overflow-scrolling: touch;
+}
+
+html{
     background: url("../image/loginbg.jpg") no-repeat center center fixed; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -21,7 +25,7 @@ fieldset{
 }
 
 hr{
-    margin-bottom: 0;
+    /*margin-bottom: 0;*/
 }
 
 .tooltip{
@@ -40,7 +44,7 @@ hr{
 }
 
 .sm{
-    width: 90px !important;
+    width: 80px !important;
 }
 
 .spacing{
@@ -52,7 +56,14 @@ hr{
     min-height: 100%;
 
     margin: 0 auto;
-    background-color: rgba(235,235,235,1);
+    background-color: rgba(235,235,235,0.75);
+}
+
+.btn.btn-default2{
+    background-color: #fff;
+    color: #333;
+    border: 1px solid grey;
+    border-radius: 4px;
 }
 
 hr{
@@ -75,10 +86,136 @@ hr{
     margin-bottom: 25px;
 }
 
+.btn.btn-submit {
+    color: #444;
+    background: rgba(255,193,92,1);
+    background: -moz-linear-gradient(top, rgba(255,193,92,1) 0%, rgba(217,152,41,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,193,92,1)), color-stop(100%, rgba(217,152,41,1)));
+    background: -webkit-linear-gradient(top, rgba(255,193,92,1) 0%, rgba(217,152,41,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,193,92,1) 0%, rgba(217,152,41,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,193,92,1) 0%, rgba(217,152,41,1) 100%);
+    background: linear-gradient(to bottom, rgba(255,193,92,1) 0%, rgba(217,152,41,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc15c', endColorstr='#d99829', GradientType=0 );
+}
+.btn.btn-submit:hover{
+    filter: brightness(1.1);
+    border-color: rgba(255, 159, 0, 0.59);
+    color: #333;
+}
+
+.btn.btn-submit:focus{
+    outline: 0;
+}
+
+footer{
+    text-align: center;
+    font-size: 0.8em;
+}
+
+input.datepicker{
+    padding-left: 16px;
+}
+
 legend{
     font-size: 28px;
     border-bottom: 1px solid #ccc;
 }
+
+.grand-select-box{
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+
+.grand-select-box-item
+{
+    flex: 1 0 auto;
+    padding: 25px;
+    margin: 5px;
+    width: 250px;
+    text-align: center;
+    background-color: white;
+    color: #fff;
+    font-weight: 500;
+}
+
+.grand-select-box-item.Bronze{
+    background: rgba(161,89,0,1);
+    background: -moz-linear-gradient(top, rgba(161,89,0,1) 0%, rgba(224,147,54,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(161,89,0,1)), color-stop(100%, rgba(224,147,54,1)));
+    background: -webkit-linear-gradient(top, rgba(161,89,0,1) 0%, rgba(224,147,54,1) 100%);
+    background: -o-linear-gradient(top, rgba(161,89,0,1) 0%, rgba(224,147,54,1) 100%);
+    background: -ms-linear-gradient(top, rgba(161,89,0,1) 0%, rgba(224,147,54,1) 100%);
+    background: linear-gradient(to bottom, rgba(161,89,0,1) 0%, rgba(224,147,54,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a15900', endColorstr='#e09336', GradientType=0 );background-color: brown;
+}
+
+.grand-select-box-item.Silver {
+    background: rgba(87,87,87,1);
+    background: -moz-linear-gradient(top, rgba(87,87,87,1) 0%, rgba(163,163,163,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(87,87,87,1)), color-stop(100%, rgba(163,163,163,1)));
+    background: -webkit-linear-gradient(top, rgba(87,87,87,1) 0%, rgba(163,163,163,1) 100%);
+    background: -o-linear-gradient(top, rgba(87,87,87,1) 0%, rgba(163,163,163,1) 100%);
+    background: -ms-linear-gradient(top, rgba(87,87,87,1) 0%, rgba(163,163,163,1) 100%);
+    background: linear-gradient(to bottom, rgba(87,87,87,1) 0%, rgba(163,163,163,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#575757', endColorstr='#a3a3a3', GradientType=0 );
+}
+
+.grand-select-box-item.Gold {
+    background: rgba(252,151,0,1);
+    background: -moz-linear-gradient(top, rgba(252,151,0,1) 0%, rgba(224,197,62,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(252,151,0,1)), color-stop(100%, rgba(224,197,62,1)));
+    background: -webkit-linear-gradient(top, rgba(252,151,0,1) 0%, rgba(224,197,62,1) 100%);
+    background: -o-linear-gradient(top, rgba(252,151,0,1) 0%, rgba(224,197,62,1) 100%);
+    background: -ms-linear-gradient(top, rgba(252,151,0,1) 0%, rgba(224,197,62,1) 100%);
+    background: linear-gradient(to bottom, rgba(252,151,0,1) 0%, rgba(224,197,62,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fc9700', endColorstr='#e0c53e', GradientType=0 );
+}
+
+.grand-select-box-item.Platinum {
+    background: rgba(39,42,48,1);
+    background: -moz-linear-gradient(top, rgba(39,42,48,1) 0%, rgba(120,121,143,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(39,42,48,1)), color-stop(100%, rgba(120,121,143,1)));
+    background: -webkit-linear-gradient(top, rgba(39,42,48,1) 0%, rgba(120,121,143,1) 100%);
+    background: -o-linear-gradient(top, rgba(39,42,48,1) 0%, rgba(120,121,143,1) 100%);
+    background: -ms-linear-gradient(top, rgba(39,42,48,1) 0%, rgba(120,121,143,1) 100%);
+    background: linear-gradient(to bottom, rgba(39,42,48,1) 0%, rgba(120,121,143,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#272a30', endColorstr='#78798f', GradientType=0 );
+}
+
+
+.ui-message-wrapper .ui-message-body
+{
+    position: relative;
+    height: auto;
+    overflow: hidden;
+}
+.ui-message-wrapper .ui-message-body .alert
+{
+    position: relative;
+    margin-bottom: 0;
+}
+.ui-message-wrapper .ui-message-body > a{
+    color: white;
+    text-decoration: underline;
+}
+
+
 
 @media screen and (max-width: 1500px){
 
@@ -92,6 +229,8 @@ legend{
     .container{
         width: 100%;
     }
+
+    
 }
 
 @media screen and (max-width: 767px){
@@ -100,5 +239,9 @@ legend{
         padding-left: 0;
         padding-right: 0;
         width: 100%;
+    }
+
+    .content-wrapper{
+        padding: 15px 15px;
     }
 }

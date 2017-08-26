@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="FIXModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AccessToken">
+          <Key>
+            <PropertyRef Name="TokenId" />
+          </Key>
+          <Property Name="TokenId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TokenKey" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Purpose" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ExpiredTimestamp" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="AuditLogId" />
@@ -80,6 +92,18 @@
           <Property Name="Rate" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="Threshold" Type="decimal" Precision="15" Scale="5" Nullable="false" />
         </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="PostId" />
+          </Key>
+          <Property Name="PostId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PostType" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedTimestamp" Type="datetime" />
+        </EntityType>
         <EntityType Name="Preauth">
           <Key>
             <PropertyRef Name="PreauthId" />
@@ -142,15 +166,6 @@
           <Property Name="ModifiedTimestamp" Type="datetime" />
           <Property Name="StatusId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="UserActivation">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="int" Nullable="false" />
-          <Property Name="ActivationCode" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="StatusId" Type="int" Nullable="false" />
-          <Property Name="ExpiredTimestamp" Type="datetime" Nullable="false" />
-        </EntityType>
         <EntityType Name="UserBankAccount">
           <Key>
             <PropertyRef Name="UserId" />
@@ -173,11 +188,12 @@
           <Property Name="UserPackageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="PackageId" Type="int" Nullable="false" />
+          <Property Name="InterestRate" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="TotalAmount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="EffectiveDate" Type="datetime" />
           <Property Name="ReceiptImagePath" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ReceiptBank" Type="nvarchar" MaxLength="255" />
-          <Property Name="ReceiptNo" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ReceiptNo" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
@@ -250,15 +266,16 @@ warning 6002: The table/view 'FIX02.dbo.vwPendingReturnInvestor' does not have a
             <PropertyRef Name="Username" />
             <PropertyRef Name="Date" />
             <PropertyRef Name="TotalInvest" />
+            <PropertyRef Name="InterestRate" />
             <PropertyRef Name="Amount" />
             <PropertyRef Name="Status" />
           </Key>
           <Property Name="UPDId" Type="int" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="Package" Type="nvarchar" MaxLength="20" />
           <Property Name="TotalInvest" Type="decimal" Precision="15" Scale="5" Nullable="false" />
-          <Property Name="Rate" Type="decimal" Precision="15" Scale="5" />
+          <Property Name="InterestRate" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="Amount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
@@ -270,15 +287,16 @@ warning 6002: The table/view 'FIX02.dbo.vwPendingReturnInvestor_Test' does not h
             <PropertyRef Name="Username" />
             <PropertyRef Name="Date" />
             <PropertyRef Name="TotalInvest" />
+            <PropertyRef Name="InterestRate" />
             <PropertyRef Name="Amount" />
             <PropertyRef Name="Status" />
           </Key>
           <Property Name="UPDId" Type="int" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="Package" Type="nvarchar" MaxLength="20" />
           <Property Name="TotalInvest" Type="decimal" Precision="15" Scale="5" Nullable="false" />
-          <Property Name="Rate" Type="decimal" Precision="15" Scale="5" />
+          <Property Name="InterestRate" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="Amount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
           <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
@@ -386,12 +404,12 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
         </Association>
         <Association Name="FK__UserActiv__Statu__5812160E">
           <End Role="Status" Type="Self.Status" Multiplicity="1" />
-          <End Role="UserActivation" Type="Self.UserActivation" Multiplicity="*" />
+          <End Role="AccessToken" Type="Self.AccessToken" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
               <PropertyRef Name="StatusId" />
             </Principal>
-            <Dependent Role="UserActivation">
+            <Dependent Role="AccessToken">
               <PropertyRef Name="StatusId" />
             </Dependent>
           </ReferentialConstraint>
@@ -400,12 +418,12 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <End Role="User" Type="Self.User" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="UserActivation" Type="Self.UserActivation" Multiplicity="0..1" />
+          <End Role="AccessToken" Type="Self.AccessToken" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="UserActivation">
+            <Dependent Role="AccessToken">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -606,18 +624,19 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Parameter Name="tier3BonusPerc" Type="float" Mode="In" />
         </Function>
         <EntityContainer Name="FIXModelStoreContainer">
+          <EntitySet Name="AccessToken" EntityType="Self.AccessToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyTrading" EntityType="Self.DailyTrading" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocSequence" EntityType="Self.DocSequence" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MatchingBonus" EntityType="Self.MatchingBonus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Package" EntityType="Self.Package" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Preauth" EntityType="Self.Preauth" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReturnInterest" EntityType="Self.ReturnInterest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserActivation" EntityType="Self.UserActivation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserBankAccount" EntityType="Self.UserBankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPackage" EntityType="Self.UserPackage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
@@ -631,7 +650,7 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
     [vwPendingReturnInvestor].[Date] AS [Date], 
     [vwPendingReturnInvestor].[Package] AS [Package], 
     [vwPendingReturnInvestor].[TotalInvest] AS [TotalInvest], 
-    [vwPendingReturnInvestor].[Rate] AS [Rate], 
+    [vwPendingReturnInvestor].[InterestRate] AS [InterestRate], 
     [vwPendingReturnInvestor].[Amount] AS [Amount], 
     [vwPendingReturnInvestor].[Status] AS [Status]
     FROM [dbo].[vwPendingReturnInvestor] AS [vwPendingReturnInvestor]</DefiningQuery>
@@ -643,7 +662,7 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
     [vwPendingReturnInvestor_Test].[Date] AS [Date], 
     [vwPendingReturnInvestor_Test].[Package] AS [Package], 
     [vwPendingReturnInvestor_Test].[TotalInvest] AS [TotalInvest], 
-    [vwPendingReturnInvestor_Test].[Rate] AS [Rate], 
+    [vwPendingReturnInvestor_Test].[InterestRate] AS [InterestRate], 
     [vwPendingReturnInvestor_Test].[Amount] AS [Amount], 
     [vwPendingReturnInvestor_Test].[Status] AS [Status]
     FROM [dbo].[vwPendingReturnInvestor_Test] AS [vwPendingReturnInvestor_Test]</DefiningQuery>
@@ -688,11 +707,11 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           </AssociationSet>
           <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="Self.FK__UserActiv__Statu__5812160E">
             <End Role="Status" EntitySet="Status" />
-            <End Role="UserActivation" EntitySet="UserActivation" />
+            <End Role="AccessToken" EntitySet="AccessToken" />
           </AssociationSet>
           <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="Self.FK__UserActiv__UserI__59063A47">
             <End Role="User" EntitySet="User" />
-            <End Role="UserActivation" EntitySet="UserActivation" />
+            <End Role="AccessToken" EntitySet="AccessToken" />
           </AssociationSet>
           <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="Self.FK__UserBankA__BankI__403A8C7D">
             <End Role="Bank" EntitySet="Bank" />
@@ -761,11 +780,8 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <EntitySet Name="DailyTrading" EntityType="FIXModel.DailyTrading" />
           <EntitySet Name="Package" EntityType="FIXModel.Package" />
           <EntitySet Name="Role" EntityType="FIXModel.Role" />
-          <EntitySet Name="UserActivation" EntityType="FIXModel.UserActivation" />
           <EntitySet Name="UserBankAccount" EntityType="FIXModel.UserBankAccount" />
           <EntitySet Name="UserProfile" EntityType="FIXModel.UserProfile" />
-          <EntitySet Name="vwPendingReturnInvestor" EntityType="FIXModel.vwPendingReturnInvestor" />
-          <EntitySet Name="vwPendingReturnInvestor_Test" EntityType="FIXModel.vwPendingReturnInvestor_Test" />
           <EntitySet Name="database_firewall_rules" EntityType="FIXModel.database_firewall_rules" />
           <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="FIXModel.FK__UserBankA__BankI__403A8C7D">
             <End Role="Bank" EntitySet="Bank" />
@@ -827,10 +843,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="User" EntitySet="User" />
             <End Role="MatchingBonus" EntitySet="MatchingBonus" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="FIXModel.FK__UserActiv__UserI__59063A47">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserActivation" EntitySet="UserActivation" />
-          </AssociationSet>
           <AssociationSet Name="FK__UserBankA__UserI__45BE5BA9" Association="FIXModel.FK__UserBankA__UserI__45BE5BA9">
             <End Role="User" EntitySet="User" />
             <End Role="UserBankAccount" EntitySet="UserBankAccount" />
@@ -844,23 +856,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="UserWallet" EntitySet="UserWallet" />
           </AssociationSet>
           <EntitySet Name="ReturnInterest" EntityType="FIXModel.ReturnInterest" />
-          <EntitySet Name="UserPackage" EntityType="FIXModel.UserPackage" />
-          <AssociationSet Name="FK__MatchingB__UserP__69FBBC1F" Association="FIXModel.FK__MatchingB__UserP__69FBBC1F">
-            <End Role="UserPackage" EntitySet="UserPackage" />
-            <End Role="MatchingBonus" EntitySet="MatchingBonus" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserPacka__Packa__48CFD27E" Association="FIXModel.FK__UserPacka__Packa__48CFD27E">
-            <End Role="Package" EntitySet="Package" />
-            <End Role="UserPackage" EntitySet="UserPackage" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserPacka__UserP__5441852A" Association="FIXModel.FK__UserPacka__UserP__5441852A">
-            <End Role="UserPackage" EntitySet="UserPackage" />
-            <End Role="ReturnInterest" EntitySet="ReturnInterest" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserPacka__UserI__47DBAE45" Association="FIXModel.FK__UserPacka__UserI__47DBAE45">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserPackage" EntitySet="UserPackage" />
-          </AssociationSet>
           <EntitySet Name="Status" EntityType="FIXModel.Status" />
           <AssociationSet Name="FK__MatchingB__Statu__503BEA1C" Association="FIXModel.FK__MatchingB__Statu__503BEA1C">
             <End Role="Status" EntitySet="Status" />
@@ -878,18 +873,43 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="Status" EntitySet="Status" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="FIXModel.FK__UserActiv__Statu__5812160E">
+          <AssociationSet Name="FK__Withdrawa__Statu__11158940" Association="FIXModel.FK__Withdrawa__Statu__11158940">
             <End Role="Status" EntitySet="Status" />
-            <End Role="UserActivation" EntitySet="UserActivation" />
+            <End Role="Withdrawal" EntitySet="Withdrawal" />
+          </AssociationSet>
+          <EntitySet Name="UserPackage" EntityType="FIXModel.UserPackage" />
+          <AssociationSet Name="FK__MatchingB__UserP__69FBBC1F" Association="FIXModel.FK__MatchingB__UserP__69FBBC1F">
+            <End Role="UserPackage" EntitySet="UserPackage" />
+            <End Role="MatchingBonus" EntitySet="MatchingBonus" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__Packa__48CFD27E" Association="FIXModel.FK__UserPacka__Packa__48CFD27E">
+            <End Role="Package" EntitySet="Package" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPacka__UserP__5441852A" Association="FIXModel.FK__UserPacka__UserP__5441852A">
+            <End Role="UserPackage" EntitySet="UserPackage" />
+            <End Role="ReturnInterest" EntitySet="ReturnInterest" />
           </AssociationSet>
           <AssociationSet Name="FK__UserPacka__Statu__29E1370A" Association="FIXModel.FK__UserPacka__Statu__29E1370A">
             <End Role="Status" EntitySet="Status" />
             <End Role="UserPackage" EntitySet="UserPackage" />
           </AssociationSet>
-          <AssociationSet Name="FK__Withdrawa__Statu__11158940" Association="FIXModel.FK__Withdrawa__Statu__11158940">
-            <End Role="Status" EntitySet="Status" />
-            <End Role="Withdrawal" EntitySet="Withdrawal" />
+          <AssociationSet Name="FK__UserPacka__UserI__47DBAE45" Association="FIXModel.FK__UserPacka__UserI__47DBAE45">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserPackage" EntitySet="UserPackage" />
           </AssociationSet>
+          <EntitySet Name="vwPendingReturnInvestor_Test" EntityType="FIXModel.vwPendingReturnInvestor_Test" />
+          <EntitySet Name="vwPendingReturnInvestor" EntityType="FIXModel.vwPendingReturnInvestor" />
+          <EntitySet Name="AccessToken" EntityType="FIXModel.AccessToken" />
+          <AssociationSet Name="FK__UserActiv__Statu__5812160E" Association="FIXModel.FK__UserActiv__Statu__5812160E">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="AccessToken" EntitySet="AccessToken" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserActiv__UserI__59063A47" Association="FIXModel.FK__UserActiv__UserI__59063A47">
+            <End Role="User" EntitySet="User" />
+            <End Role="AccessToken" EntitySet="AccessToken" />
+          </AssociationSet>
+          <EntitySet Name="Post" EntityType="FIXModel.Post" />
           </EntityContainer>
         <EntityType Name="AuditLog">
           <Key>
@@ -952,17 +972,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
           <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__RoleI__4222D4EF" FromRole="Role" ToRole="UserProfile" />
         </EntityType>
-        <EntityType Name="UserActivation">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="ActivationCode" Type="Guid" Nullable="false" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <Property Name="ExpiredTimestamp" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="UserActivation" ToRole="User" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="UserActivation" ToRole="Status" />
-        </EntityType>
         <EntityType Name="UserBankAccount">
           <Key>
             <PropertyRef Name="UserId" />
@@ -1000,42 +1009,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Role" Relationship="FIXModel.FK__UserProfi__RoleI__4222D4EF" FromRole="UserProfile" ToRole="Role" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="UserProfile" ToRole="User" />
-        </EntityType>
-        <EntityType Name="vwPendingReturnInvestor">
-          <Key>
-            <PropertyRef Name="UPDId" />
-            <PropertyRef Name="Username" />
-            <PropertyRef Name="Date" />
-            <PropertyRef Name="TotalInvest" />
-            <PropertyRef Name="Amount" />
-            <PropertyRef Name="Status" />
-          </Key>
-          <Property Name="UPDId" Type="Int32" Nullable="false" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Package" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="TotalInvest" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="Rate" Type="Decimal" Precision="15" Scale="5" />
-          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="vwPendingReturnInvestor_Test">
-          <Key>
-            <PropertyRef Name="UPDId" />
-            <PropertyRef Name="Username" />
-            <PropertyRef Name="Date" />
-            <PropertyRef Name="TotalInvest" />
-            <PropertyRef Name="Amount" />
-            <PropertyRef Name="Status" />
-          </Key>
-          <Property Name="UPDId" Type="Int32" Nullable="false" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Package" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="TotalInvest" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="Rate" Type="Decimal" Precision="15" Scale="5" />
-          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="database_firewall_rules">
           <Key>
@@ -1146,8 +1119,8 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="ApprovedReferenceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__MatchingB__Refer__7EF6D905" FromRole="MatchingBonus" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="FIXModel.FK__MatchingB__UserI__7FEAFD3E" FromRole="MatchingBonus" ToRole="User" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__MatchingB__UserP__69FBBC1F" FromRole="MatchingBonus" ToRole="UserPackage" />
           <NavigationProperty Name="Status" Relationship="FIXModel.FK__MatchingB__Statu__503BEA1C" FromRole="MatchingBonus" ToRole="Status" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__MatchingB__UserP__69FBBC1F" FromRole="MatchingBonus" ToRole="UserPackage" />
         </EntityType>
         <EntityType Name="Withdrawal">
           <Key>
@@ -1267,12 +1240,12 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="StatusId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="MatchingBonus" Relationship="FIXModel.FK__MatchingB__Refer__7EF6D905" FromRole="User" ToRole="MatchingBonus" />
           <NavigationProperty Name="MatchingBonus1" Relationship="FIXModel.FK__MatchingB__UserI__7FEAFD3E" FromRole="User" ToRole="MatchingBonus" />
-          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="User" ToRole="UserActivation" />
           <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__45BE5BA9" FromRole="User" ToRole="UserBankAccount" />
           <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="User" ToRole="UserProfile" />
           <NavigationProperty Name="UserWallet" Relationship="FIXModel.FK__UserWalle__UserI__46B27FE2" FromRole="User" ToRole="UserWallet" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="User" ToRole="UserPackage" />
           <NavigationProperty Name="Status" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="User" ToRole="Status" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="User" ToRole="UserPackage" />
+          <NavigationProperty Name="AccessToken" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="User" ToRole="AccessToken" />
         </EntityType>
         <Association Name="FK__MatchingB__Refer__7EF6D905">
           <End Type="FIXModel.User" Role="User" Multiplicity="1" />
@@ -1294,20 +1267,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="MatchingBonus">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserActiv__UserI__59063A47">
-          <End Type="FIXModel.User" Role="User" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="UserActivation">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1366,80 +1325,9 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="ApprovedReferenceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApprovedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApprovedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="ReturnInterest" ToRole="UserPackage" />
           <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="ReturnInterest" ToRole="Status" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="ReturnInterest" ToRole="UserPackage" />
         </EntityType>
-        <EntityType Name="UserPackage">
-          <Key>
-            <PropertyRef Name="UserPackageId" />
-          </Key>
-          <Property Name="UserPackageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="PackageId" Type="Int32" Nullable="false" />
-          <Property Name="TotalAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
-          <Property Name="ReceiptImagePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ReceiptBank" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ReceiptNo" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <Property Name="ApprovedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MatchingBonus" Relationship="FIXModel.FK__MatchingB__UserP__69FBBC1F" FromRole="UserPackage" ToRole="MatchingBonus" />
-          <NavigationProperty Name="Package" Relationship="FIXModel.FK__UserPacka__Packa__48CFD27E" FromRole="UserPackage" ToRole="Package" />
-          <NavigationProperty Name="ReturnInterest" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackage" ToRole="ReturnInterest" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="UserPackage" ToRole="User" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__29E1370A" FromRole="UserPackage" ToRole="Status" />
-        </EntityType>
-        <Association Name="FK__MatchingB__UserP__69FBBC1F">
-          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="1" />
-          <End Type="FIXModel.MatchingBonus" Role="MatchingBonus" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserPackage">
-              <PropertyRef Name="UserPackageId" />
-            </Principal>
-            <Dependent Role="MatchingBonus">
-              <PropertyRef Name="UserPackageId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserPacka__Packa__48CFD27E">
-          <End Type="FIXModel.Package" Role="Package" Multiplicity="1" />
-          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Package">
-              <PropertyRef Name="PackageId" />
-            </Principal>
-            <Dependent Role="UserPackage">
-              <PropertyRef Name="PackageId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserPacka__UserP__5441852A">
-          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="1" />
-          <End Type="FIXModel.ReturnInterest" Role="ReturnInterest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserPackage">
-              <PropertyRef Name="UserPackageId" />
-            </Principal>
-            <Dependent Role="ReturnInterest">
-              <PropertyRef Name="UserPackageId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserPacka__UserI__47DBAE45">
-          <End Type="FIXModel.User" Role="User" Multiplicity="1" />
-          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="UserPackage">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Status">
           <Key>
             <PropertyRef Name="StatusId" />
@@ -1450,9 +1338,9 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <NavigationProperty Name="Preauth" Relationship="FIXModel.FK__Preauth__StatusI__2057CCD0" FromRole="Status" ToRole="Preauth" />
           <NavigationProperty Name="ReturnInterest" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="Status" ToRole="ReturnInterest" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="Status" ToRole="User" />
-          <NavigationProperty Name="UserActivation" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="Status" ToRole="UserActivation" />
-          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Statu__29E1370A" FromRole="Status" ToRole="UserPackage" />
           <NavigationProperty Name="Withdrawal" Relationship="FIXModel.FK__Withdrawa__Statu__11158940" FromRole="Status" ToRole="Withdrawal" />
+          <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Statu__29E1370A" FromRole="Status" ToRole="UserPackage" />
+          <NavigationProperty Name="AccessToken" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="Status" ToRole="AccessToken" />
         </EntityType>
         <Association Name="FK__MatchingB__Statu__503BEA1C">
           <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
@@ -1502,15 +1390,75 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserActiv__Statu__5812160E">
+        <Association Name="FK__Withdrawa__Statu__11158940">
           <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
-          <End Type="FIXModel.UserActivation" Role="UserActivation" Multiplicity="*" />
+          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
               <PropertyRef Name="StatusId" />
             </Principal>
-            <Dependent Role="UserActivation">
+            <Dependent Role="Withdrawal">
               <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UserPackage">
+          <Key>
+            <PropertyRef Name="UserPackageId" />
+          </Key>
+          <Property Name="UserPackageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PackageId" Type="Int32" Nullable="false" />
+          <Property Name="InterestRate" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="TotalAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
+          <Property Name="ReceiptImagePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiptBank" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiptNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <Property Name="ApprovedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MatchingBonus" Relationship="FIXModel.FK__MatchingB__UserP__69FBBC1F" FromRole="UserPackage" ToRole="MatchingBonus" />
+          <NavigationProperty Name="Package" Relationship="FIXModel.FK__UserPacka__Packa__48CFD27E" FromRole="UserPackage" ToRole="Package" />
+          <NavigationProperty Name="ReturnInterest" Relationship="FIXModel.FK__UserPacka__UserP__5441852A" FromRole="UserPackage" ToRole="ReturnInterest" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserPacka__Statu__29E1370A" FromRole="UserPackage" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="UserPackage" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__MatchingB__UserP__69FBBC1F">
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="1" />
+          <End Type="FIXModel.MatchingBonus" Role="MatchingBonus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPackage">
+              <PropertyRef Name="UserPackageId" />
+            </Principal>
+            <Dependent Role="MatchingBonus">
+              <PropertyRef Name="UserPackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__Packa__48CFD27E">
+          <End Type="FIXModel.Package" Role="Package" Multiplicity="1" />
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Package">
+              <PropertyRef Name="PackageId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="PackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPacka__UserP__5441852A">
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="1" />
+          <End Type="FIXModel.ReturnInterest" Role="ReturnInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPackage">
+              <PropertyRef Name="UserPackageId" />
+            </Principal>
+            <Dependent Role="ReturnInterest">
+              <PropertyRef Name="UserPackageId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1526,18 +1474,108 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Withdrawa__Statu__11158940">
+        <Association Name="FK__UserPacka__UserI__47DBAE45">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1" />
+          <End Type="FIXModel.UserPackage" Role="UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserPackage">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="vwPendingReturnInvestor_Test">
+          <Key>
+            <PropertyRef Name="UPDId" />
+            <PropertyRef Name="Username" />
+            <PropertyRef Name="Date" />
+            <PropertyRef Name="TotalInvest" />
+            <PropertyRef Name="InterestRate" />
+            <PropertyRef Name="Amount" />
+            <PropertyRef Name="Status" />
+          </Key>
+          <Property Name="UPDId" Type="Int32" Nullable="false" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Package" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInvest" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="InterestRate" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="vwPendingReturnInvestor">
+          <Key>
+            <PropertyRef Name="UPDId" />
+            <PropertyRef Name="Username" />
+            <PropertyRef Name="Date" />
+            <PropertyRef Name="TotalInvest" />
+            <PropertyRef Name="InterestRate" />
+            <PropertyRef Name="Amount" />
+            <PropertyRef Name="Status" />
+          </Key>
+          <Property Name="UPDId" Type="Int32" Nullable="false" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Package" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInvest" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="InterestRate" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AccessToken">
+          <Key>
+            <PropertyRef Name="TokenId" />
+          </Key>
+          <Property Name="TokenId" Type="Guid" Nullable="false" />
+          <Property Name="TokenKey" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Purpose" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpiredTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="AccessToken" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="AccessToken" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__UserActiv__Statu__5812160E">
           <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
-          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
+          <End Type="FIXModel.AccessToken" Role="AccessToken" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
               <PropertyRef Name="StatusId" />
             </Principal>
-            <Dependent Role="Withdrawal">
+            <Dependent Role="AccessToken">
               <PropertyRef Name="StatusId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__UserActiv__UserI__59063A47">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FIXModel.AccessToken" Role="AccessToken" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AccessToken">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="PostId" />
+          </Key>
+          <Property Name="PostId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PostType" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1606,16 +1644,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserActivation">
-            <EntityTypeMapping TypeName="FIXModel.UserActivation">
-              <MappingFragment StoreEntitySet="UserActivation">
-                <ScalarProperty Name="ExpiredTimestamp" ColumnName="ExpiredTimestamp" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserBankAccount">
             <EntityTypeMapping TypeName="FIXModel.UserBankAccount">
               <MappingFragment StoreEntitySet="UserBankAccount">
@@ -1647,34 +1675,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ReferralId" ColumnName="ReferralId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vwPendingReturnInvestor">
-            <EntityTypeMapping TypeName="FIXModel.vwPendingReturnInvestor">
-              <MappingFragment StoreEntitySet="vwPendingReturnInvestor">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="Rate" ColumnName="Rate" />
-                <ScalarProperty Name="TotalInvest" ColumnName="TotalInvest" />
-                <ScalarProperty Name="Package" ColumnName="Package" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="UPDId" ColumnName="UPDId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vwPendingReturnInvestor_Test">
-            <EntityTypeMapping TypeName="FIXModel.vwPendingReturnInvestor_Test">
-              <MappingFragment StoreEntitySet="vwPendingReturnInvestor_Test">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="Rate" ColumnName="Rate" />
-                <ScalarProperty Name="TotalInvest" ColumnName="TotalInvest" />
-                <ScalarProperty Name="Package" ColumnName="Package" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="UPDId" ColumnName="UPDId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1846,6 +1846,14 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Status">
+            <EntityTypeMapping TypeName="FIXModel.Status">
+              <MappingFragment StoreEntitySet="Status">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UserPackage">
             <EntityTypeMapping TypeName="FIXModel.UserPackage">
               <MappingFragment StoreEntitySet="UserPackage">
@@ -1859,17 +1867,64 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="ReceiptImagePath" ColumnName="ReceiptImagePath" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="InterestRate" ColumnName="InterestRate" />
                 <ScalarProperty Name="PackageId" ColumnName="PackageId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Status">
-            <EntityTypeMapping TypeName="FIXModel.Status">
-              <MappingFragment StoreEntitySet="Status">
-                <ScalarProperty Name="Description" ColumnName="Description" />
+          <EntitySetMapping Name="vwPendingReturnInvestor_Test">
+            <EntityTypeMapping TypeName="FIXModel.vwPendingReturnInvestor_Test">
+              <MappingFragment StoreEntitySet="vwPendingReturnInvestor_Test">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="InterestRate" ColumnName="InterestRate" />
+                <ScalarProperty Name="TotalInvest" ColumnName="TotalInvest" />
+                <ScalarProperty Name="Package" ColumnName="Package" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UPDId" ColumnName="UPDId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwPendingReturnInvestor">
+            <EntityTypeMapping TypeName="FIXModel.vwPendingReturnInvestor">
+              <MappingFragment StoreEntitySet="vwPendingReturnInvestor">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="InterestRate" ColumnName="InterestRate" />
+                <ScalarProperty Name="TotalInvest" ColumnName="TotalInvest" />
+                <ScalarProperty Name="Package" ColumnName="Package" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UPDId" ColumnName="UPDId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccessToken">
+            <EntityTypeMapping TypeName="FIXModel.AccessToken">
+              <MappingFragment StoreEntitySet="AccessToken">
+                <ScalarProperty Name="ExpiredTimestamp" ColumnName="ExpiredTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Purpose" ColumnName="Purpose" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TokenKey" ColumnName="TokenKey" />
+                <ScalarProperty Name="TokenId" ColumnName="TokenId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Post">
+            <EntityTypeMapping TypeName="FIXModel.Post">
+              <MappingFragment StoreEntitySet="Post">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PostType" ColumnName="PostType" />
+                <ScalarProperty Name="PostId" ColumnName="PostId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

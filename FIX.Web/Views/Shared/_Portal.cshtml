@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
     <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/bootswatch.css"))" />
-    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/select2.custom.css"))" />
-    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/portal_css/portal.css"))" />
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/modernizr")
@@ -21,15 +19,21 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
-    
+    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/select2.custom.css"))" />
+    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/portal_css/portal.css"))" />
     @Scripts.Render("~/bundles/app")
 
     <title>@ViewBag.Title</title>
 </head>
 <body>
     <div class="body-content container">
+        @{Html.RenderPartial("_Alerts", new { });}
         @RenderBody()
+        <footer>
+            <p>&copy; @DateTime.Now.Year FIX Advisory All Right Reserved. </p>
+        </footer>
     </div>
+    
 
     @RenderSection("scripts", required: false)
 

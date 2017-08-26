@@ -12,45 +12,53 @@
             <legend>Create New User</legend>
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="form-header">User Profile</div>
+                    <div class="form-header">Account Information</div>
                     <div class="form-body">
-                        @if (User.IsInRole(DBConstant.DBCRole.Admin))
-                        {
                         @Html.EditorFor(x => x.RoleId, "Dropdown", new { DDL = Model.RoleDDL })
-                        }
-                        @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL})
+                        <div class="role-user-section">
+                            @Html.EditorFor(x => x.ReferralId, "Dropdown2", new { DDL = Model.ReferralDDL })
+                            @Html.EditorFor(x => x.Email, "Email")
+                        </div>
                         @Html.EditorFor(x => x.Username, "Text")
                         @Html.EditorFor(x => x.Password, "Password")
                         @Html.EditorFor(x => x.ConfirmPassword, "Password")
-                        @Html.EditorFor(x => x.SecurityPassword, "Text")
-                        @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
-                        @Html.EditorFor(x => x.Name, "Text")
-                        @Html.EditorFor(x => x.ICNumber, "Text")
-                        @Html.EditorFor(x => x.Email, "Email")
-                        @Html.EditorFor(x => x.PhoneNo, "Text")
-                        @Html.EditorFor(x => x.Address, "Text")
-                        @Html.EditorFor(x => x.State, "Text")
-                        @Html.EditorFor(x => x.City, "Text")
-                        @Html.EditorFor(x => x.PostCode, "Text")
-                        @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="form-header">User Bank Account</div>
-                    <div class="form-body">
-                        @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
-                        @Html.EditorFor(x => x.BankAccountHolder, "Text")
-                        @Html.EditorFor(x => x.BankAccountNo, "Text")
-                        @Html.EditorFor(x => x.BankBranch, "Text")
+                        <div class="role-user-section">
+                            @Html.EditorFor(x => x.SecurityPassword, "Text", new { @class = "sm" })
+                        </div>
                     </div>
                 </div>
             </div>
-
+            <div class="role-user-section">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-header">Member Profile</div>
+                        <div class="form-body">
+                            @Html.EditorFor(x => x.Gender, "Dropdown", new { DDL = Model.GenderDDL })
+                            @Html.EditorFor(x => x.Name, "Text")
+                            @Html.EditorFor(x => x.ICNumber, "Text")
+                            @Html.EditorFor(x => x.PhoneNo, "Text")
+                            @Html.EditorFor(x => x.Address, "Text")
+                            @Html.EditorFor(x => x.State, "Text")
+                            @Html.EditorFor(x => x.City, "Text")
+                            @Html.EditorFor(x => x.PostCode, "Text")
+                            @Html.EditorFor(x => x.Country, "Dropdown", new { DDL = Model.CountryDDL })
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-header">User Bank Account</div>
+                        <div class="form-body">
+                            @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL })
+                            @Html.EditorFor(x => x.BankAccountHolder, "Text")
+                            @Html.EditorFor(x => x.BankAccountNo, "Text")
+                            @Html.EditorFor(x => x.BankBranch, "Text")
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="action-panel">
                 @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
                 <button class="btn btn-submit" id="Button1" type="submit">Submit</button>
             </div>
-            
         </fieldset>
     }
 </div>
@@ -59,6 +67,9 @@
 
     <script>
         $(function () {
+
+            $('#user-form').data('validator').settings.ignore = ':hidden';
+
             $('#ReferralId').select2({
                 dropdownParent: $('#ReferralId').parent(),
                 ajax: {
@@ -85,7 +96,7 @@
 
         $('#SecurityPassword').tooltip({
             title: "Access certain sensitive information requires security password. Please enter 6 numeric digit (e.g. 123456).",
-            placement: "top",
+            placement: "right",
             trigger: "focus"
         });
 
@@ -95,6 +106,14 @@
             title: "Password must be a minimum of 8 characters and contain at least letter, one capital letter and a number.",
             placement: "top",
             trigger: "focus"
+        });
+
+        $('#RoleId').change(function () {
+            if ($(this).val() == '@((int)DBConstant.DBCRole.Id.Admin)') {
+                $('.role-user-section').hide();
+            } else {
+                $('.role-user-section').show();
+            }
         });
 
     </script>

@@ -10,12 +10,18 @@ namespace FIX.Web.Controllers
     {
         public ActionResult UnauthorizedAccess()
         {
+            Response.AddHeader("REFRESH", "7;URL=/Account/Login");
             return View();
         }
 
         public ActionResult NotFound()
         {
             TempData["BackUrl"] = Request.UrlReferrer?.ToString();
+            return View();
+        }
+
+        public ActionResult ServerError()
+        {
             return View();
         }
     }

@@ -23,7 +23,7 @@ namespace FIX.Service.Entities
         public string ApprovedBy { get; set; }
         public Nullable<System.DateTime> ApprovedTimestamp { get; set; }
     
-        public virtual UserPackage UserPackage { get; set; }
         public virtual Status Status { get; set; }
+        public virtual UserPackage UserPackage { get; set; }
     }
 }

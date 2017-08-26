@@ -32,11 +32,8 @@ namespace FIX.Service.Entities
         public virtual DbSet<DailyTrading> DailyTrading { get; set; }
         public virtual DbSet<Package> Package { get; set; }
         public virtual DbSet<Role> Role { get; set; }
-        public virtual DbSet<UserActivation> UserActivation { get; set; }
         public virtual DbSet<UserBankAccount> UserBankAccount { get; set; }
         public virtual DbSet<UserProfile> UserProfile { get; set; }
-        public virtual DbSet<vwPendingReturnInvestor> vwPendingReturnInvestor { get; set; }
-        public virtual DbSet<vwPendingReturnInvestor_Test> vwPendingReturnInvestor_Test { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
         public virtual DbSet<DocSequence> DocSequence { get; set; }
         public virtual DbSet<WalletTransaction> WalletTransaction { get; set; }
@@ -46,8 +43,12 @@ namespace FIX.Service.Entities
         public virtual DbSet<Preauth> Preauth { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<ReturnInterest> ReturnInterest { get; set; }
-        public virtual DbSet<UserPackage> UserPackage { get; set; }
         public virtual DbSet<Status> Status { get; set; }
+        public virtual DbSet<UserPackage> UserPackage { get; set; }
+        public virtual DbSet<vwPendingReturnInvestor_Test> vwPendingReturnInvestor_Test { get; set; }
+        public virtual DbSet<vwPendingReturnInvestor> vwPendingReturnInvestor { get; set; }
+        public virtual DbSet<AccessToken> AccessToken { get; set; }
+        public virtual DbSet<Post> Post { get; set; }
     
         public virtual ObjectResult<spMatchingBonus_Result> spMatchingBonus(Nullable<int> level, string userId, string updId, Nullable<int> offsetMonth, Nullable<int> offsetDay, Nullable<double> tier1BonusPerc, Nullable<double> tier2BonusPerc, Nullable<double> tier3BonusPerc)
         {

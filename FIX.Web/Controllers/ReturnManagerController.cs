@@ -53,7 +53,7 @@ namespace FIX.Web.Controllers
                 Date = x.Date.ToUserLocalDate(User.Identity.GetUserTimeZone()),
                 Package = x.Package,
                 TotalInvest = x.TotalInvest,
-                Rate = x.Rate,
+                Rate = x.InterestRate,
                 Amount = x.Amount,
                 Status = x.Status,
                 ActionText = new List<ActionTag>

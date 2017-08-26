@@ -52,6 +52,7 @@ namespace FIX.Web.Controllers
             //Limit
 
             if (sort == "RoleName") sort = "UserProfile.Role.Description";
+            if (sort == "Status") sort = "Status.Description";
             //Sort
             queryableList = queryableList.PaginateList(x => x.Username, sort, order, offset, limit);
 
@@ -62,25 +63,35 @@ namespace FIX.Web.Controllers
                     Email = x.Email,
                     RoleName = x.UserProfile.Role.Description,
                     Status = x.Status.Description,
-                    ActionLinks = new List<ActionLink>()
+                    ActionLinks = new Func<List<ActionLink>>(() =>
                     {
-                        new ActionLink() {
-                            Name = "Edit",
-                            Url = Url.RouteUrl(new {
-                                id = x.UserId,
-                                controller = "User",
-                                action = "Edit"
-                            })
-                        },
-                        new ActionLink() {
-                            Name = "Detail",
-                            Url = Url.RouteUrl(new {
-                                id = x.UserId,
-                                controller = "User",
-                                action = "Detail"
-                            })
+                        List<ActionLink> links = new List<ActionLink>();
+                        if (x.UserProfile.RoleId != (int)DBCRole.Id.Admin)
+                        {
+                            links.Add(new ActionLink()
+                            {
+                                Name = "Edit",
+                                Url = Url.RouteUrl(new
+                                {
+                                    id = x.UserId,
+                                    controller = "User",
+                                    action = "Edit"
+                                })
+                            });
+
+                            links.Add(new ActionLink()
+                            {
+                                Name = "Detail",
+                                Url = Url.RouteUrl(new
+                                {
+                                    id = x.UserId,
+                                    controller = "User",
+                                    action = "Detail"
+                                })
+                            });
                         }
-                    }
+                        return links;
+                    })()
 
                 });
 
@@ -124,66 +135,17 @@ namespace FIX.Web.Controllers
         {
             try
             {
-                User user = new User()
-                {
-                    Username = model.Username,
-                    Email = model.Email,
-                    Password = model.Password,
-                    SecurityPassword = model.SecurityPassword,
-                    IP = Request.UserHostAddress,
-                    HasAcceptedTerms = false,
-                    HasEmailVerified = false,
-                    IsFirstTimeLogIn = true,
-                    CreatedTimestamp = DateTime.UtcNow,
-                    TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
-                    StatusId = (int)DBConstant.EStatus.Pending,
-                    UserProfile = new UserProfile
-                    {
-                        ReferralId = model.ReferralId,
-                        Name = model.Name,
-                        ICNumber = model.ICNumber,
-                        Address = model.Address,
-                        City = model.City,
-                        State = model.State,
-                        PostCode = model.PostCode,
-                        Country = model.Country,
-                        Gender = model.Gender,
-                        PhoneNo = model.PhoneNo,
-                        RoleId = (User.IsInRole(DBCRole.Admin)) ? model.RoleId : (int)DBCRole.Id.User,
-                        CreatedTimestamp = DateTime.UtcNow,
-                    },
-                    UserBankAccount = new List<UserBankAccount>
-                    {
-                        new UserBankAccount()
-                        {
-                            BankAccountHolder = model.BankAccountHolder,
-                            BankAccountNo = model.BankAccountNo,
-                            BankBranch = model.BankBranch,
-                            CreatedTimestamp = DateTime.UtcNow,
-                            IsPrimary = true,
-                            BankId = model.BankId
-                        }
-                    },
-                    UserWallet = new List<UserWallet>
-                    {
-                        new UserWallet()
-                        {
-                            WalletId = Guid.NewGuid(),
-                            Currency = DBCCurrency.USD,
-                            Balance = decimal.Zero,
-                        }
-                    }
-                };
-
-                _userService.InsertUser(user);
+                new AccountController(_userService, _bankService).CreateNewAccount(model, Request.UserHostAddress);
                 _userService.SaveChanges(User.Identity.GetUserId<int>());
 
-                var curUser = _userService.GetUserBy(user.Username);
-
-                AccountController ac = new AccountController(_userService, _bankService);
-                ac.SendActivationEmail(curUser.UserId);
-
-                Success("Successfully created user " + model.Username + ", user will be prompted to verify his email upon login for the first time.");
+                if (model.RoleId == (int)DBCRole.Id.Admin)
+                {
+                    Success("Successfully created admin " + model.Username + ".");
+                }
+                else
+                {
+                    Success("Successfully registered user " + model.Username + ". Verification email has been sent to account email address (" + model.Email + ").", false);
+                }
             }
             catch (Exception ex)
             {
@@ -215,7 +177,7 @@ namespace FIX.Web.Controllers
                 Country = userInfo.UserProfile.Country,
                 PhoneNo = userInfo.UserProfile.PhoneNo,
                 ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId)?.Username,
-                CreditBalance = userInfo.UserWallet.FirstOrDefault()?.Balance.ToString()
+                CreditBalance = userInfo.UserWallet.FirstOrDefault()?.Balance.toCurrencyFormat()
             };
 
             if (userInfo.UserBankAccount.Count > 0)
@@ -337,7 +299,7 @@ namespace FIX.Web.Controllers
                 State = userInfo.UserProfile.State,
                 PostCode = userInfo.UserProfile.PostCode,
                 Country = userInfo.UserProfile.Country,
-                CreditBalance = userInfo.UserWallet.FirstOrDefault()?.Balance.ToString(),
+                CreditBalance = userInfo.UserWallet.FirstOrDefault()?.Balance.toCurrencyFormat(),
                 ReferralName = _userService.GetUserBy(userInfo.UserProfile.ReferralId)?.Username
             };
 

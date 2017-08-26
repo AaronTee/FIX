@@ -228,7 +228,7 @@ namespace FIX.Web.Controllers
                         ReferenceNo = docCode,
                         NotifyEmail = model.NotifyEmail,
                         BankId = model.BankId,
-                        StatusId = (int)EStatus.Pending,
+                        StatusId = (int)EStatus.Approved,
                         BankAccountName = model.BankAccountHolder,
                         BankAccountNo = model.BankAccountNo,
                         BankBranch = model.BankBranch,

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
+using System.Web.Mvc;
 
 namespace FIX.Web.Models
 {
@@ -60,44 +62,21 @@ namespace FIX.Web.Models
         public bool RememberMe { get; set; }
     }
 
-    public class RegisterViewModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-    }
-
     public class ResetPasswordViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
         [Display(Name = "Password")]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])\\S{8,}$", ErrorMessage = "Password must be a minimum of 8 characters and contain at least one capital letter.")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Password is not match.")]
         public string ConfirmPassword { get; set; }
 
-        public string Code { get; set; }
+        [Required]
+        public string Token { get; set; }
     }
 
     public class ForgotPasswordViewModel
@@ -117,7 +96,47 @@ namespace FIX.Web.Models
 
     public class SetupViewModel
     {
+        public SetupViewModel()
+        {
+            PackageList = new List<PackageInfo>();
+        }
 
+        public struct PackageInfo
+        {
+            public string PackageDescription { get; set; }
+            public string PackageThreshold { get; set; }
+            public string ReturnRate { get; set; }
+            public string styleClass { get; set; }
+        }
+
+        public List<PackageInfo> PackageList { get; set; }
+
+        [Required]
+        [Display(Name = "Receipt Image")]
+        public HttpPostedFileBase ReceiptFile { get; set; }
+
+        [Required]
+        [Display(Name = "Bank")]
+        public string Bank { get; set; }
+
+        [Display(Name = "Receipt Reference No.")]
+        public string ReferenceNo { get; set; }
+
+        [Required]
+        [Display(Name = "Receipt Date")]
+        public string Date { get; set; }
+
+        [Display(Name = "Invest Amount")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.00}")]
+        [Range(typeof(Decimal), "500", "10000000", ErrorMessage = "{0} must be a decimal or number between {1} and {2}.")]
+        [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount must be non-negative and two decimal places.")]
+        public decimal Amount { get; set; }
+
+        [Display(Name = "Entitled Package")]
+        public string PackageName { get; set; }
+
+        [Display(Name = "Rate")]
+        public string Rate { get; set; }
     }
 
     

@@ -72,6 +72,7 @@ namespace FIX.Web.App_Start
             kernel.Bind<IInvestmentService>().To<InvestmentService>();
             kernel.Bind<IDocService>().To<DocService>();
             kernel.Bind<IReportService>().To<ReportService>();
+            kernel.Bind<IArticleService>().To<ArticleService>();
         }        
     }
 }

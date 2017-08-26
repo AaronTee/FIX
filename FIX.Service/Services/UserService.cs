@@ -14,6 +14,9 @@ namespace FIX.Service
         protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IUnitOfWork _uow;
 
+        public const string CIPHER_KEYPHRASE = "k@ikNighT";
+        public const int TOKEN_RAND_LENGTH = 20;
+
         public UserService(IUnitOfWork uow)
         {
             _uow = uow;
@@ -47,6 +50,11 @@ namespace FIX.Service
         public User GetUserBy(string username)
         {
            return _uow.Repository<User>().GetAsQueryable().Where(x => x.Username == username).FirstOrDefault();
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            return _uow.Repository<User>().GetAsQueryable().Where(x => x.Email == email).FirstOrDefault();
         }
 
         public User GetReferralBy(int? id)
@@ -87,56 +95,93 @@ namespace FIX.Service
             return _uow.Repository<User>().GetAsQueryable().Where(x => x.Email == email).FirstOrDefault() == null;
         }
 
-        public Guid AssignNewValidationCode(User user)
+        public string CreateNewToken(User user, EAccessTokenPurpose purpose)
         {
-            Guid activationCode = Guid.NewGuid();
-
-            if (user.UserActivation != null) _uow.Repository<UserActivation>().Delete(user.UserActivation);
-
-            var newActivation = new UserActivation
+            if (user != null)
             {
-                UserId = user.UserId,
-                ActivationCode = activationCode,
-                StatusId = (int)EStatus.Active,
-                ExpiredTimestamp = DateTime.UtcNow
-            };
-            _uow.Repository<UserActivation>().Insert(newActivation);
-
-            return activationCode;
-        }
-
-        public bool IsValidActivationCode(Guid activationCode)
-        {
-            var userActivation = _uow.Repository<UserActivation>().GetAsQueryable().Where(x => x.ActivationCode == activationCode && x.StatusId == (int)EStatus.Active).FirstOrDefault();
-
-            if (userActivation != null)
-            {
-                var user = _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == userActivation.UserId).FirstOrDefault();
-
-                if (user != null)
+                try
                 {
-                    return true;
+                    var token = Randomizor.GenerateRandomAlphanumeric(TOKEN_RAND_LENGTH);
+
+                    string tokenString = StringCipher.Encrypt(token, CIPHER_KEYPHRASE);
+
+                    var encodedToken = System.Text.Encoding.Unicode.GetBytes(tokenString);
+
+                    var tokenUrlEncoded = System.Web.HttpServerUtility.UrlTokenEncode(encodedToken);
+
+                    var purposeName = Enum.GetName(typeof(EAccessTokenPurpose), purpose);
+                    //delete all previously request of the same purpose
+                    var tokens = _uow.Repository<AccessToken>().GetAsQueryable(x => x.UserId == user.UserId && x.Purpose == purposeName);
+                    _uow.Repository<AccessToken>().DeleteAll(tokens);
+
+                    var newToken = new AccessToken
+                    {
+                        TokenId = Guid.NewGuid(),
+                        UserId = user.UserId,
+                        TokenKey = token,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        Purpose = purposeName,
+                        StatusId = (int)EStatus.Active,
+                        ExpiredTimestamp = DateTime.UtcNow.AddDays(1)
+                    };
+                    _uow.Repository<AccessToken>().Insert(newToken);
+                    SaveChanges();
+                    return tokenUrlEncoded;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message, ex);
                 }
             }
 
-            return false;
+            throw new NullReferenceException("User cannot be null on creating a new token.");
         }
 
-        public User ValidateActivationCode(Guid activationCode)
+        //token string passed in has userid combined, please seperate and validate token only.
+        public AccessToken IsValidToken(string tokenString, EAccessTokenPurpose purpose)
         {
-            var userActivation = _uow.Repository<UserActivation>().GetAsQueryable().Where(x => x.ActivationCode == activationCode && x.StatusId == (int)EStatus.Active).FirstOrDefault();
-
-            if(userActivation != null)
+            try
             {
-                var user = _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == userActivation.UserId).FirstOrDefault();
+                var tokenPurpose = Enum.GetName(typeof(EAccessTokenPurpose), purpose);
 
-                if(user != null)
+                var tokenUrlDecoded = System.Web.HttpServerUtility.UrlTokenDecode(tokenString);
+                var decodedToken = System.Text.Encoding.Unicode.GetString(tokenUrlDecoded);
+                var decryptedTokenString = StringCipher.Decrypt(decodedToken, CIPHER_KEYPHRASE);
+
+                var tokenRecord = _uow.Repository<AccessToken>().GetAsQueryable(x => x.TokenKey == decryptedTokenString).FirstOrDefault();
+
+                if (tokenRecord != null)
+                {
+                    return tokenRecord;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return null;
+        }
+
+        public User ActivateUserAccount(string tokenString)
+        {
+            var token = IsValidToken(tokenString, EAccessTokenPurpose.VerifyEmail);
+
+            if (token != null)
+            {
+                var user = token.User;
+
+                //find all request for verifyemail and delete it.
+                var similarTokens = _uow.Repository<AccessToken>().GetAsQueryable().Where(x => x.UserId == user.UserId && x.Purpose == token.Purpose);
+                _uow.Repository<AccessToken>().DeleteAll(similarTokens);
+
+                if (user != null)
                 {
                     user.HasEmailVerified = true;
-                    _uow.Repository<UserActivation>().Delete(userActivation);
-                    SaveChanges();
+                    UpdateUser(user);
+                    SaveChanges(user.UserId);
                     return user;
                 }
+                
             }
 
             return null;
@@ -154,18 +199,39 @@ namespace FIX.Service
 
         public void InsertUser(User user)
         {
+            user.CreatedTimestamp = DateTime.UtcNow;
             user.Password = SecurePasswordHasher.Hash(user.Password);
             _uow.Repository<User>().Insert(user);
         }
 
         public void UpdateUser(User user)
         {
+            user.ModifiedTimestamp = DateTime.UtcNow;
             _uow.Repository<User>().Update(user);
         }
 
-        public void ResetPassword(int? userId, string rawPassword, string keyPhrase)
+        public bool ResetPassword(string tokenString, string newPassword)
         {
-            _uow.Repository<User>().GetByKey(userId).Password = StringCipher.Encrypt(rawPassword, keyPhrase);
+            var token = IsValidToken(tokenString, EAccessTokenPurpose.ResetPassword);
+
+            if (token != null)
+            {
+                var user = token.User;
+
+                //find all request for verifyemail and delete it.
+                var similarTokens = _uow.Repository<AccessToken>().GetAsQueryable().Where(x => x.UserId == user.UserId && x.Purpose == token.Purpose);
+                _uow.Repository<AccessToken>().DeleteAll(similarTokens);
+
+                if (user != null)
+                {
+                    user.Password = SecurePasswordHasher.Hash(newPassword);
+                    _uow.Repository<User>().Update(user);
+                    return SaveChanges(user.UserId);
+                }
+
+            }
+
+            return false;
         }
 
         public bool SaveChanges(int userId)

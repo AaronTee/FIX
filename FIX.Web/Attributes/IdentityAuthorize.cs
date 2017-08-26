@@ -25,11 +25,6 @@ namespace SyntrinoWeb.Attributes
             return pass;
         }
 
-        public override void OnAuthorization(AuthorizationContext filterContext)
-        {
-            
-        }
-
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
             // Returns HTTP 401 - see comment in HttpUnauthorizedResult.cs.

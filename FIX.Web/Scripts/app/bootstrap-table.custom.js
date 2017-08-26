@@ -12,7 +12,7 @@ function LinkFormatter(value, row, index) {
     var html = '';
 
     value.forEach(function (data) {
-        html += "<a class='btn btn-actionlink' href='" + data.Url + "'>" + data.Name + "</a>";
+        html += "<a class='btn btn-actionlink " + data.ClassName + "' href='" + data.Url + "'>" + data.Name + "</a>";
     });
 
     return html;

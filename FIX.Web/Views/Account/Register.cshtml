@@ -7,18 +7,16 @@
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
     <div class="content-wrapper">
         <div class="content-header">
-            <h1>Signing up your new account</h1>
+            <h1>Signing up new account</h1>
             <br />
             <br />
         </div>
         <div class="content-body">
             <div class="row">
                 <div class="col-sm-12 spacing">
-                    <h4>Enter your member detail</h4>
+                    <h4>Enter member detail</h4>
                     <hr />
                     <fieldset>
                         <div class="row">
@@ -50,10 +48,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.Editor("", "Submit", new { PreviousAction = "Login" })
+                            </div>
+                        </div>
                     </fieldset>
                 </div>
             </div>
-            <div class="row">
+            @*<div class="row">
                 <div class="col-md-12 spacing">
                     <h4>Terms and Conditions</h4>
                     <hr />
@@ -69,7 +72,7 @@
                         <button class="btn btn-success" type="submit">Register</button>
                     </div>
                 </div>
-            </div>
+            </div>*@
         </div>
     </div>
 }
@@ -102,14 +105,14 @@
 
         $('#SecurityPassword').tooltip({
             title: "Access certain sensitive information requires security password. Please enter 6 numeric digit (e.g. 123456).",
-            placement: "top",
+            placement: "right",
             trigger: "focus"
         });
 
         $('#SecurityPassword').attr("maxlength", 6);
 
         $('#Password').tooltip({
-            title: "Password must be a minimum of 8 characters and contain at least letter, one capital letter and a number.",
+            title: "Password must be a minimum of 8 characters and contain at one capital letter.",
             placement: "top",
             trigger: "focus"
         });

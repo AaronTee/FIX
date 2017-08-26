@@ -50,6 +50,11 @@ namespace FIX.Service
             public const string Deleted = "Deleted";
         }
 
+        public enum EAccessTokenPurpose
+        {
+            ResetPassword, VerifyEmail
+        }
+
         public struct DBCCurrency
         {
             public const string USD = "USD";
@@ -98,9 +103,20 @@ namespace FIX.Service
             Interest_Return, Matching_Bonus, Withdrawal
         }
 
+        public enum EPostType
+        {
+            Announcement
+        }
+
         public static string GetDescription(this ETransactionType type)
         {
             return Enum.GetName(type.GetType(), type);
+        }
+
+        public static string GetDescription(this EPostType type)
+        {
+            var types = Enum.GetName(type.GetType(), type);
+            return types.Replace("_", " ");
         }
 
         public static string GetDescription(this EStatus s){

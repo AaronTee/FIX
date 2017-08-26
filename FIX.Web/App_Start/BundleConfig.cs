@@ -9,7 +9,7 @@ namespace FIX.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
 
-#if DEBUG
+//#if DEBUG
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/bundles/jquery.js"));
 
@@ -29,25 +29,25 @@ namespace FIX.Web
 
             bundles.Add(new ScriptBundle("~/Content/main").Include(
                       "~/Scripts/bundles/main.js"));
-#else
+//#else
 
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+//            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+//                        "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+//            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+//                        "~/Scripts/jquery.validate*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
+//            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+//                        "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+//            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+//                      "~/Scripts/bootstrap.js",
+//                      "~/Scripts/respond.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/app").IncludeDirectory(
-                        "~/Scripts/app", "*.js", true).IncludeDirectory(
-                        "~/Scripts/app/lib", "*.js", true));
-#endif
+//            bundles.Add(new ScriptBundle("~/bundles/app").IncludeDirectory(
+//                        "~/Scripts/app", "*.js", true).IncludeDirectory(
+//                        "~/Scripts/app/lib", "*.js", true));
+//#endif
 
             bundles.Add(new StyleBundle("~/Content/style").Include(
                       "~/Content/styles.min.css"));

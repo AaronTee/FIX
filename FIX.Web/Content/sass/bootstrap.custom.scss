@@ -127,6 +127,12 @@ ul.breadcrumb li a:active {
     margin-left: 0;
 }
 
+.navbar-brand{
+    @include screen-small{
+        display: none !important;
+    }
+}
+
 .navbar-collapse{
     border-top: 0;
 }
@@ -218,7 +224,7 @@ tr td a.btn.btn-actionlink:not(:last-child) {
     & .control-span,
     & .control-label{
         font-size: 0.9em;
-        padding-top: 10px;
+        padding-top: 8px;
     }
 
     & .control-label{
@@ -234,6 +240,10 @@ tr td a.btn.btn-actionlink:not(:last-child) {
 
         margin-left: 0;
         margin-right: 0;
+
+        & .form-span{
+            margin-left: 13px;
+        }
 
         &.action-panel{
             text-align:right;
@@ -363,9 +373,10 @@ select{
 
 .bootstrap-table{
     margin: 15px 0px;
-
+    
     & .fixed-table-container{
 
+        border-top: 0;
         border-bottom: 0;
 
         & table tbody{
@@ -482,7 +493,44 @@ select{
         @include animation('slide-down 1s');
     }
 }
- 
+
+/* Magnific-popup */
+.mfp-zoom-in {
+    /* start state */
+    .mfp-with-anim {
+        opacity: 0;
+        transition: all 0.2s ease-in-out;
+        transform: scale(0.8);
+    }
+
+    &.mfp-bg {
+        opacity: 0;
+        transition: all 0.3s ease-out;
+    }
+    /* animate in */
+    &.mfp-ready {
+        .mfp-with-anim {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        &.mfp-bg {
+            opacity: 0.8;
+        }
+    }
+    /* animate out */
+    &.mfp-removing {
+
+        .mfp-with-anim {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        &.mfp-bg {
+            opacity: 0;
+        }
+    }
+}
 
 /*mobile form size*/
 @media (max-width: 512px)  {

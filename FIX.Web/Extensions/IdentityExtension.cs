@@ -18,12 +18,12 @@ namespace FIX.Web.Extensions
 
         public static bool GetUserHasAcceptedTC(this IIdentity identity)
         {
-            return ((ClaimsIdentity)identity).FindFirst("AcceptedTC").Value == (1).ToString();
+            return ((ClaimsIdentity)identity).FindFirst("AcceptedTC").Value == (true).ToString();
         }
 
         public static bool GetUserIsFirstTimeLogin(this IIdentity identity)
         {
-            return ((ClaimsIdentity)identity).FindFirst("IsFirstTimeLogin").Value == (1).ToString();
+            return ((ClaimsIdentity)identity).FindFirst("IsFirstTimeLogin").Value == (true).ToString();
         }
     }
 }

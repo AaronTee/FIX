@@ -124,11 +124,6 @@ namespace FIX.Service.Utils
             }
         }
 
-        internal static string Encrypt(string rawPassword, object configurationManager)
-        {
-            throw new NotImplementedException();
-        }
-
         private static byte[] Generate256BitsOfRandomEntropy()
         {
             var randomBytes = new byte[32]; // 32 Bytes will give us 256 bits.

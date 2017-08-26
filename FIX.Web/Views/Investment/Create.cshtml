@@ -26,7 +26,7 @@
             @Html.EditorFor(x => x.ReferenceNo, "Text");
             @Html.EditorFor(x => x.ReceiptFile, "File", new { format = "image", accept = "image/x-png, image/jpeg" });
             @Html.EditorFor(x => x.Date, "Date");
-            @Html.EditorFor(x => x.Amount, "Number");
+            @Html.EditorFor(x => x.Amount, "Number", new { @class = "dec md" });
             @Html.EditorFor(x => x.PackageName, "Text", new { @readonly = true });
             @Html.EditorFor(x => x.Rate, "Text", new { @readonly = true });
             @Html.Editor("", "Submit", new { PreviousAction = "Index" });

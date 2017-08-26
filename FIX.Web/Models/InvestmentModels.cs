@@ -33,6 +33,7 @@ namespace FIX.Web.Models
         public decimal ReturnRate { get; set; }
         public string Status { get; set; }
         public string IsNewUser { get; set; }
+        public List<ActionLink> ImageLink { get; set; }
     }
 
     public class InvestmentCreateModel
@@ -40,6 +41,8 @@ namespace FIX.Web.Models
 
         public IEnumerable<Package> PackageList { get; set; }
 
+        [Required]
+        [Display(Name = "Receipt Image")]
         public HttpPostedFileBase ReceiptFile { get; set; }
 
         [Required]

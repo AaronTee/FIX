@@ -20,7 +20,7 @@ namespace FIX.Service
 
         public IQueryable<Package> GetAllPackage()
         {
-            return _uow.Repository<Package>().GetAsQueryable();
+            return _uow.Repository<Package>().GetAsQueryable().OrderBy(x => x.Threshold);
         }
 
         public IQueryable<UserPackage> GetAllUserPackage(int userId)

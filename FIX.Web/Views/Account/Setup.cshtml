@@ -2,29 +2,77 @@
 @{
     Layout = "~/Views/Shared/_Portal.cshtml";
 }
-@using (Html.BeginForm("Setup", "Account", FormMethod.Post))
-{
 
-    <div class="content-wrapper">
-        <div class="content-header">
-            <h1>Setting up your new account</h1>
-            <br />
-            <br/>
-        </div>
-        <div class="content-body">
-            <div class="row">
-                <div class="col-md-6 spacing">
-                    <h4>Upload your receipt</h4>
-                    <hr />
-                    
+<div class="content-wrapper">
+    <div class="content-header">
+        <h1>Subscribe to our package</h1>
+        <br />
+        <br/>
+    </div>
+    <div class="content-body">
+        <div class="row">
+            <div class="col-md-12 spacing">
+                <h4>Available Packages</h4>
+                <hr />
+                <div class="grand-select-box">
+                @foreach (var package in Model.PackageList) {
+                    <div class="grand-select-box-item @(package.styleClass)">
+                        <div class="image"></div>
+                        <h2 style="font-weight: 600">@(package.PackageDescription)</h2>
+                        <br/>
+                        Return Rate
+                        <div>@(package.ReturnRate)</div>
+                        <br />
+                        Minimum Amount
+                        <div>@(package.PackageThreshold) USD</div>
+                    </div>
+                }
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-8 spacing">
+                <h4>Upload your receipt to us</h4>
+                <hr />
+                <fieldset class="spacing">
+                    <div class="form-section">
+                        @using (Html.BeginForm("Setup", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.EditorFor(x => x.Bank, "Text", new { @placeholder = "e.g. Maybank" });
+                            @*@Html.EditorFor(x => x.ReferenceNo, "Text");*@
+                            @Html.EditorFor(x => x.ReceiptFile, "File", new { format = "image", accept = "image/x-png, image/jpeg" });
+                            @Html.EditorFor(x => x.Date, "Date");
+                            @Html.EditorFor(x => x.Amount, "Number", new { @class = "dec md" });
+                            @Html.EditorFor(x => x.PackageName, "Text", new { @readonly = true });
+                            @Html.EditorFor(x => x.Rate, "Text", new { @readonly = true });
+                            @Html.Editor("", "Submit", new { PreviousAction = "Login", PreviousActionText = "Cancel" });
+                        }
+                    </div>
+                </fieldset>
+            </div>
+        </div>
     </div>
-
-    
-}
+</div>
 
 @section scripts{
-
+    <script>
+        $(function () {
+            $('#Amount').focusout(function () {
+                $this = $(this);
+                $('#PackageName').val("-");
+                $('#Rate').val("-");
+                $.ajax({
+                    url: GetPath('Investment/EntitledPackage'),
+                    type: 'GET',
+                    data: { amount: $this.val() },
+                    success: function (result) {
+                        if (result) {
+                            $('#PackageName').val(result.Description);
+                            $('#Rate').val(result.Rate);
+                        }
+                    }
+                })
+            });
+        });
+    </script>
 }

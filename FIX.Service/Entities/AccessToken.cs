@@ -12,14 +12,17 @@ namespace FIX.Service.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class UserActivation
+    public partial class AccessToken
     {
+        public System.Guid TokenId { get; set; }
+        public string TokenKey { get; set; }
         public int UserId { get; set; }
-        public System.Guid ActivationCode { get; set; }
+        public string Purpose { get; set; }
         public int StatusId { get; set; }
+        public System.DateTime CreatedTimestamp { get; set; }
         public System.DateTime ExpiredTimestamp { get; set; }
     
-        public virtual User User { get; set; }
         public virtual Status Status { get; set; }
+        public virtual User User { get; set; }
     }
 }

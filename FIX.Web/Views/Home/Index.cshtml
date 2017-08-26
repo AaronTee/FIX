@@ -95,14 +95,32 @@
 
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="panel">
             <h2 class="headline green">Announcement</h2>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel">
-            <h2 class="headline blue">Stats</h2>
+            <div class="panel-content">
+                <div class="ql-container ql-snow">
+                    <div class="ql-editor" style="padding: 0;white-space: unset;overflow-y: unset">
+                        @Html.Raw(HttpUtility.HtmlDecode(Model.AnnouncementHtml))
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@section scripts{
+
+    <style>
+        .panel-content{
+            overflow-y: scroll;
+            height: 100%;
+            max-height: 800px;
+            min-height: 350px;
+        }
+
+        .ql-container.ql-snow{
+            border: none !important;
+        }
+    </style>    
+}

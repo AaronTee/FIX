@@ -92,7 +92,7 @@ $(function () {
         var v = 0;
         var checker = Number($this.val());
         if (!isNaN(checker)) v = checker;
-        $this.val(v.format());
+        $this.val(v.format(2, ".", ""));
         $this.valid();
     });
 

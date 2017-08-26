@@ -37,7 +37,7 @@
     @Styles.Render("~/Content/style")
 </head>
 <body ontouchstart="">
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity.IsAuthenticated && User.Identity.GetUserHasAcceptedTC() && !User.Identity.GetUserIsFirstTimeLogin())
     {
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container navbar-container">
@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container container--main">
         @Html.Partial("Sidebar")
         <div class="body-canvas has-sidebar has-fixed-header">
             @{Html.RenderPartial("_Alerts", new { });}

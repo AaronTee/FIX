@@ -10,5 +10,6 @@ namespace FIX.Web.Models
         public decimal WalletBalance { get; set; }
         public decimal BonusAmount { get; set; }
         public int ActivePackagesCount { get; set; }
+        public string AnnouncementHtml { get; set; }
     }
 }

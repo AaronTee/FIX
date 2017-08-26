@@ -1,0 +1,44 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    Layout = "~/Views/Shared/_Portal.cshtml";
+    ViewBag.Title = "Error";
+    var backUrl = TempData["BackUrl"]?.ToString();
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <h1>Internal Server Error</h1>
+        <hr />
+    </div>
+    <div class="content-body">
+
+        @if (User.IsInRole(DBConstant.DBCRole.User))
+        {
+            <p>You are seeing this page because something bad happened to our server while we serve your request. Please come back later when we fixed that problem.</p>
+            
+            <h3>What you can do for us</h3>
+            <ul>
+                <li>
+                    Contact our customer service if problem persist.
+                </li>
+            </ul>
+        }
+        else
+        {
+            <p>There is something wrong in the server while processing your request. Please contact development team if problem still persist.</p>
+        }
+
+        <br />
+        <br />
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="@(Url.Action("Index", "Home"))" class="btn btn-default">Back to Home</a>
+        }
+        else
+        {
+            <a href="@(Url.Action("Login", "Account"))" class="btn btn-default">Back</a>
+        }
+    </div>
+</div>

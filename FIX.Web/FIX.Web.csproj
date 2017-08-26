@@ -220,6 +220,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorizeTransactionController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DashboardManagerController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HtmlLoaderController.cs" />
     <Compile Include="Controllers\DailyTradingController.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Helpers\SVGHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DailyTradingModels.cs" />
+    <Compile Include="Models\DashboardManagerModels.cs" />
     <Compile Include="Models\MatchingBonusModels.cs" />
     <Compile Include="Models\AuthorizeTransactionModels.cs" />
     <Compile Include="Models\ReportModels.cs" />
@@ -265,6 +267,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utils\CultureConstraint.cs" />
+    <Compile Include="Utils\Emailer.cs" />
     <Compile Include="Utils\FileManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -276,9 +279,11 @@
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\ios-checkbox.css" />
     <Content Include="Content\css\loginpage.css" />
+    <Content Include="Content\css\magnific-popup.css" />
     <Content Include="Content\css\metisMenu.min.css" />
     <Content Include="Content\css\morris.css" />
     <Content Include="Content\css\pikaday-responsive.min.css" />
+    <Content Include="Content\css\quill.snow.css" />
     <Content Include="Content\portal_css\portal.css" />
     <Content Include="Content\css\startmin.css" />
     <Content Include="Content\css\timeline.css" />
@@ -319,6 +324,11 @@
     <Content Include="Scripts\app\bootstrap-modal.custom.js" />
     <Content Include="Scripts\app\extension.js" />
     <Content Include="Scripts\app\lib\fileinput.min.js" />
+    <Content Include="Scripts\app\lib\ext\image-resize.min.js" />
+    <Content Include="Scripts\app\lib\jquery.magnific-popup.min.js" />
+    <Content Include="Scripts\app\lib\jquery.sticky.js" />
+    <Content Include="Scripts\app\lib\json2.js" />
+    <Content Include="Scripts\app\lib\quill.min.js" />
     <Content Include="Scripts\app\utils.js" />
     <Content Include="Scripts\app\user.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -447,8 +457,11 @@
     <Content Include="Views\Account\Setup.cshtml" />
     <Content Include="Views\Error\UnauthorizedAccess.cshtml" />
     <Content Include="Views\Account\SetupComplete.cshtml" />
+    <Content Include="Views\Error\ServerError.cshtml" />
+    <Content Include="Views\DashboardManager\Index.cshtml" />
     <None Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Investment\Manage.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\File2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

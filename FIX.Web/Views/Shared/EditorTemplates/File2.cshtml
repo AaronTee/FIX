@@ -1,0 +1,12 @@
+﻿@model HttpPostedFileBase
+
+<div class="form-group">
+    @Html.LabelFor(model => model, new { @class = "control-label col-lg-4 col-md-5" })
+    <div class="col-lg-8 col-md-7">
+        <label class="btn btn-default2" for="@(ViewData.ModelMetadata.PropertyName)">
+            @Html.TextBoxFor(model => model, new { type = "file", accept = (ViewData["accept"] ?? "application / pdf"), @class = "filestyle", data_buttonname = "btn-primary", onchange = "$('#upload-file-info-" + ViewData.ModelMetadata.PropertyName + "').html(this.files[0].name);" })
+        </label>
+        <br />
+        @Html.ValidationMessageFor(model => model)
+    </div>
+</div>

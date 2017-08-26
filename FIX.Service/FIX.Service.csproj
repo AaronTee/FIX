@@ -85,6 +85,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\AccessToken.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\AuditLog.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -123,6 +126,9 @@
     <Compile Include="Entities\Package.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Post.cs">
+      <DependentUpon>FIXEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Preauth.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -154,9 +160,6 @@
     <Compile Include="Entities\User.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entities\UserActivation.cs">
-      <DependentUpon>FIXEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entities\UserBankAccount.cs">
       <DependentUpon>FIXEntities.tt</DependentUpon>
     </Compile>
@@ -185,8 +188,10 @@
     <Compile Include="Interfaces\IInvestmentService.cs" />
     <Compile Include="Interfaces\IFinancialService.cs" />
     <Compile Include="Interfaces\IBaseService.cs" />
+    <Compile Include="Services\ArticleService.cs" />
     <Compile Include="Services\DocService.cs" />
     <Compile Include="Interfaces\IDocService.cs" />
+    <Compile Include="Interfaces\IArticleService.cs" />
     <Compile Include="Services\InvestmentService.cs" />
     <Compile Include="Interfaces\IRoleService.cs" />
     <Compile Include="Interfaces\IReportService.cs" />
@@ -195,6 +200,7 @@
     <Compile Include="Services\FinancialService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Utils\Cryptograph.cs" />
+    <Compile Include="Utils\Random.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

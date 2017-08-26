@@ -1,0 +1,243 @@
+﻿@model DashboardManagerViewModels
+
+<h1>Dashboard Manager</h1>
+
+<form id="article-form" class="form-horizontal">
+
+    <h2>Which board do you want to edit?</h2>
+    <div class="form-section">
+        <div class="form-group">
+            <input type="button" class="btn btn-submit" value="Save" id="save-post" style="float:right"/>
+            @Html.DropDownListFor(model => model.PostType, Model.PostTypeDDL)
+        </div>
+    </div>
+
+    <div class="board-section">
+
+        <div class="form-section">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-1" })
+                <div class="col-md-11">
+                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @style = "width: 100%;max-width:500px", @maxlength = 50 })
+                    @Html.ValidationMessageFor(model => model.Title)
+                </div>
+            </div>
+        </div>
+
+        <!-- Create the toolbar container -->
+        <div id="toolbar">
+            <span class="ql-formats">
+                <select class="ql-font"></select>
+                <select class="ql-size"></select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+            </span>
+            <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-script" value="sub"></button>
+                <button class="ql-script" value="super"></button>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-header" value="1"></button>
+                <button class="ql-header" value="2"></button>
+                <button class="ql-blockquote"></button>
+                <button class="ql-code-block"></button>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <button class="ql-indent" value="-1"></button>
+                <button class="ql-indent" value="+1"></button>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-direction" value="rtl"></button>
+                <select class="ql-align"></select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-link"></button>
+                <button class="ql-image"></button>
+                <button class="ql-video"></button>
+            </span>
+        </div>
+
+        @Html.HiddenFor(x => x.Content)
+        <!-- Create the editor container -->
+        <div id="editor"></div>
+    </div>
+</form>
+
+@section scripts{
+
+    <style>
+
+        .container--main{
+            height: auto;
+        }
+
+        #toolbar{
+            position: relative;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 50px;
+            z-index: 2;
+            background-color: white;
+        }
+
+        #editor {
+            min-height: 350px;
+        }
+
+        .board-section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+    </style>
+
+    <script src="@Url.Content("~/Scripts/app/lib/ext/image-resize.min.js")" type="text/javascript"></script>
+
+    <script>
+        var editor,
+            form = $('#article-form');
+
+        $(function () {
+            if (Quill) {
+                //Quill.register('modules/imageResize', ImageResize);
+                editor = new Quill('#editor', {
+                    modules: {
+                        toolbar: '#toolbar',
+                        //imageResize: {},
+                    },
+                    theme: 'snow',
+                    placeholder: 'Start your writing...',
+                    bounds: '.body-content'
+                });
+                Quill.prototype.getHtml = function () {
+                    return this.container.querySelector('.ql-editor').innerHTML;
+                };
+
+                // quill editor add image handler
+                editor.getModule('toolbar').addHandler('image', function () {
+                    selectLocalImage();
+                });
+            }
+
+            $("#toolbar").insertAfter(".container--main .fixed-wrapper");
+
+            $('#PostType').trigger('change');
+        });
+
+       /**
+       * Step1. select local image
+       */
+        function selectLocalImage() {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.click();
+            // Listen upload local image and save to server
+            input.onchange = function () {
+                var file = input.files[0];
+                // file type is only image.
+                if (/^image\//.test(file.type)) {
+                    saveToServer(file);
+                }
+                else {
+                    console.warn('You could only upload images.');
+                }
+            };
+        }
+
+        /**
+         * Step2. save to server
+         *
+        */
+        function saveToServer(file) {
+            var fd = new FormData();
+            fd.append('image', file);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', GetPath('Image/UploadEditorImage'), true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // this is callback data: url
+                    var url = JSON.parse(xhr.responseText).data;
+                    insertToEditor(url);
+                }
+            };
+            xhr.send(fd);
+        }
+
+        /**
+         * Step3. insert image url to rich editor.
+        */
+        function insertToEditor(url) {
+            // push image url to rich editor.
+            var range = editor.getSelection();
+            editor.insertEmbed(range.index, 'image', url);
+        }
+        
+
+
+        $('#PostType').change(function () {
+            //load html into editor
+            $('#Title').empty();
+            editor.setText("");
+
+            $.ajax({
+                url: GetPath('DashboardManager/GetPostContent'),
+                type: 'POST',
+                data: { postType: $('#PostType').val() },
+                success: function (data) {
+                    if (data.status == '@((int)DBConstant.EJState.Success)') {
+                        editor.root.innerHTML = data.content;
+                        $('#Title').val(data.title);
+                    }
+                    else {
+                        showAlert("Failed to load post content. Please check log for detail.", "danger");
+                    }
+                },
+                complete: function () {
+
+                }
+            })
+        });
+
+        $('#save-post').click(function () {
+            //post content
+            var $this = $(this);
+
+            $this.addClass('disabled');
+
+            $('#Content').val(editor.getHtml());
+            var formData = $('#article-form').serialize();
+
+            $.ajax({
+                url: GetPath('DashboardManager/SetPostContent'),
+                type: 'POST',
+                data: formData,
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == '@((int)DBConstant.EJState.Success)') {
+                        showAlert("Successfully saved post content", "success");
+                    }
+                    else
+                    {
+                        showAlert("Failed to save post content. Please check log for detail.", "danger");
+                    }
+                },
+                complete: function () {
+                    $this.removeClass('disabled');
+                }
+            })
+        });
+
+    </script>
+
+            
+}

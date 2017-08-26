@@ -41,7 +41,7 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Password")]
-        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,32}$", ErrorMessage = "Password must be a minimum of 8 characters and contain at least letter, one capital letter and a number.")]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])\\S{8,}$", ErrorMessage = "Password must be a minimum of 8 characters and contain at least one capital letter.")]
         public string Password { get; set; }
 
         [Required]

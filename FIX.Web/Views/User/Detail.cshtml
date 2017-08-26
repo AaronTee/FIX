@@ -13,12 +13,11 @@
                 <div class="col-lg-6">
                     <div class="form-header">User Profile</div>
                     <div class="form-body no-padding-side no-padding-top">
-                        @Html.EditorFor(x => x.RoleName, "Display")
                         @Html.EditorFor(x => x.Username, "Display")
-                        @Html.EditorFor(x => x.Gender, "Display")
-                        @Html.EditorFor(x => x.Name, "Display")
-                        @Html.EditorFor(x => x.ICNumber, "Display")
                         @Html.EditorFor(x => x.Email, "Display")
+                        @Html.EditorFor(x => x.Name, "Display")
+                        @Html.EditorFor(x => x.Gender, "Display")
+                        @Html.EditorFor(x => x.ICNumber, "Display")
                         @Html.EditorFor(x => x.PhoneNo, "Display")
                         @Html.EditorFor(x => x.Address, "Display")
                         @Html.EditorFor(x => x.State, "Display")
@@ -40,7 +39,7 @@
                         @Html.EditorFor(x => x.ReferralName, "Display")
                     </div>
                     <div class="form-header">Credit Wallet</div>
-                    <div class="form-body">
+                    <div class="form-body no-padding-side no-padding-top">
                         @Html.EditorFor(x => x.CreditBalance, "Display")
                     </div>
                 </div>

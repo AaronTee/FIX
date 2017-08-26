@@ -24,6 +24,9 @@
                 @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = Resources.Global.Password })
             </div>
             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            <div style="text-align: right">
+                <a href="@(Url.Action("ForgotPassword"))" style="color:#ccc">Forgot Password?</a>
+            </div>
         </li>
         <li>
             @Html.CheckBoxFor(m => m.RememberMe) @Html.LabelFor(m => m.RememberMe, new { @style="color:white" })
@@ -38,6 +41,7 @@
             <a href="@(Url.Action("Register"))" style="color:#0094ff">or sign up here</a>
         </li>
     </ul>
+    <div class="spacing"></div>
     }
 </div>
 

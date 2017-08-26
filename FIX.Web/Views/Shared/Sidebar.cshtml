@@ -37,6 +37,9 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-menu">
+                        <a href="@Url.Action("Index", "DashboardManager")">Dashboard Manager</a>
+                    </li>
                 }
 
                 @if (User.IsInRole(DBConstant.DBCRole.User))
@@ -44,6 +47,10 @@
                     <li class="nav-menu">
                         <i class="fa fa-home fa-1x nav-menu-icon"></i>
                         <a href="@Url.Action("Index", "Home")">Home</a>
+                    </li>
+                    <li class="nav-menu">
+                        <i class="fa fa-user-circle fa-1x nav-menu-icon"></i>
+                        <a href="@Url.Action("Register", "Account")">Member Registration</a>
                     </li>
                     <li class="nav-menu">
                         <i class="fa fa-line-chart fa-1x nav-menu-icon"></i>
@@ -91,7 +98,7 @@
             </span>
             <ul>
                 <li>
-                    @Html.ActionLink("Manage", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-sidebar-primary" })
+                    @Html.ActionLink("Manage", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-sidebar-primary" })
                 </li>
                 <li>
                     <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-sidebar-primary btn-logout">Logout</a>

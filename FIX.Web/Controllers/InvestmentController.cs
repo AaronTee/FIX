@@ -92,7 +92,7 @@ namespace FIX.Web.Controllers
                     {
                         UserPackageId = userPackage.UserPackageId,
                         EffectiveDate = DateTime.UtcNow.AddMonths(i + 1).AddDays(1),
-                        Amount = userPackage.TotalAmount * package.Rate,
+                        Amount = userPackage.TotalAmount * userPackage.InterestRate,
                         StatusId = (int)EStatus.Pending,
                     };
 
@@ -117,7 +117,7 @@ namespace FIX.Web.Controllers
                             Generation = i,
                             Rate = Rate,
                             ReturnDate = DateTime.UtcNow.AddMonths(y + 1).AddDays(1),
-                            BonusAmount = userPackage.TotalAmount * package.Rate * Rate,
+                            BonusAmount = userPackage.TotalAmount * userPackage.InterestRate * Rate,
                             StatusId = (int)EStatus.Pending
                         };
 
@@ -125,6 +125,15 @@ namespace FIX.Web.Controllers
                     }
                     referralUser = _userService.GetReferralBy(referralUser.UserId);
                     Rate -= MatchingBonusSetting.DecreaseRate;
+                }
+
+                //Activate user from pending if not already.
+                var newUser =  _userService.GetUserBy(userPackage.UserId);
+                if (newUser.StatusId == (int)EStatus.Pending)
+                {
+                    newUser.StatusId = (int)EStatus.Active;
+                    newUser.ModifiedTimestamp = DateTime.UtcNow;
+                    _userService.UpdateUser(newUser);
                 }
 
                 if (_investmentService.SaveChange(User.Identity.GetUserId<int>()))
@@ -150,6 +159,42 @@ namespace FIX.Web.Controllers
             return View();
         }
 
+        public bool NewPackageSubscription(InvestmentCreateModel model, HttpPostedFileBase ReceiptFile, int userId)
+        {
+            try
+            {
+                if (ReceiptFile.IsImage())
+                {
+                    string fileExt = Path.GetExtension(ReceiptFile.FileName);
+                    string newFileName = (DBConstant.UploadReceiptPrefix + DateTime.UtcNow.ConvertToPlainDateTimeString() + Guid.NewGuid().ToString() + fileExt).ToLower();
+                    new ImageController().Upload(ConfigurationManager.AppSettings["UploadReceiptPhotoPath"], ReceiptFile, newFileName);
+
+                    var package = _investmentService.GetEntitledPackage(model.Amount);
+
+                    UserPackage up = new UserPackage
+                    {
+                        PackageId = package.PackageId,
+                        UserId = userId,
+                        TotalAmount = model.Amount,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        ReceiptBank = model.Bank,
+                        ReceiptImagePath = newFileName,
+                        ReceiptNo = model.ReferenceNo ?? "",
+                        InterestRate = package.Rate,
+                        StatusId = (int)EStatus.Pending,
+                    };
+
+                    _investmentService.InsertUserPackage(up);
+                    return _investmentService.SaveChange(userId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+            return false;
+        }
+
         [HttpPost]
         public ActionResult Create(InvestmentCreateModel model, HttpPostedFileBase ReceiptFile)
         {
@@ -166,21 +211,14 @@ namespace FIX.Web.Controllers
                 {
                     var package = _investmentService.GetEntitledPackage(model.Amount);
 
-                    UserPackage up = new UserPackage
+                    if (NewPackageSubscription(model, ReceiptFile, User.Identity.GetUserId<int>()))
                     {
-                        PackageId = package.PackageId,
-                        UserId = User.Identity.GetUserId<int>(),
-                        TotalAmount = model.Amount,
-                        CreatedTimestamp = DateTime.UtcNow,
-                        ReceiptBank = model.Bank,
-                        ReceiptImagePath = newFileName,
-                        ReceiptNo = model.ReferenceNo,
-                        StatusId = (int)EStatus.Pending,
-                    };
-
-                    _investmentService.InsertUserPackage(up);
-                    _investmentService.SaveChange(User.Identity.GetUserId<int>());
-                    Success("Added new package " + package.Description + " and pending for approval.");
+                        Success("Added new package " + package.Description + " and pending for approval.");
+                    }
+                    else
+                    {
+                        Warning("Something wrong while we add your new package.\n If problem persist please contact our customer service.", false);
+                    }
                 }
                 else
                 {
@@ -189,7 +227,7 @@ namespace FIX.Web.Controllers
             }
             catch (Exception ex)
             {
-                Danger("Something wrong while we process your request, please try again later.\n If problem persist please contact our customer service.", true, true);
+                Danger("Something wrong while we process your request, please try again later.\n If problem persist please contact our customer service.", false);
                 Log.Error(ex.Message, ex);
             }
 
@@ -207,7 +245,7 @@ namespace FIX.Web.Controllers
                 StartDate = (x.EffectiveDate.HasValue) ? x.EffectiveDate.Value.ToUserLocalDate(tz) : "-",
                 EndDate = (x.EffectiveDate.HasValue) ? x.EffectiveDate.Value.AddMonths(DBCPackageLifetime.Month).ToUserLocalDate(tz) : "-",
                 InvestedAmount = x.TotalAmount,
-                ReturnRate = x.Package.Rate,
+                ReturnRate = x.InterestRate,
                 Status = x.Status.Description
             });
 
@@ -246,19 +284,25 @@ namespace FIX.Web.Controllers
                 Package = x.Package.Description,
                 RequestDate = x.CreatedTimestamp.ToUserLocalDate(tz),
                 Username = x.User.Username,
-                IsNewUser = x.User.IsFirstTimeLogIn.Value ? "Yes" : "No",
+                IsNewUser = (x.User.StatusId == (int)EStatus.Pending) ? "Yes" : "No",
                 InvestedAmount = x.TotalAmount,
-                ReturnRate = x.Package.Rate,
+                ReturnRate = x.InterestRate,
                 Status = x.Status.Description,
+                ImageLink = new List<ActionLink>
+                {
+                    new ActionLink()
+                    {
+                        Name = "Image",
+                        Url = Url.Action("GetUploadReceipt", "Image", new {
+                            relativePath = ConfigurationManager.AppSettings[""],
+                            imageName = x.ReceiptImagePath
+                        }),
+                        ClassName = "image-previewable"
+                    },
+                },
                 ActionTags = new Func<List<ActionTag>>(() =>
                 {
                     List<ActionTag> links = new List<ActionTag>();
-
-                    links.Add(new ActionTag()
-                    {
-                        Name = "Image",
-                        Action = "image",
-                    });
 
                     links.Add(new ActionTag()
                     {
@@ -294,7 +338,7 @@ namespace FIX.Web.Controllers
                 {
                     UserPackageId = x.UserPackageId,
                     Date = x.EffectiveDate.ToUserLocalDate(tz),
-                    ReturnRate = x.UserPackage.Package.Rate,
+                    ReturnRate = x.UserPackage.InterestRate,
                     Amount = x.Amount,
                     Status = x.Status.Description
                 });
@@ -338,7 +382,7 @@ namespace FIX.Web.Controllers
                 var package = _investmentService.GetEntitledPackage(amount.Value);
                 return Json(new
                 {
-                    Rate = (package.Rate * 100) + "%",
+                    Rate = (package.Rate * 100).toCurrencyFormat() + "%",
                     Description = package.Description
                 }, JsonRequestBehavior.AllowGet);
             }

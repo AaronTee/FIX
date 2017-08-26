@@ -21,9 +21,9 @@ namespace FIX.Service.Entities
             this.Preauth = new HashSet<Preauth>();
             this.ReturnInterest = new HashSet<ReturnInterest>();
             this.User = new HashSet<User>();
-            this.UserActivation = new HashSet<UserActivation>();
-            this.UserPackage = new HashSet<UserPackage>();
             this.Withdrawal = new HashSet<Withdrawal>();
+            this.UserPackage = new HashSet<UserPackage>();
+            this.AccessToken = new HashSet<AccessToken>();
         }
     
         public int StatusId { get; set; }
@@ -38,10 +38,10 @@ namespace FIX.Service.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserActivation> UserActivation { get; set; }
+        public virtual ICollection<Withdrawal> Withdrawal { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPackage> UserPackage { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Withdrawal> Withdrawal { get; set; }
+        public virtual ICollection<AccessToken> AccessToken { get; set; }
     }
 }

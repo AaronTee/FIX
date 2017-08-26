@@ -23,11 +23,11 @@
             <div class="col-md-6">
                 <div class="form-header">Fill in your banking detail</div>
                 <div class="form-body">
-                    @Html.EditorFor(x => x.UsePrimary, "Checkbox", new { Label = "Use Primary" })
-                    @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL, @class = "t-cb", @readonly = true })
-                    @Html.EditorFor(x => x.BankAccountHolder, "Text", new { @class = "t-cb", @readonly = true })
-                    @Html.EditorFor(x => x.BankAccountNo, "Text", new { @class = "t-cb", @readonly = true })
-                    @Html.EditorFor(x => x.BankBranch, "Text", new { @class = "t-cb", @readonly = true })
+                    @*@Html.EditorFor(x => x.UsePrimary, "Checkbox", new { Label = "Use Primary" })*@
+                    @Html.EditorFor(x => x.BankId, "Dropdown", new { DDL = Model.BankDDL, @class = "t-cb" })
+                    @Html.EditorFor(x => x.BankAccountHolder, "Text", new { @class = "t-cb" })
+                    @Html.EditorFor(x => x.BankAccountNo, "Text", new { @class = "t-cb" })
+                    @Html.EditorFor(x => x.BankBranch, "Text", new { @class = "t-cb" })
                 </div>
             </div>
         </div>
@@ -41,12 +41,12 @@
 
 @section scripts{
     <script>
-        $(function () {
-            $('#UsePrimary').click(function () {
-                $('.t-cb').removeAttr('readonly');
-                if($(this).is(":checked")) $('.t-cb').attr("readonly", "readonly");
-            });
-        });
+        //$(function () {
+        //    $('#UsePrimary').click(function () {
+        //        $('.t-cb').removeAttr('readonly');
+        //        if($(this).is(":checked")) $('.t-cb').attr("readonly", "readonly");
+        //    });
+        //});
         
     </script>
 

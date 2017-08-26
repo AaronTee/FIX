@@ -13,22 +13,30 @@ namespace FIX.Web.Controllers
     [Authorize]
     public class ImageController : BaseController
     {
-        public ActionResult Image(string ImageName)
+        public ActionResult GetUploadReceipt(string imageName)
         {
-            string photorootpath = ConfigurationManager.AppSettings["PhotoUploadPath"];
-            if (String.IsNullOrEmpty(photorootpath))
-                throw new Exception("PhotoRootPath is not define in Web Config"); //
-            string photofullpath = photorootpath + "\\" + ImageName.Trim();
-            return base.File(photofullpath, "image/jpeg", ImageName);
+            string extName = Path.GetExtension(imageName);
+            string relativePath = Path.Combine(ConfigurationManager.AppSettings["UploadReceiptPhotoPath"], imageName);
+            string fullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+            return base.File(fullFilePath, "image/" + extName, imageName);
         }
 
-        public ActionResult ImageUploadReceipt(string ImageName)
+        public ActionResult GetEditorImage(string image)
         {
-            string photorootpath = ConfigurationManager.AppSettings["UploadReceiptPhotoPath"];
-            if (String.IsNullOrEmpty(photorootpath))
-                throw new Exception("PhotoRootPath is not define in Web Config"); //
-            string photofullpath = photorootpath + "\\" + ImageName.Trim();
-            return base.File(photofullpath, "image/jpeg", ImageName);
+            string extName = Path.GetExtension(image);
+            string relativePath = Path.Combine(ConfigurationManager.AppSettings["EditorImagesPath"], image);
+            string fullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
+            return base.File(fullFilePath, "image/" + extName, image);
+        }
+
+        //Upload from quill image handler
+        public JsonResult UploadEditorImage(HttpPostedFileWrapper image)
+        {
+            string relativePath = ConfigurationManager.AppSettings["EditorImagesPath"];
+
+            Upload(relativePath, image, image.FileName);
+
+            return Json( new { data = Url.Action("GetEditorImage", "Image", new { image = image.FileName }) }, JsonRequestBehavior.AllowGet);
         }
 
         internal bool Upload(string relativePath, HttpPostedFileBase file, string saveAsName)

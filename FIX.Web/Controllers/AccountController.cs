@@ -21,6 +21,7 @@ using System.Configuration;
 using static FIX.Service.DBConstant;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using FIX.Web.Utils;
 
 namespace FIX.Web.Controllers
 {
@@ -29,11 +30,13 @@ namespace FIX.Web.Controllers
     {
         private IUserService _userService;
         private IBankService _bankService;
+        private IInvestmentService _investmentService;
 
-        public AccountController(IUserService userService, IBankService bankService)
+        public AccountController(IUserService userService, IBankService bankService, IInvestmentService investmentService = null)
         {
             _userService = userService;
             _bankService = bankService;
+            _investmentService = investmentService;
         }
 
         [AllowAnonymous]
@@ -57,6 +60,106 @@ namespace FIX.Web.Controllers
             return View(model);
         }
 
+        public void CreateNewAccount(UserViewModel model, string ipaddress = "")
+        {
+            try
+            {
+                User user;
+
+                if (model.RoleId == (int)DBCRole.Id.Admin)
+                {
+                    user = new User()
+                    {
+                        Username = model.Username,
+                        Email = model.Email ?? "-",
+                        Password = model.Password,
+                        SecurityPassword = "",
+                        IP = ipaddress,
+                        HasAcceptedTerms = true,
+                        HasEmailVerified = true,
+                        IsFirstTimeLogIn = false,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
+                        StatusId = (int)DBConstant.EStatus.Active,
+                        UserProfile = new UserProfile
+                        {
+                            ReferralId = 0,
+                            Name = model.Username,
+                            ICNumber = "",
+                            Address = "",
+                            City = "",
+                            State = "",
+                            PostCode = "",
+                            Country = "",
+                            Gender = DBCGender.Other,
+                            PhoneNo = "",
+                            RoleId = (int)DBCRole.Id.Admin,
+                            CreatedTimestamp = DateTime.UtcNow,
+                        }
+                    };
+                }
+                else
+                {
+                    user = new User()
+                    {
+                        Username = model.Username,
+                        Email = model.Email,
+                        Password = model.Password,
+                        SecurityPassword = model.SecurityPassword,
+                        IP = ipaddress,
+                        HasAcceptedTerms = true,
+                        HasEmailVerified = false,
+                        IsFirstTimeLogIn = true,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
+                        StatusId = (int)DBConstant.EStatus.Pending,
+                        UserProfile = new UserProfile
+                        {
+                            ReferralId = model.ReferralId,
+                            Name = model.Name,
+                            ICNumber = model.ICNumber,
+                            Address = model.Address,
+                            City = model.City,
+                            State = model.State,
+                            PostCode = model.PostCode,
+                            Country = model.Country,
+                            Gender = model.Gender,
+                            PhoneNo = model.PhoneNo,
+                            RoleId = _userService.GetAllRoles().Where(x => x.RoleId == (int)DBCRole.Id.User).FirstOrDefault().RoleId,
+                            CreatedTimestamp = DateTime.UtcNow,
+                        },
+                        UserBankAccount = new List<UserBankAccount>
+                        {
+                            new UserBankAccount()
+                            {
+                                BankAccountHolder = model.BankAccountHolder,
+                                BankAccountNo = model.BankAccountNo,
+                                BankBranch = model.BankBranch,
+                                CreatedTimestamp = DateTime.UtcNow,
+                                IsPrimary = true,
+                                BankId = model.BankId
+                            }
+                        },
+                        UserWallet = new List<UserWallet>
+                        {
+                            new UserWallet()
+                            {
+                                WalletId = Guid.NewGuid(),
+                                Currency = DBCCurrency.USD,
+                                Balance = decimal.Zero,
+                            }
+                        }
+                    };
+                }
+
+                _userService.InsertUser(user);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+        }
+
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
         [HttpPost]
@@ -64,66 +167,13 @@ namespace FIX.Web.Controllers
         {
             try
             {
-                User user = new User()
-                {
-                    Username = model.Username,
-                    Email = model.Email,
-                    Password = model.Password,
-                    SecurityPassword = model.SecurityPassword,
-                    IP = Request.UserHostAddress,
-                    HasAcceptedTerms = false,
-                    HasEmailVerified = false,
-                    IsFirstTimeLogIn = false,
-                    CreatedTimestamp = DateTime.UtcNow,
-                    TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
-                    StatusId = (int)DBConstant.EStatus.Pending,
-                    UserProfile = new UserProfile
-                    {
-                        ReferralId = model.ReferralId,
-                        Name = model.Name,
-                        ICNumber = model.ICNumber,
-                        Address = model.Address,
-                        City = model.City,
-                        State = model.State,
-                        PostCode = model.PostCode,
-                        Country = model.Country,
-                        Gender = model.Gender,
-                        PhoneNo = model.PhoneNo,
-                        RoleId = _userService.GetAllRoles().Where(x => x.RoleId == (int)DBCRole.Id.User).FirstOrDefault().RoleId,
-                        CreatedTimestamp = DateTime.UtcNow,
-                    },
-                    UserBankAccount = new List<UserBankAccount>
-                    {
-                        new UserBankAccount()
-                        {
-                            BankAccountHolder = model.BankAccountHolder,
-                            BankAccountNo = model.BankAccountNo,
-                            BankBranch = model.BankBranch,
-                            CreatedTimestamp = DateTime.UtcNow,
-                            IsPrimary = true,
-                            BankId = model.BankId
-                        }
-                    },
-                    UserWallet = new List<UserWallet>
-                    {
-                        new UserWallet()
-                        {
-                            WalletId = Guid.NewGuid(),
-                            Currency = DBCCurrency.USD,
-                            Balance = decimal.Zero,
-                        }
-                    }
-                };
+                CreateNewAccount(model, Request.UserHostAddress);
 
-                _userService.InsertUser(user);
                 var success = _userService.SaveChanges(User.Identity.GetUserId<int>());
-
                 if (!success) return View("Error");
 
-                var curUser = _userService.GetUserBy(user.Username);
-
-                TempData["ActivationEmailUserId"] = curUser.UserId;
-                return RedirectToAction("ActivationEmail");
+                var curUser = _userService.GetUserBy(model.Username);
+                return VerifyEmail(curUser.UserId);
             }
             catch (Exception ex)
             {
@@ -134,27 +184,27 @@ namespace FIX.Web.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult ActivationEmail()
+        public ActionResult VerifyEmail()
         {
             try
             {
-                var uid = (int)TempData["ActivationEmailUserId"];
-
+                int uid = 0;
+                Int32.TryParse(TempData["ActivationEmailUserId"]?.ToString(), out uid);
                 if (uid == 0)
                 {
                     return HttpNotFound();
                 }
 
-                SendActivationEmail(uid);
-
                 RequiredActionModel _raModel = new RequiredActionModel
                 {
-                    Title = "Your account need to be verified by your email.",
+                    Title = "Email pending verification",
                     Controller = "Account",
-                    Action = "Login",
-                    Content = "Please check your email to activate your account.",
-                    FormMethod = FormMethod.Get,
-                    SubmitButtonDescription = "Login",
+                    Action = "VerifyEmail",
+                    Content = "Your email has not been verified yet, please check your registered email to verify.",
+                    FormMethod = FormMethod.Post,
+                    SubmitButtonDescription = "Resend email verification",
+                    Data = uid,
+                    DataName = "uid"
                 };
 
                 return View("RequiredAction", _raModel);
@@ -167,40 +217,89 @@ namespace FIX.Web.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Activation()
+        [HttpPost]
+        public ActionResult VerifyEmail(int uid)
+        {
+            var reqUser = _userService.GetUserBy(uid);
+
+            //Check once more if account is verified
+            //Probably someone abused here. [Check Target: User without verified yet]
+            if (reqUser.HasEmailVerified)
+            {
+                RequiredActionModel _raModel2 = new RequiredActionModel
+                {
+                    Title = "This user's email has already verified.",
+                    Controller = "Account",
+                    Action = "Login",
+                    Content = "",
+                    FormMethod = FormMethod.Get,
+                    SubmitButtonDescription = "Back",
+                };
+                return View("RequiredAction", _raModel2);
+            }
+
+            SendActivationEmail(uid);
+
+            /* For registration through logged in user portal */
+            if (User.Identity.IsAuthenticated)
+            {
+                Success("Successfully registered user " + reqUser.Username + ". Verification email has been sent to account email address (" + reqUser.Email + ").", false);
+                return RedirectToAction("Index", "Home");
+            }
+
+            RequiredActionModel _raModel = new RequiredActionModel
+            {
+                Title = "Email verification sent",
+                Controller = "Account",
+                Action = "Login",
+                Content = "Email verification sent, Please check your email '" + reqUser.Email + "' to verify your email address.",
+                FormMethod = FormMethod.Get,
+                SubmitButtonDescription = "Login",
+            };
+
+            return View("RequiredAction", _raModel);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Activation(string token)
         {
             try
             {
-                var encrypedActivationCode = RouteData.Values["id"]?.ToString();
-                if (!encrypedActivationCode.IsNullOrEmpty())
+                if (!token.IsNullOrEmpty())
                 {
-                    if (new Regex("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$").IsMatch(encrypedActivationCode))
+                    //check if activation is exist
+                    if (_userService.IsValidToken(token, EAccessTokenPurpose.VerifyEmail) != null)
                     {
-                        var decryptedActivationCode = EncryptionHelper.Base64Decode(encrypedActivationCode);
-                        Guid activationCode = Guid.ParseExact(decryptedActivationCode, "N");
+                        _userService.ActivateUserAccount(token);
 
-                        //check if activation is exist
-                        if (_userService.IsValidActivationCode(activationCode))
+                        RequiredActionModel _raModel = new RequiredActionModel
                         {
-                            _userService.ValidateActivationCode(activationCode);
-                            return RedirectToAction("Setup");
-                        }
-                        else
-                        {
-                            //RequiredActionModel _raModel = new RequiredActionModel
-                            //{
-                            //    Controller = "Account",
-                            //    Action = "Login",
-                            //    FormMethod = FormMethod.Get,
-                            //    SubmitButtonDescription = "Login",
-                            //};
+                            Controller = "Account",
+                            Action = "Login",
+                            FormMethod = FormMethod.Get,
+                            SubmitButtonDescription = "Login to your account",
+                        };
 
-                            //_raModel.Title = "Invalid Verification Request";
-                            //_raModel.Content = "Verification link or code is not valid, either has been removed or expired. Please log in to your account to request another email verification code.";
+                        _raModel.Title = "Email successfully verified.";
 
-                            //return View("RequiredAction", _raModel);
-                        }
+                        return View("RequiredAction", _raModel);
                     }
+                    else
+                    {
+                        //RequiredActionModel _raModel = new RequiredActionModel
+                        //{
+                        //    Controller = "Account",
+                        //    Action = "Login",
+                        //    FormMethod = FormMethod.Get,
+                        //    SubmitButtonDescription = "Login",
+                        //};
+
+                        //_raModel.Title = "Invalid Verification Request";
+                        //_raModel.Content = "Verification link or code is not valid, either has been removed or expired. Please log in to your account to request another email verification code.";
+
+                        //return View("RequiredAction", _raModel);
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -213,21 +312,65 @@ namespace FIX.Web.Controllers
 
         public ActionResult Setup()
         {
-            if (!User.Identity.GetUserIsFirstTimeLogin()) return new HttpNotFoundResult();
-            SetupViewModel model = new SetupViewModel();
+            //Check if user submitted or not.
+            var curUser = _userService.GetUserBy(User.Identity.GetUserId<int>());
+
+            if (!curUser.IsFirstTimeLogIn.Value) return new HttpNotFoundResult();
+            SetupViewModel model = new SetupViewModel
+            {
+                PackageList = _investmentService.GetAllPackage().ToList().Select(x => new SetupViewModel.PackageInfo
+                {
+                    PackageDescription = x.Description,
+                    PackageThreshold = x.Threshold.toCurrencyFormat(),
+                    ReturnRate = (x.Rate * 100).ToString("#0.00") + "%",
+                    styleClass = x.Description
+                }).ToList()
+            };
+
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Setup(SetupViewModel model)
+        public ActionResult Setup(SetupViewModel model, HttpPostedFileBase ReceiptFile)
         {
-            return View("Setup");
+            var currentUser = _userService.GetUserBy(User.Identity.GetUserId<int>());
+
+            if (ModelState.IsValid)
+            {
+                InvestmentCreateModel investmentCreateModel = new InvestmentCreateModel
+                {
+                    Bank = model.Bank,
+                    Date = model.Date,
+                    Amount = model.Amount,
+                    ReceiptFile = ReceiptFile,
+                    ReferenceNo = model.ReferenceNo
+                };
+
+                var isSuccess = new InvestmentController(_investmentService, _userService).NewPackageSubscription(investmentCreateModel, ReceiptFile, currentUser.UserId);
+                if (isSuccess)
+                {
+                    currentUser.IsFirstTimeLogIn = false;
+                    _userService.UpdateUser(currentUser);
+                    _userService.SaveChanges(User.Identity.GetUserId<int>());
+
+                    return RedirectToAction("SetupComplete");
+                }
+                else return View("Error");
+            }
+
+            model.PackageList = _investmentService.GetAllPackage().ToList().Select(x => new SetupViewModel.PackageInfo
+            {
+                PackageDescription = x.Description,
+                PackageThreshold = x.Threshold.toCurrencyFormat(),
+                ReturnRate = (x.Rate * 100).ToString("#0.00") + "%",
+                styleClass = x.Description
+            }).ToList();
+            
+            return View(model);
         }
 
         public ActionResult SetupComplete()
         {
-            Response.AddHeader("REFRESH", "5;URL=/Account/Login");
-
             return View();
         }
 
@@ -235,9 +378,29 @@ namespace FIX.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                return RedirectToAction("Index", "Home");
+                if (User.Identity.IsAuthenticated)
+                {
+                    var userStatusId = _userService.GetUserBy(User.Identity.GetUserId<int>()).StatusId;
+                    if (User.Identity.GetUserHasAcceptedTC() && userStatusId == (int)EStatus.Active)
+                    {
+                        if (User.IsInRole(DBCRole.Admin))
+                        {
+                            return RedirectToAction("Index", "User");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    return LogOff();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return LogOff();
             }
 
             ViewBag.ReturnUrl = returnUrl;
@@ -269,9 +432,10 @@ namespace FIX.Web.Controllers
                     if (!currentUser.HasEmailVerified)
                     {
                         TempData["ActivationEmailUserId"] = currentUser.UserId;
-                        return RedirectToAction("ActivationEmail");
+                        return RedirectToAction("VerifyEmail");
                     }
 
+                    //Add Claims
                     var ident = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.NameIdentifier, currentUser.UserId.ToString()),
                     new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
@@ -288,20 +452,28 @@ namespace FIX.Web.Controllers
                         IsPersistent = model.RememberMe
                     }, ident);
 
-                    //if (!returnUrl.IsNullOrEmpty())
-                    //{
-                    //    return Redirect(returnUrl);
-                    //}
-                    //else
-                    //{
-                    //    return (userRole.Description == DBConstant.DBCRole.Admin) ? RedirectToAction("Index", "User") : RedirectToAction("Index", "Home");
-                    //}
-
                     var isFirstTimeLogin = (currentUser.IsFirstTimeLogIn != null) ? currentUser.IsFirstTimeLogIn.Value : false;
 
+                    //Verify is new user
                     if (isFirstTimeLogin)
                     {
                         return RedirectToAction("Setup");
+                    }
+
+                    //Verify if has pending application
+                    if(currentUser.StatusId == (int)EStatus.Pending)
+                    {
+                        RequiredActionModel _raModel = new RequiredActionModel
+                        {
+                            Title = "Account pending review",
+                            Controller = "Account",
+                            Action = "Login",
+                            Content = "Seems like your application has been submitted or existed in our system and is pending to review. Please wait while we confirm your application.",
+                            FormMethod = FormMethod.Get,
+                            SubmitButtonDescription = "Back To Login",
+                        };
+
+                        return View("RequiredAction", _raModel);
                     }
 
                     return (userRole.Description == DBConstant.DBCRole.Admin) ? RedirectToAction("Index", "User") : RedirectToAction("Index", "Home");
@@ -357,6 +529,132 @@ namespace FIX.Web.Controllers
             return JResponse.success;
         }
 
+        [AllowAnonymous]
+        public ActionResult ForgotPassword()
+        {
+            ForgotPasswordViewModel model = new ForgotPasswordViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ForgotPassword(ForgotPasswordViewModel model)
+        {
+            try
+            {
+                //Get user by email
+                if (ModelState.IsValid)
+                {
+                    var reqUser = _userService.GetUserByEmail(model.Email);
+
+                    if (reqUser != null)
+                    {
+                        var token = "rs?token=" + _userService.CreateNewToken(reqUser, EAccessTokenPurpose.ResetPassword);
+                        string body = "Hi " + reqUser.Username + ",";
+                        body += "<br /><br />Please click the following link to reset your password, do not proceed if this action is not performed by you.";
+                        body += "<br /><a href = '" + string.Format("{0}://{1}/Account/ResetPassword/{2}", Request.Url.Scheme, Request.Url.Authority, token) + "'>Click here to activate your account.</a>";
+                        body += "<br /><br />*This is an automatic generated mail, please do not reply.";
+
+                        var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");
+                        Emailer.Send(body, "FIX Account Activation", mailaddress, reqUser.Email);
+                    }
+
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+            
+            return View("Error");
+        }
+
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string token)
+        {
+            if (!token.IsNullOrEmpty())
+            {
+                if (_userService.IsValidToken(token, EAccessTokenPurpose.ResetPassword) != null)
+                {
+                    ResetPasswordViewModel model = new ResetPasswordViewModel
+                    {
+                        Token = RouteData.Values["id"]?.ToString(),
+                    };
+                    return View(model);
+                }
+            }
+
+            return new HttpNotFoundResult();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult ResetPassword(ResetPasswordViewModel model)
+        {
+            //add password reset model here. add password field for new password.
+            try
+            {
+                if (ModelState.IsValid) {
+
+                    if (!model.Token.IsNullOrEmpty())
+                    {
+                        //check if activation is exist
+                        if (_userService.IsValidToken(model.Token, EAccessTokenPurpose.ResetPassword) != null)
+                        {
+                            _userService.ResetPassword(model.Token, model.Password);
+
+                            RequiredActionModel _raModel = new RequiredActionModel
+                            {
+                                Controller = "Account",
+                                Action = "Login",
+                                FormMethod = FormMethod.Get,
+                                SubmitButtonDescription = "Login to your account",
+                            };
+
+                            _raModel.Title = "Your password has been reset.";
+
+                            return RedirectToAction("ResetPasswordConfirmation");
+                        }
+                    }
+                }
+                else
+                {
+                    return View("ResetPassword", new
+                    {
+                        id = model.Token
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                return new HttpStatusCodeResult(500);
+            }
+
+            return new HttpNotFoundResult();
+        }
+
+        [AllowAnonymous]
+        public ActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        //public ActionResult Manage()
+        //{
+        //    var curUser = _userService.GetUserBy(User.Identity.GetUserId<int>());
+
+        //    //_userService.ResetPassword(curUser.UserId,)
+
+        //}
+
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -395,56 +693,23 @@ namespace FIX.Web.Controllers
         }
 
 
-        public void SendActivationEmail(int? uid)
+        public void SendActivationEmail(int uid)
         {
-            if (uid == 0 || uid == null)
+            if (uid == 0)
             {
-                if (User.Identity.IsAuthenticated)
-                {
-                    uid = _userService.GetUserBy(User.Identity.Name).UserId;
-                }
+                return;
             }
 
             var user = _userService.GetUserBy(uid);
+            var token = "rs?token=" + _userService.CreateNewToken(user, EAccessTokenPurpose.VerifyEmail);
+            string body = "Hi " + user.Username + ",";
+            body += "<br /><br />Please click the following link to register your account, please note that this link is only valid 24 hours from the request time.";
+            body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, token) + "'>Click here to activate your account.</a>";
+            body += "<br /><br />*This is an automatic generated mail, please do not reply.";
 
-            var activationCode = _userService.AssignNewValidationCode(user);
-            var encryptedActivationCode = EncryptionHelper.Base64Encode(activationCode.ToString("N"));
+            var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");
 
-            _userService.SaveChanges(uid.Value);
-
-            using (var mm = new MailMessage())
-            {
-                try
-                {
-                    string body = "Hi " + user.Username + ",";
-                    body += "<br /><br />Please click the following link to register your account";
-                    body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, encryptedActivationCode) + "'>Click here to activate your account.</a>";
-                    body += "<br /><br />*This is an automatic generated mail, please do not reply.";
-
-                    var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");
-                    var mailaddresspassword = AppSettingsHelper.GetKeyValue("MailingAddressPassword");
-
-                    SmtpClient smtp = new SmtpClient();
-
-                    mm.From = new MailAddress(mailaddress);
-                    mm.To.Add(user.Email);
-                    mm.Subject = "Account Activation";
-                    mm.Body = body;
-                    mm.IsBodyHtml = true;
-                    mm.BodyEncoding = System.Text.Encoding.UTF8;
-                    mm.SubjectEncoding = System.Text.Encoding.Default;
-
-                    smtp.Send(mm);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.Message, ex);
-                }
-                finally
-                {
-                    mm.Dispose();
-                }
-            }
+            Emailer.Send(body, "FIX Account Activation", mailaddress, user.Email);
         }
 
     }

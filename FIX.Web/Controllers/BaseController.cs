@@ -27,41 +27,53 @@ namespace FIX.Web.Controllers
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-
-            string cookie_cultureName = AppSettingsHelper.GetKeyValue("Cookie_CultureName");
-
-            if (RouteData.Values["lang"] != null &&
-                !string.IsNullOrWhiteSpace(RouteData.Values["lang"].ToString()))
+            try
             {
-                // set the culture from the route data (url)
-                var lang = RouteData.Values["lang"].ToString();
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(lang);
-            }
-            else
-            {
-                // load the culture info from the cookie
-                var cookie = HttpContext.Request.Cookies[cookie_cultureName];
-                var langHeader = string.Empty;
-                if (cookie != null)
+                string cookie_cultureName = AppSettingsHelper.GetKeyValue("Cookie_CultureName");
+
+                if (RouteData.Values["lang"] != null &&
+                    !string.IsNullOrWhiteSpace(RouteData.Values["lang"].ToString()))
                 {
-                    // set the culture by the cookie content
-                    langHeader = cookie.Value;
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(langHeader);
+                    // set the culture from the route data (url)
+                    var lang = RouteData.Values["lang"].ToString();
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(lang);
                 }
                 else
                 {
-                    // set the culture by the location if not speicified
-                    langHeader = HttpContext.Request.UserLanguages[0];
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(langHeader);
+                    // load the culture info from the cookie
+                    var cookie = HttpContext.Request.Cookies[cookie_cultureName];
+                    var langHeader = string.Empty;
+                    if (cookie != null)
+                    {
+                        // set the culture by the cookie content
+                        langHeader = cookie.Value;
+                        Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(langHeader);
+                    }
+                    else
+                    {
+                        // set the culture by the location if not speicified
+                        langHeader = HttpContext.Request.UserLanguages[0];
+                        Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(langHeader);
+                    }
+                    // set the lang value into route data
+                    RouteData.Values["lang"] = langHeader;
                 }
-                // set the lang value into route data
-                RouteData.Values["lang"] = langHeader;
-            }
 
-            // save the location into cookie
-            HttpCookie _cookie = new HttpCookie(cookie_cultureName, Thread.CurrentThread.CurrentUICulture.Name);
-            _cookie.Expires = DateTime.Now.AddYears(1);
-            HttpContext.Response.SetCookie(_cookie);
+                // save the location into cookie
+                HttpCookie _cookie = new HttpCookie(cookie_cultureName, Thread.CurrentThread.CurrentUICulture.Name);
+                _cookie.Expires = DateTime.Now.AddYears(1);
+                HttpContext.Response.SetCookie(_cookie);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+                filterContext.Result = new RedirectToRouteResult(
+                new RouteValueDictionary
+                {
+                    { "controller", "Account" },
+                    { "action", "Login" }
+                });
+            }
 
             base.OnActionExecuting(filterContext);
         }
