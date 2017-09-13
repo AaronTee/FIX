@@ -136,7 +136,7 @@ namespace FIX.Web.Controllers
             try
             {
                 AccountController accController = new AccountController(_userService, _bankService);
-                accController.CreateNewAccount(model, Request.UserHostAddress);
+                accController.CreateNewAccount(model, Request.UserHostAddress, true);
                 _userService.SaveChanges(User.Identity.GetUserId<int>());
 
                 //Query the new userid

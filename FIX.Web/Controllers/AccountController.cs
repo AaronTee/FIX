@@ -60,7 +60,7 @@ namespace FIX.Web.Controllers
             return View(model);
         }
 
-        public void CreateNewAccount(UserViewModel model, string ipaddress = "")
+        public void CreateNewAccount(UserViewModel model, string ipaddress = "", bool fromAdmin = false)
         {
             try
             {
@@ -109,10 +109,10 @@ namespace FIX.Web.Controllers
                         IP = ipaddress,
                         HasAcceptedTerms = true,
                         HasEmailVerified = false,
-                        IsFirstTimeLogIn = true,
+                        IsFirstTimeLogIn = !fromAdmin,
                         CreatedTimestamp = DateTime.UtcNow,
                         TimeZoneId = DBConstant.DEFAULT_TIMEZONEID,
-                        StatusId = (int)DBConstant.EStatus.Pending,
+                        StatusId = !fromAdmin ? (int)DBConstant.EStatus.Pending : (int)DBConstant.EStatus.Active,
                         UserProfile = new UserProfile
                         {
                             ReferralId = model.ReferralId,
