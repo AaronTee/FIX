@@ -97,13 +97,17 @@
                 @User.Identity.GetUserName()
             </span>
             <ul>
+                @if (User.IsInRole(DBConstant.DBCRole.User))
+                {
                 <li>
-                    @Html.ActionLink("Manage", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-sidebar-primary" })
+                    @Html.ActionLink("Manage", "Index", "ManageAccount", routeValues: null, htmlAttributes: new { title = "Manage", @class = "btn btn-sidebar-primary" })
                 </li>
+                }
                 <li>
                     <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-sidebar-primary btn-logout">Logout</a>
                 </li>
             </ul>
+            <span style="background-color:rgba(20, 20, 20, 1); padding: 5px; font-size:0.8em">&copy; @DateTime.Now.Year FIX Advisory All Right Reserved.</span>
         </div>
     </div>
 </div>

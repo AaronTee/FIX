@@ -10,25 +10,19 @@
         <EntityTypeShape EntityType="FIXModel.DailyTrading" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="FIXModel.Package" Width="1.5" PointX="3" PointY="19.875" />
         <EntityTypeShape EntityType="FIXModel.Role" Width="1.5" PointX="6" PointY="22" />
-        <EntityTypeShape EntityType="FIXModel.UserBankAccount" Width="1.5" PointX="5.25" PointY="17.5" />
         <EntityTypeShape EntityType="FIXModel.UserProfile" Width="1.5" PointX="8.25" PointY="17" />
         <EntityTypeShape EntityType="FIXModel.database_firewall_rules" Width="1.5" PointX="2.75" PointY="4.75" />
-        <AssociationConnector Association="FIXModel.FK__UserBankA__BankI__403A8C7D" />
         <AssociationConnector Association="FIXModel.FK__UserProfi__RoleI__4222D4EF" />
         <EntityTypeShape EntityType="FIXModel.DocSequence" Width="1.5" PointX="5.375" PointY="4.75" />
         <EntityTypeShape EntityType="FIXModel.WalletTransaction" Width="1.5" PointX="7.5" PointY="30" />
         <EntityTypeShape EntityType="FIXModel.MatchingBonus" Width="1.5" PointX="10.5" PointY="13" />
-        <EntityTypeShape EntityType="FIXModel.Withdrawal" Width="1.5" PointX="8.5" PointY="22" />
-        <AssociationConnector Association="FIXModel.FK__Withdrawa__BankI__1209AD79" />
         <EntityTypeShape EntityType="FIXModel.UserWallet" Width="1.5" PointX="5.25" PointY="8.875" />
         <AssociationConnector Association="FIXModel.FK__WalletTra__Walle__40F9A68C" />
-        <AssociationConnector Association="FIXModel.FK__Withdrawa__Walle__10216507" />
         <EntityTypeShape EntityType="FIXModel.Preauth" Width="1.5" PointX="10.5" PointY="8.75" />
         <AssociationConnector Association="FIXModel.FK__Preauth__WalletI__1F63A897" />
         <EntityTypeShape EntityType="FIXModel.User" Width="1.5" PointX="3" PointY="10.125" />
         <AssociationConnector Association="FIXModel.FK__MatchingB__Refer__7EF6D905" />
         <AssociationConnector Association="FIXModel.FK__MatchingB__UserI__7FEAFD3E" />
-        <AssociationConnector Association="FIXModel.FK__UserBankA__UserI__45BE5BA9" />
         <AssociationConnector Association="FIXModel.FK__UserProfi__UserI__4316F928" />
         <AssociationConnector Association="FIXModel.FK__UserWalle__UserI__46B27FE2" />
         <EntityTypeShape EntityType="FIXModel.ReturnInterest" Width="1.5" PointX="13.5" PointY="9.375" />
@@ -37,7 +31,6 @@
         <AssociationConnector Association="FIXModel.FK__Preauth__StatusI__2057CCD0" />
         <AssociationConnector Association="FIXModel.FK__UserPacka__Statu__534D60F1" />
         <AssociationConnector Association="FIXModel.FK__User__Status__5165187F" />
-        <AssociationConnector Association="FIXModel.FK__Withdrawa__Statu__11158940" />
         <EntityTypeShape EntityType="FIXModel.UserPackage" Width="1.5" PointX="8.25" PointY="7.625" />
         <AssociationConnector Association="FIXModel.FK__MatchingB__UserP__69FBBC1F" />
         <AssociationConnector Association="FIXModel.FK__UserPacka__Packa__48CFD27E" />
@@ -50,6 +43,12 @@
         <AssociationConnector Association="FIXModel.FK__UserActiv__Statu__5812160E" />
         <AssociationConnector Association="FIXModel.FK__UserActiv__UserI__59063A47" />
         <EntityTypeShape EntityType="FIXModel.Post" Width="1.5" PointX="10.375" PointY="4.75" />
+        <EntityTypeShape EntityType="FIXModel.Withdrawal" Width="1.5" PointX="10.5" PointY="17.75" />
+        <AssociationConnector Association="FIXModel.FK__Withdrawa__Statu__11158940" />
+        <AssociationConnector Association="FIXModel.FK__Withdrawa__Walle__10216507" />
+        <EntityTypeShape EntityType="FIXModel.UserBankAccount" Width="1.5" PointX="5.25" PointY="17" />
+        <AssociationConnector Association="FIXModel.FK__UserBankA__BankI__403A8C7D" />
+        <AssociationConnector Association="FIXModel.FK__UserBankA__UserI__45BE5BA9" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

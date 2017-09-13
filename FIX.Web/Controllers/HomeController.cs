@@ -55,7 +55,7 @@ namespace FIX.Web.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex.Message, ex);
-                return RedirectToAction("LogOff");
+                return new AccountController(_userService).LogOff();
             }
         }
     }

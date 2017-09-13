@@ -32,7 +32,7 @@ namespace FIX.Web.Controllers
         private IBankService _bankService;
         private IInvestmentService _investmentService;
 
-        public AccountController(IUserService userService, IBankService bankService, IInvestmentService investmentService = null)
+        public AccountController(IUserService userService, IBankService bankService = null, IInvestmentService investmentService = null)
         {
             _userService = userService;
             _bankService = bankService;
@@ -132,6 +132,7 @@ namespace FIX.Web.Controllers
                         {
                             new UserBankAccount()
                             {
+                                UBAId = Guid.NewGuid(),
                                 BankAccountHolder = model.BankAccountHolder,
                                 BankAccountNo = model.BankAccountNo,
                                 BankBranch = model.BankBranch,
@@ -238,7 +239,7 @@ namespace FIX.Web.Controllers
                 return View("RequiredAction", _raModel2);
             }
 
-            SendActivationEmail(uid);
+            SendActivationEmail(uid, Request);
 
             /* For registration through logged in user portal */
             if (User.Identity.IsAuthenticated)
@@ -423,7 +424,7 @@ namespace FIX.Web.Controllers
                     return View(model);
                 }
 #endif
-                if (await _userService.IsValid(model.Username, model.Password, ConfigurationManager.AppSettings["CipherKeyPhrase"]))
+                if (await _userService.IsValid(model.Username, model.Password))
                 {
                     var currentUser = _userService.GetUserBy(model.Username);
                     var userRole = _userService.GetUserRoleBy(currentUser.UserProfile);
@@ -693,7 +694,7 @@ namespace FIX.Web.Controllers
         }
 
 
-        public void SendActivationEmail(int uid)
+        public void SendActivationEmail(int uid, HttpRequestBase request)
         {
             if (uid == 0)
             {
@@ -704,7 +705,7 @@ namespace FIX.Web.Controllers
             var token = "rs?token=" + _userService.CreateNewToken(user, EAccessTokenPurpose.VerifyEmail);
             string body = "Hi " + user.Username + ",";
             body += "<br /><br />Please click the following link to register your account, please note that this link is only valid 24 hours from the request time.";
-            body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, token) + "'>Click here to activate your account.</a>";
+            body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", request.Url.Scheme, request.Url.Authority, token) + "'>Click here to activate your account.</a>";
             body += "<br /><br />*This is an automatic generated mail, please do not reply.";
 
             var mailaddress = AppSettingsHelper.GetKeyValue("MailingAddress");

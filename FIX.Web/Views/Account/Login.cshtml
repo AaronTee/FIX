@@ -9,7 +9,7 @@
     @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors--loginpage text-danger " })
     <ul class="form-field" style="list-style-type: none">
         <li>
             <div class="input-group">
@@ -41,12 +41,12 @@
             <a href="@(Url.Action("Register"))" style="color:#0094ff">or sign up here</a>
         </li>
     </ul>
-    <div class="spacing"></div>
+    <div style="padding: 20px"></div>
     }
 </div>
 
 
 @section Scripts {
     @*Overwrite*@
-    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/loginpage.css"))"/> 
+    <link rel="stylesheet" type="text/css" href="@(Url.Content("~/Content/css/loginpage.css"))" /> 
 }

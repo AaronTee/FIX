@@ -19,7 +19,7 @@ namespace FIX.Service.Entities
         public string ReferenceNo { get; set; }
         public string NotifyEmail { get; set; }
         public decimal WithdrawAmount { get; set; }
-        public int BankId { get; set; }
+        public string Bank { get; set; }
         public string BankAccountName { get; set; }
         public string BankAccountNo { get; set; }
         public string BankBranch { get; set; }
@@ -27,8 +27,7 @@ namespace FIX.Service.Entities
         public System.DateTime CreatedTimestamp { get; set; }
         public Nullable<System.DateTime> ApprovedTimestamp { get; set; }
     
-        public virtual Bank Bank { get; set; }
-        public virtual UserWallet UserWallet { get; set; }
         public virtual Status Status { get; set; }
+        public virtual UserWallet UserWallet { get; set; }
     }
 }

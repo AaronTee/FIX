@@ -14,6 +14,7 @@ namespace FIX.Service.Entities
     
     public partial class UserBankAccount
     {
+        public System.Guid UBAId { get; set; }
         public int UserId { get; set; }
         public int BankId { get; set; }
         public string BankAccountNo { get; set; }

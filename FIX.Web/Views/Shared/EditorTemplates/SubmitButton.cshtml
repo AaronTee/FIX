@@ -1,0 +1,9 @@
+﻿<div class="form-group">
+    <div class="control-label col-lg-4 col-md-5"></div>
+    <div class="col-lg-8 col-md-7">
+        @if (ViewData["PreviousAction"] != null) {
+            @Html.ActionLink(ViewData["PreviousActionText"]?.ToString() ?? "Back", ViewData["PreviousAction"].ToString(), null, new { @class = "btn btn-default" });
+        }
+        <input type="button" class="btn btn-submit" value="Submit"/>
+    </div>
+</div>

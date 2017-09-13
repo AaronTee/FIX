@@ -12,7 +12,7 @@ namespace FIX.Service
         bool ResetPassword(string tokenString, string newPassword);
         string CreateNewToken(User user, DBConstant.EAccessTokenPurpose purpose);
         IQueryable<Role> GetAllRoles();
-        IQueryable<UserBankAccount> GetAllUserBankAccount(int? userId);
+        IQueryable<UserBankAccount> GetUserBankAccounts(int? userId);
         IQueryable<User> GetAllUsers();
         IQueryable<User> GetAllUsersWithoutAdmin();
         User GetReferralBy(int? id);
@@ -21,13 +21,15 @@ namespace FIX.Service
         User GetUserBy(int? id);
         User GetUserByEmail(string email);
         Role GetUserRoleBy(UserProfile userProfile);
+        bool IsNotInUsedBankAccount(int bankId, string bankAccountNo);
         IQueryable<User> GetUsersWithoutAdmin();
         void InsertUser(User user);
-        Task<bool> IsValid(string username, string password, string keyPhrase);
+        Task<bool> IsValid(string username, string password);
         bool IsValidEmailAddress(string email);
         AccessToken IsValidToken(string tokenString, DBConstant.EAccessTokenPurpose purpose);
         void SaveChanges();
         bool SaveChanges(int userId);
+        void UpdatePassword(User user, string newPassword);
         void UpdateUser(User user);
     }
 }

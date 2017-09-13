@@ -1,0 +1,86 @@
+﻿@model FIX.Web.Models.ManageAccountViewModel
+@{
+    ViewBag.Title = "Manage your account";
+}
+
+<div class="form-section">
+    <div class="form-horizontal">
+        <fieldset>
+            <legend>@ViewBag.Title</legend>
+            <div class="row">
+                <div class="col-lg-6">
+                    <form data-action="@(Url.Action("UpdateUserProfile"))">
+                        <div class="form-header">Personal Information</div>
+                        <div class="form-body">
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.Name, "Text")
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.PhoneNo, "Text")
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.Address, "Text")
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.State, "Text")
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.City, "Text")
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.PostCode, "Text")
+                            @Html.EditorFor(x => x.ManagePersonalDetailVM.Country, "Dropdown", new { DDL = Model.CountryDDL })
+                            @Html.Editor("", "SubmitButton")
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <form data-action="@(Url.Action("UpdatePassword"))" class="reset">
+                        <div class="form-header">Update Password</div>
+                        <div class="form-body">
+                            @Html.EditorFor(x => x.ManagePasswordVM.CurrentPassword, "Password")
+                            @Html.EditorFor(x => x.ManagePasswordVM.NewPasword, "Password")
+                            @Html.EditorFor(x => x.ManagePasswordVM.ConfirmNewPassword, "Password")
+                            @Html.Editor("", "SubmitButton")
+                        </div>
+                    </form>
+                    <form data-action="@(Url.Action("UpdateBankAccount"))">
+                        <div class="form-header">User Bank Account</div>
+                        <div class="form-body">
+                            @Html.EditorFor(x => x.ManageBankAccountVM.BankId, "Dropdown", new { DDL = Model.BankDDL })
+                            @Html.EditorFor(x => x.ManageBankAccountVM.BankAccountHolder, "Text")
+                            @Html.EditorFor(x => x.ManageBankAccountVM.BankAccountNo, "Text")
+                            @Html.EditorFor(x => x.ManageBankAccountVM.BankBranch, "Text")
+                            @Html.Editor("", "SubmitButton")
+                        </div>
+                    </form>
+                    <div class="form-header">Referral</div>
+                    <div class="form-body no-padding-side no-padding-top">
+                        @Html.EditorFor(x => x.ReferralName, "Display")
+                    </div>
+                    <div class="form-header">Credit Wallet</div>
+                    <div class="form-body no-padding-side no-padding-top">
+                        @Html.EditorFor(x => x.CreditBalance, "Display")
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $('input.btn-submit').click(function () {
+
+            var $this = $(this);
+            var $form = $(this).closest('form');
+
+            if ($form.valid()) {
+                $this.addClass('disabled');
+                var action = $form.data("action");
+
+                $.post(action, $form.serialize(), function (data) {
+                    showAlert(data.result, data.alertClass);
+                })
+                .fail(function () {
+                    showAlert("Seomthing wrong while we process your request. Please try again later.", 'danger');
+                })
+                .always(function () {
+                    $this.removeClass('disabled');
+
+                    if ($form.hasClass('reset')) $form[0].reset();
+                });
+            }
+
+        });
+    </script>
+}

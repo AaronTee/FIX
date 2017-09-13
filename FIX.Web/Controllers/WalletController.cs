@@ -171,7 +171,7 @@ namespace FIX.Web.Controllers
         public ActionResult Withdrawal()
         {
             //Read user primary bank
-            var userBankAccount = _userService.GetAllUserBankAccount(User.Identity.GetUserId<int>()).FirstOrDefault();
+            var userBankAccount = _userService.GetUserBankAccounts(User.Identity.GetUserId<int>()).FirstOrDefault();
             var userWallet = _financialService.GetUserWallet(userBankAccount.UserId);
 
             WithdrawalViewModels model = new WithdrawalViewModels();
@@ -183,7 +183,7 @@ namespace FIX.Web.Controllers
                     BankAccountHolder = userBankAccount.BankAccountHolder,
                     BankAccountNo = userBankAccount.BankAccountNo,
                     BankBranch = userBankAccount.BankBranch,
-                    BankId = userBankAccount.BankId,
+                    Bank = userBankAccount.Bank.Name,
                     CreditBalance = (_financialService.GetUserWalletAvailableBalance(userWallet.WalletId) ?? decimal.Zero).toCurrencyFormat(),
                     NotifyEmail = userBankAccount.User.Email,
                 };
@@ -192,8 +192,8 @@ namespace FIX.Web.Controllers
             model.BankDDL = new SelectList(_bankService.GetAllBank().Select(x => new SelectListItem()
             {
                 Text = x.Name,
-                Value = x.BankId.ToString()
-            }), "Value", "Text", model.BankId);
+                Value = x.Name
+            }), "Value", "Text", model.Bank);
 
             return View(model);
         }
@@ -227,7 +227,7 @@ namespace FIX.Web.Controllers
                         WalletId = userWallet.WalletId,
                         ReferenceNo = docCode,
                         NotifyEmail = model.NotifyEmail,
-                        BankId = model.BankId,
+                        Bank = model.Bank,
                         StatusId = (int)EStatus.Approved,
                         BankAccountName = model.BankAccountHolder,
                         BankAccountNo = model.BankAccountNo,

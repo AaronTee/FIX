@@ -135,8 +135,13 @@ namespace FIX.Web.Controllers
         {
             try
             {
-                new AccountController(_userService, _bankService).CreateNewAccount(model, Request.UserHostAddress);
+                AccountController accController = new AccountController(_userService, _bankService);
+                accController.CreateNewAccount(model, Request.UserHostAddress);
                 _userService.SaveChanges(User.Identity.GetUserId<int>());
+
+                //Query the new userid
+                var newUser = _userService.GetUserBy(model.Username);
+                accController.SendActivationEmail(newUser.UserId, Request);
 
                 if (model.RoleId == (int)DBCRole.Id.Admin)
                 {
@@ -237,6 +242,7 @@ namespace FIX.Web.Controllers
                 userInfo.UserProfile.PhoneNo = model.PhoneNo;
                 userInfo.UserProfile.ModifiedTimestamp = DateTime.UtcNow;
 
+                //has at least one bank account
                 if (userInfo.UserBankAccount.Count > 0)
                 {
                     foreach (var bankAccount in userInfo.UserBankAccount)
@@ -247,6 +253,21 @@ namespace FIX.Web.Controllers
                         bankAccount.BankBranch = model.BankBranch;
                         break; //support only one account for now hence break.
                     }
+                }
+                else
+                {
+                    UserBankAccount uba = new UserBankAccount
+                    {
+                        UBAId = Guid.NewGuid(),
+                        IsPrimary = true,
+                        CreatedTimestamp = DateTime.UtcNow,
+                        BankId = model.BankId,
+                        BankAccountHolder = model.BankAccountHolder,
+                        BankAccountNo = model.BankAccountNo,
+                        BankBranch = model.BankBranch,
+                    };
+
+                    userInfo.UserBankAccount.Add(uba);
                 }
 
                 //create wallet if empty

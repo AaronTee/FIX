@@ -168,14 +168,13 @@
         </EntityType>
         <EntityType Name="UserBankAccount">
           <Key>
-            <PropertyRef Name="UserId" />
-            <PropertyRef Name="BankId" />
-            <PropertyRef Name="BankAccountNo" />
+            <PropertyRef Name="UBAId" />
           </Key>
+          <Property Name="UBAId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="BankId" Type="int" Nullable="false" />
           <Property Name="BankAccountNo" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="BankAccountHolder" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankAccountHolder" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BankBranch" Type="nvarchar" MaxLength="100" />
           <Property Name="IsPrimary" Type="bit" Nullable="false" />
           <Property Name="CreatedTimestamp" Type="datetime" Nullable="false" />
@@ -250,7 +249,7 @@
           <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="NotifyEmail" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="WithdrawAmount" Type="decimal" Precision="15" Scale="5" Nullable="false" />
-          <Property Name="BankId" Type="int" Nullable="false" />
+          <Property Name="Bank" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="BankAccountName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="BankAccountNo" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="BankBranch" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -566,18 +565,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Withdrawa__BankI__1209AD79">
-          <End Role="Bank" Type="Self.Bank" Multiplicity="1" />
-          <End Role="Withdrawal" Type="Self.Withdrawal" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Bank">
-              <PropertyRef Name="BankId" />
-            </Principal>
-            <Dependent Role="Withdrawal">
-              <PropertyRef Name="BankId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Withdrawa__Statu__11158940">
           <End Role="Status" Type="Self.Status" Multiplicity="1" />
           <End Role="Withdrawal" Type="Self.Withdrawal" Multiplicity="*" />
@@ -757,10 +744,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="UserWallet" EntitySet="UserWallet" />
             <End Role="WalletTransaction" EntitySet="WalletTransaction" />
           </AssociationSet>
-          <AssociationSet Name="FK__Withdrawa__BankI__1209AD79" Association="Self.FK__Withdrawa__BankI__1209AD79">
-            <End Role="Bank" EntitySet="Bank" />
-            <End Role="Withdrawal" EntitySet="Withdrawal" />
-          </AssociationSet>
           <AssociationSet Name="FK__Withdrawa__Statu__11158940" Association="Self.FK__Withdrawa__Statu__11158940">
             <End Role="Status" EntitySet="Status" />
             <End Role="Withdrawal" EntitySet="Withdrawal" />
@@ -780,13 +763,8 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <EntitySet Name="DailyTrading" EntityType="FIXModel.DailyTrading" />
           <EntitySet Name="Package" EntityType="FIXModel.Package" />
           <EntitySet Name="Role" EntityType="FIXModel.Role" />
-          <EntitySet Name="UserBankAccount" EntityType="FIXModel.UserBankAccount" />
           <EntitySet Name="UserProfile" EntityType="FIXModel.UserProfile" />
           <EntitySet Name="database_firewall_rules" EntityType="FIXModel.database_firewall_rules" />
-          <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="FIXModel.FK__UserBankA__BankI__403A8C7D">
-            <End Role="Bank" EntitySet="Bank" />
-            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
-          </AssociationSet>
           <AssociationSet Name="FK__UserProfi__RoleI__4222D4EF" Association="FIXModel.FK__UserProfi__RoleI__4222D4EF">
             <End Role="Role" EntitySet="Role" />
             <End Role="UserProfile" EntitySet="UserProfile" />
@@ -815,19 +793,10 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <EntitySet Name="DocSequence" EntityType="FIXModel.DocSequence" />
           <EntitySet Name="WalletTransaction" EntityType="FIXModel.WalletTransaction" />
           <EntitySet Name="MatchingBonus" EntityType="FIXModel.MatchingBonus" />
-          <EntitySet Name="Withdrawal" EntityType="FIXModel.Withdrawal" />
-          <AssociationSet Name="FK__Withdrawa__BankI__1209AD79" Association="FIXModel.FK__Withdrawa__BankI__1209AD79">
-            <End Role="Bank" EntitySet="Bank" />
-            <End Role="Withdrawal" EntitySet="Withdrawal" />
-          </AssociationSet>
           <EntitySet Name="UserWallet" EntityType="FIXModel.UserWallet" />
           <AssociationSet Name="FK__WalletTra__Walle__40F9A68C" Association="FIXModel.FK__WalletTra__Walle__40F9A68C">
             <End Role="UserWallet" EntitySet="UserWallet" />
             <End Role="WalletTransaction" EntitySet="WalletTransaction" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Withdrawa__Walle__10216507" Association="FIXModel.FK__Withdrawa__Walle__10216507">
-            <End Role="UserWallet" EntitySet="UserWallet" />
-            <End Role="Withdrawal" EntitySet="Withdrawal" />
           </AssociationSet>
           <EntitySet Name="Preauth" EntityType="FIXModel.Preauth" />
           <AssociationSet Name="FK__Preauth__WalletI__1F63A897" Association="FIXModel.FK__Preauth__WalletI__1F63A897">
@@ -842,10 +811,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <AssociationSet Name="FK__MatchingB__UserI__7FEAFD3E" Association="FIXModel.FK__MatchingB__UserI__7FEAFD3E">
             <End Role="User" EntitySet="User" />
             <End Role="MatchingBonus" EntitySet="MatchingBonus" />
-          </AssociationSet>
-          <AssociationSet Name="FK__UserBankA__UserI__45BE5BA9" Association="FIXModel.FK__UserBankA__UserI__45BE5BA9">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
           </AssociationSet>
           <AssociationSet Name="FK__UserProfi__UserI__4316F928" Association="FIXModel.FK__UserProfi__UserI__4316F928">
             <End Role="User" EntitySet="User" />
@@ -872,10 +837,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <AssociationSet Name="FK__User__Status__5165187F" Association="FIXModel.FK__User__Status__5165187F">
             <End Role="Status" EntitySet="Status" />
             <End Role="User" EntitySet="User" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Withdrawa__Statu__11158940" Association="FIXModel.FK__Withdrawa__Statu__11158940">
-            <End Role="Status" EntitySet="Status" />
-            <End Role="Withdrawal" EntitySet="Withdrawal" />
           </AssociationSet>
           <EntitySet Name="UserPackage" EntityType="FIXModel.UserPackage" />
           <AssociationSet Name="FK__MatchingB__UserP__69FBBC1F" Association="FIXModel.FK__MatchingB__UserP__69FBBC1F">
@@ -910,6 +871,24 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
             <End Role="AccessToken" EntitySet="AccessToken" />
           </AssociationSet>
           <EntitySet Name="Post" EntityType="FIXModel.Post" />
+          <EntitySet Name="Withdrawal" EntityType="FIXModel.Withdrawal" />
+          <AssociationSet Name="FK__Withdrawa__Statu__11158940" Association="FIXModel.FK__Withdrawa__Statu__11158940">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Withdrawal" EntitySet="Withdrawal" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Withdrawa__Walle__10216507" Association="FIXModel.FK__Withdrawa__Walle__10216507">
+            <End Role="UserWallet" EntitySet="UserWallet" />
+            <End Role="Withdrawal" EntitySet="Withdrawal" />
+          </AssociationSet>
+          <EntitySet Name="UserBankAccount" EntityType="FIXModel.UserBankAccount" />
+          <AssociationSet Name="FK__UserBankA__BankI__403A8C7D" Association="FIXModel.FK__UserBankA__BankI__403A8C7D">
+            <End Role="Bank" EntitySet="Bank" />
+            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserBankA__UserI__45BE5BA9" Association="FIXModel.FK__UserBankA__UserI__45BE5BA9">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserBankAccount" EntitySet="UserBankAccount" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AuditLog">
           <Key>
@@ -934,7 +913,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
           <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__BankI__403A8C7D" FromRole="Bank" ToRole="UserBankAccount" />
-          <NavigationProperty Name="Withdrawal" Relationship="FIXModel.FK__Withdrawa__BankI__1209AD79" FromRole="Bank" ToRole="Withdrawal" />
         </EntityType>
         <EntityType Name="DailyTrading">
           <Key>
@@ -971,23 +949,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
           <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__RoleI__4222D4EF" FromRole="Role" ToRole="UserProfile" />
-        </EntityType>
-        <EntityType Name="UserBankAccount">
-          <Key>
-            <PropertyRef Name="UserId" />
-            <PropertyRef Name="BankId" />
-            <PropertyRef Name="BankAccountNo" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="BankId" Type="Int32" Nullable="false" />
-          <Property Name="BankAccountNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BankAccountHolder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BankBranch" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="IsPrimary" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Bank" Relationship="FIXModel.FK__UserBankA__BankI__403A8C7D" FromRole="UserBankAccount" ToRole="Bank" />
-          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserBankA__UserI__45BE5BA9" FromRole="UserBankAccount" ToRole="User" />
         </EntityType>
         <EntityType Name="UserProfile">
           <Key>
@@ -1026,18 +987,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
-        <Association Name="FK__UserBankA__BankI__403A8C7D">
-          <End Type="FIXModel.Bank" Role="Bank" Multiplicity="1" />
-          <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Bank">
-              <PropertyRef Name="BankId" />
-            </Principal>
-            <Dependent Role="UserBankAccount">
-              <PropertyRef Name="BankId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__UserProfi__RoleI__4222D4EF">
           <End Type="FIXModel.Role" Role="Role" Multiplicity="1" />
           <End Type="FIXModel.UserProfile" Role="UserProfile" Multiplicity="*" />
@@ -1122,38 +1071,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <NavigationProperty Name="Status" Relationship="FIXModel.FK__MatchingB__Statu__503BEA1C" FromRole="MatchingBonus" ToRole="Status" />
           <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__MatchingB__UserP__69FBBC1F" FromRole="MatchingBonus" ToRole="UserPackage" />
         </EntityType>
-        <EntityType Name="Withdrawal">
-          <Key>
-            <PropertyRef Name="WithdrawalId" />
-          </Key>
-          <Property Name="WithdrawalId" Type="Int32" Nullable="false" />
-          <Property Name="WalletId" Type="Guid" Nullable="false" />
-          <Property Name="ReferenceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NotifyEmail" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="WithdrawAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
-          <Property Name="BankId" Type="Int32" Nullable="false" />
-          <Property Name="BankAccountName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BankAccountNo" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="BankBranch" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ApprovedTimestamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Bank" Relationship="FIXModel.FK__Withdrawa__BankI__1209AD79" FromRole="Withdrawal" ToRole="Bank" />
-          <NavigationProperty Name="UserWallet" Relationship="FIXModel.FK__Withdrawa__Walle__10216507" FromRole="Withdrawal" ToRole="UserWallet" />
-          <NavigationProperty Name="Status" Relationship="FIXModel.FK__Withdrawa__Statu__11158940" FromRole="Withdrawal" ToRole="Status" />
-        </EntityType>
-        <Association Name="FK__Withdrawa__BankI__1209AD79">
-          <End Type="FIXModel.Bank" Role="Bank" Multiplicity="1" />
-          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Bank">
-              <PropertyRef Name="BankId" />
-            </Principal>
-            <Dependent Role="Withdrawal">
-              <PropertyRef Name="BankId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="UserWallet">
           <Key>
             <PropertyRef Name="WalletId" />
@@ -1164,9 +1081,9 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="Balance" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
           <Property Name="AuthorizedBalance" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
           <NavigationProperty Name="WalletTransaction" Relationship="FIXModel.FK__WalletTra__Walle__40F9A68C" FromRole="UserWallet" ToRole="WalletTransaction" />
-          <NavigationProperty Name="Withdrawal" Relationship="FIXModel.FK__Withdrawa__Walle__10216507" FromRole="UserWallet" ToRole="Withdrawal" />
           <NavigationProperty Name="Preauth" Relationship="FIXModel.FK__Preauth__WalletI__1F63A897" FromRole="UserWallet" ToRole="Preauth" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__UserWalle__UserI__46B27FE2" FromRole="UserWallet" ToRole="User" />
+          <NavigationProperty Name="Withdrawal" Relationship="FIXModel.FK__Withdrawa__Walle__10216507" FromRole="UserWallet" ToRole="Withdrawal" />
         </EntityType>
         <Association Name="FK__WalletTra__Walle__40F9A68C">
           <End Type="FIXModel.UserWallet" Role="UserWallet" Multiplicity="1" />
@@ -1176,18 +1093,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               <PropertyRef Name="WalletId" />
             </Principal>
             <Dependent Role="WalletTransaction">
-              <PropertyRef Name="WalletId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Withdrawa__Walle__10216507">
-          <End Type="FIXModel.UserWallet" Role="UserWallet" Multiplicity="1" />
-          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserWallet">
-              <PropertyRef Name="WalletId" />
-            </Principal>
-            <Dependent Role="Withdrawal">
               <PropertyRef Name="WalletId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1240,12 +1145,12 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="StatusId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="MatchingBonus" Relationship="FIXModel.FK__MatchingB__Refer__7EF6D905" FromRole="User" ToRole="MatchingBonus" />
           <NavigationProperty Name="MatchingBonus1" Relationship="FIXModel.FK__MatchingB__UserI__7FEAFD3E" FromRole="User" ToRole="MatchingBonus" />
-          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__45BE5BA9" FromRole="User" ToRole="UserBankAccount" />
           <NavigationProperty Name="UserProfile" Relationship="FIXModel.FK__UserProfi__UserI__4316F928" FromRole="User" ToRole="UserProfile" />
           <NavigationProperty Name="UserWallet" Relationship="FIXModel.FK__UserWalle__UserI__46B27FE2" FromRole="User" ToRole="UserWallet" />
           <NavigationProperty Name="Status" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="User" ToRole="Status" />
           <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__UserI__47DBAE45" FromRole="User" ToRole="UserPackage" />
           <NavigationProperty Name="AccessToken" Relationship="FIXModel.FK__UserActiv__UserI__59063A47" FromRole="User" ToRole="AccessToken" />
+          <NavigationProperty Name="UserBankAccount" Relationship="FIXModel.FK__UserBankA__UserI__45BE5BA9" FromRole="User" ToRole="UserBankAccount" />
         </EntityType>
         <Association Name="FK__MatchingB__Refer__7EF6D905">
           <End Type="FIXModel.User" Role="User" Multiplicity="1" />
@@ -1267,20 +1172,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="MatchingBonus">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__UserBankA__UserI__45BE5BA9">
-          <End Type="FIXModel.User" Role="User" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="UserBankAccount">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1338,9 +1229,9 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <NavigationProperty Name="Preauth" Relationship="FIXModel.FK__Preauth__StatusI__2057CCD0" FromRole="Status" ToRole="Preauth" />
           <NavigationProperty Name="ReturnInterest" Relationship="FIXModel.FK__UserPacka__Statu__534D60F1" FromRole="Status" ToRole="ReturnInterest" />
           <NavigationProperty Name="User" Relationship="FIXModel.FK__User__Status__5165187F" FromRole="Status" ToRole="User" />
-          <NavigationProperty Name="Withdrawal" Relationship="FIXModel.FK__Withdrawa__Statu__11158940" FromRole="Status" ToRole="Withdrawal" />
           <NavigationProperty Name="UserPackage" Relationship="FIXModel.FK__UserPacka__Statu__29E1370A" FromRole="Status" ToRole="UserPackage" />
           <NavigationProperty Name="AccessToken" Relationship="FIXModel.FK__UserActiv__Statu__5812160E" FromRole="Status" ToRole="AccessToken" />
+          <NavigationProperty Name="Withdrawal" Relationship="FIXModel.FK__Withdrawa__Statu__11158940" FromRole="Status" ToRole="Withdrawal" />
         </EntityType>
         <Association Name="FK__MatchingB__Statu__503BEA1C">
           <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
@@ -1386,18 +1277,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
               <PropertyRef Name="StatusId" />
             </Principal>
             <Dependent Role="User">
-              <PropertyRef Name="StatusId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Withdrawa__Statu__11158940">
-          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
-          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Status">
-              <PropertyRef Name="StatusId" />
-            </Principal>
-            <Dependent Role="Withdrawal">
               <PropertyRef Name="StatusId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1576,6 +1455,91 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
           <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Withdrawal">
+          <Key>
+            <PropertyRef Name="WithdrawalId" />
+          </Key>
+          <Property Name="WithdrawalId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WalletId" Type="Guid" Nullable="false" />
+          <Property Name="ReferenceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NotifyEmail" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="WithdrawAmount" Type="Decimal" Nullable="false" Precision="15" Scale="5" />
+          <Property Name="Bank" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountNo" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ApprovedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Status" Relationship="FIXModel.FK__Withdrawa__Statu__11158940" FromRole="Withdrawal" ToRole="Status" />
+          <NavigationProperty Name="UserWallet" Relationship="FIXModel.FK__Withdrawa__Walle__10216507" FromRole="Withdrawal" ToRole="UserWallet" />
+        </EntityType>
+        <Association Name="FK__Withdrawa__Statu__11158940">
+          <End Type="FIXModel.Status" Role="Status" Multiplicity="1" />
+          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="Withdrawal">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Withdrawa__Walle__10216507">
+          <End Type="FIXModel.UserWallet" Role="UserWallet" Multiplicity="1" />
+          <End Type="FIXModel.Withdrawal" Role="Withdrawal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserWallet">
+              <PropertyRef Name="WalletId" />
+            </Principal>
+            <Dependent Role="Withdrawal">
+              <PropertyRef Name="WalletId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UserBankAccount">
+          <Key>
+            <PropertyRef Name="UBAId" />
+          </Key>
+          <Property Name="UBAId" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="BankId" Type="Int32" Nullable="false" />
+          <Property Name="BankAccountNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankAccountHolder" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsPrimary" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedTimestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Bank" Relationship="FIXModel.FK__UserBankA__BankI__403A8C7D" FromRole="UserBankAccount" ToRole="Bank" />
+          <NavigationProperty Name="User" Relationship="FIXModel.FK__UserBankA__UserI__45BE5BA9" FromRole="UserBankAccount" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__UserBankA__BankI__403A8C7D">
+          <End Type="FIXModel.Bank" Role="Bank" Multiplicity="1" />
+          <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="BankId" />
+            </Principal>
+            <Dependent Role="UserBankAccount">
+              <PropertyRef Name="BankId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserBankA__UserI__45BE5BA9">
+          <End Type="FIXModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FIXModel.UserBankAccount" Role="UserBankAccount" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserBankAccount">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1641,20 +1605,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserBankAccount">
-            <EntityTypeMapping TypeName="FIXModel.UserBankAccount">
-              <MappingFragment StoreEntitySet="UserBankAccount">
-                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
-                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
-                <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
-                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
-                <ScalarProperty Name="BankAccountHolder" ColumnName="BankAccountHolder" />
-                <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
-                <ScalarProperty Name="BankId" ColumnName="BankId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1765,24 +1715,6 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserPackageId" ColumnName="UserPackageId" />
                 <ScalarProperty Name="MatchingBonusId" ColumnName="MatchingBonusId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Withdrawal">
-            <EntityTypeMapping TypeName="FIXModel.Withdrawal">
-              <MappingFragment StoreEntitySet="Withdrawal">
-                <ScalarProperty Name="ApprovedTimestamp" ColumnName="ApprovedTimestamp" />
-                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
-                <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
-                <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
-                <ScalarProperty Name="BankId" ColumnName="BankId" />
-                <ScalarProperty Name="WithdrawAmount" ColumnName="WithdrawAmount" />
-                <ScalarProperty Name="NotifyEmail" ColumnName="NotifyEmail" />
-                <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
-                <ScalarProperty Name="WalletId" ColumnName="WalletId" />
-                <ScalarProperty Name="WithdrawalId" ColumnName="WithdrawalId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1925,6 +1857,39 @@ warning 6002: The table/view 'FIX02.sys.database_firewall_rules' does not have a
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="PostType" ColumnName="PostType" />
                 <ScalarProperty Name="PostId" ColumnName="PostId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Withdrawal">
+            <EntityTypeMapping TypeName="FIXModel.Withdrawal">
+              <MappingFragment StoreEntitySet="Withdrawal">
+                <ScalarProperty Name="ApprovedTimestamp" ColumnName="ApprovedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+                <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
+                <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
+                <ScalarProperty Name="Bank" ColumnName="Bank" />
+                <ScalarProperty Name="WithdrawAmount" ColumnName="WithdrawAmount" />
+                <ScalarProperty Name="NotifyEmail" ColumnName="NotifyEmail" />
+                <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
+                <ScalarProperty Name="WalletId" ColumnName="WalletId" />
+                <ScalarProperty Name="WithdrawalId" ColumnName="WithdrawalId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserBankAccount">
+            <EntityTypeMapping TypeName="FIXModel.UserBankAccount">
+              <MappingFragment StoreEntitySet="UserBankAccount">
+                <ScalarProperty Name="ModifiedTimestamp" ColumnName="ModifiedTimestamp" />
+                <ScalarProperty Name="CreatedTimestamp" ColumnName="CreatedTimestamp" />
+                <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
+                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+                <ScalarProperty Name="BankAccountHolder" ColumnName="BankAccountHolder" />
+                <ScalarProperty Name="BankAccountNo" ColumnName="BankAccountNo" />
+                <ScalarProperty Name="BankId" ColumnName="BankId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UBAId" ColumnName="UBAId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

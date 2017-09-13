@@ -95,7 +95,7 @@ namespace FIX.Service
 
         public enum EJState
         {
-            Unknown, Success, Failed, NoWallet
+            Unknown, Success, Failed, NoWallet, NotMatch
         }
 
         public enum ETransactionType

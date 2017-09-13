@@ -17,9 +17,12 @@ function showAlert(message, style, autodismiss) {
         autodismiss = true;
     };
 
-    html = "<div class='alert alert-" + (style || "success") + " " + dismissableClass + "' >";
-    html = html + "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-    html = html + message + "</div>";
+    html += "<div class=\"ui-message-body\">";
+    html += "<div class='alert alert-" + (style || "success") + " " + dismissableClass + "' >";
+    html += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+    html += message + "</div>";
+    html += "</div>";
+
 
     alertWrapper.append(html);
     alertWrapper.show();

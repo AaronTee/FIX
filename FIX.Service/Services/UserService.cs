@@ -42,7 +42,12 @@ namespace FIX.Service
             return _uow.Repository<User>().GetAsQueryable(filter: x=> x.UserProfile.Role.Description != DBCRole.Admin);
         }
 
-        public IQueryable<UserBankAccount> GetAllUserBankAccount(int? userId)
+        public bool IsNotInUsedBankAccount(int bankId, string bankAccountNo)
+        {
+            return _uow.Repository<UserBankAccount>().GetAsQueryable(x => x.BankId == bankId && x.BankAccountNo == bankAccountNo).Count() < 1;
+        }
+
+        public IQueryable<UserBankAccount> GetUserBankAccounts(int? userId)
         {
             return _uow.Repository<UserBankAccount>().GetAsQueryable().Where(x => x.UserId == userId);
         }
@@ -68,7 +73,7 @@ namespace FIX.Service
             return _uow.Repository<User>().GetAsQueryable().Where(x => x.UserId == id).FirstOrDefault();
         }
 
-        public async Task<bool> IsValid(string username, string password, string keyPhrase)
+        public async Task<bool> IsValid(string username, string password)
         {
             var task = Task.Run(() =>
             {
@@ -207,6 +212,12 @@ namespace FIX.Service
         public void UpdateUser(User user)
         {
             user.ModifiedTimestamp = DateTime.UtcNow;
+            _uow.Repository<User>().Update(user);
+        }
+
+        public void UpdatePassword(User user, string newPassword)
+        {
+            user.Password = SecurePasswordHasher.Hash(newPassword);
             _uow.Repository<User>().Update(user);
         }
 

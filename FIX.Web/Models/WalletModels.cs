@@ -54,7 +54,7 @@ namespace FIX.Web.Models
 
         [Required]
         [Display(Name = "Bank")]
-        public int BankId { get; set; }
+        public string Bank { get; set; }
 
         [Required]
         [Display(Name = "Bank Account Holder")]
